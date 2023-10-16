@@ -17,8 +17,9 @@ import java.util.stream.Collectors;
 public class ModCommands {
 
     public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
-        commandDispatcher.register(Commands.literal(CustomAbilities.MOD_ID).then(Commands.literal("clear").executes(ModCommands::clearAbility))
-                .then(Commands.argument("name",StringArgumentType.string()).suggests(VALID_ABILITIES)).executes(ModCommands::activateAbility));
+        commandDispatcher.register(Commands.literal(CustomAbilities.MOD_ID)
+                .then(Commands.literal("clear").executes(ModCommands::clearAbility))
+                .then(Commands.argument("name",StringArgumentType.string()).suggests(VALID_ABILITIES).executes(ModCommands::activateAbility)));
     }
 
     private static int activateAbility(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
@@ -52,5 +53,6 @@ public class ModCommands {
         if (newA != null) {
             newA.onAbilityAcquired.accept(player);
         }
+        Constants.LOG.info("{} removed {} ability, got {} ability",player,original,newA);
     }
 }

@@ -7,6 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
+import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod(CustomAbilities.MOD_ID)
@@ -23,6 +24,7 @@ public class CustomAbilitiesForge {
         CustomAbilities.init();
         MinecraftForge.EVENT_BUS.addListener(this::commands);
         MinecraftForge.EVENT_BUS.addListener(this::targetPlayer);
+        MinecraftForge.EVENT_BUS.addListener(this::knockback);
     }
 
     private void targetPlayer(LivingChangeTargetEvent e) {
@@ -34,6 +36,10 @@ public class CustomAbilitiesForge {
                 e.setCanceled(true);//wardens don't attack this ability
             }
         }
+    }
+
+    private void knockback(LivingKnockBackEvent e) {
+
     }
 
     private void commands(RegisterCommandsEvent e) {

@@ -1,5 +1,6 @@
 package tfar.customabilities.mixin;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -29,6 +30,22 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
     private void registerCustom(CallbackInfo ci) {
         this.entityData.define(ABILITY, -1);
     }
+
+
+    @Inject(method = "addAdditionalSaveData",at = @At("RETURN"))
+    private void addExtra(CompoundTag $$0, CallbackInfo ci) {
+        Ability ability = getAbility();
+        if (ability != null) {
+            $$0.putInt("ability", getAbility().ordinal());
+        }
+    }
+
+    @Inject(method = "readAdditionalSaveData",at = @At("RETURN"))
+    private void readExtra(CompoundTag $$0, CallbackInfo ci) {
+
+    }
+
+
 
     @Override
     @Nullable
