@@ -36,7 +36,7 @@ public enum Ability {
     Barcode(Constants.NOTHING, Constants.NOTHING),
     //todo          -Turn into bat
 
-    Basil(Constants.createPermanentEffect(MobEffects.WATER_BREATHING), Constants.removePermanentEffect(MobEffects.WATER_BREATHING)),
+    Basil(Constants.createPermanentEffect(MobEffects.WATER_BREATHING), Constants.removePermanentEffect(MobEffects.WATER_BREATHING),true),
 //-Water breathing
 //-Swim and mine speed unaffected in water
 //-Any horse can be ridden, even without saddle
@@ -52,9 +52,9 @@ public enum Ability {
 //todo-teleportation ability
 //-water contact deals damage
 
-    Otty(Constants.NOTHING, Constants.NOTHING),
-    //todo          -water breathing 8 minutes
-//todo-swim and mine speed unaffected in water
+    Otty(Constants.NOTHING, Constants.NOTHING,true),
+    //todo-water breathing 8 minutes
+//-swim and mine speed unaffected in water
 //todo-can see in water clearly
 //todo-can sleep underwater
 //todo-cannot sleep unless a player is sleeping within a 3 block radius
@@ -77,9 +77,15 @@ public enum Ability {
 
     public final Consumer<Player> onAbilityAcquired;
     public final Consumer<Player> onAbilityRemoved;
+    public final boolean nativeAquaAffinity;
 
     Ability(Consumer<Player> onAbilityAcquired, Consumer<Player> onAbilityRemoved) {
+        this(onAbilityAcquired,onAbilityRemoved,false);
+    }
+
+    Ability(Consumer<Player> onAbilityAcquired, Consumer<Player> onAbilityRemoved,boolean nativeAquaAffinity) {
         this.onAbilityAcquired = onAbilityAcquired;
         this.onAbilityRemoved = onAbilityRemoved;
+        this.nativeAquaAffinity = nativeAquaAffinity;
     }
 }

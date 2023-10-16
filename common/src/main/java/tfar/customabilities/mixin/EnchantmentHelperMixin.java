@@ -16,15 +16,21 @@ public class EnchantmentHelperMixin {
 
     @Inject(method = "hasAquaAffinity",at = @At("HEAD"),cancellable = true)
     private static void waterAbility(LivingEntity living, CallbackInfoReturnable<Boolean> cir) {
-        if (living instanceof Player player && ((PlayerDuck)player).getAbility() == Ability.Basil) {
+        if (living instanceof Player player && nativeAquaAffinity(player)) {
             cir.setReturnValue(true);
         }
     }
 
     @Inject(method = "getDepthStrider",at = @At("HEAD"),cancellable = true)
     private static void waterAbility2(LivingEntity living, CallbackInfoReturnable<Integer> cir) {
-        if (living instanceof Player player && ((PlayerDuck)player).getAbility() == Ability.Basil) {
+        if (living instanceof Player player && nativeAquaAffinity(player)) {
             cir.setReturnValue(Enchantments.DEPTH_STRIDER.getMaxLevel());
         }
     }
+
+    private static boolean nativeAquaAffinity(Player player) {
+        Ability ability = ((PlayerDuck)player).getAbility();
+        return ability != null && ability.nativeAquaAffinity;
+    }
+
 }
