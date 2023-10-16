@@ -33,19 +33,19 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
 
 
     @Inject(method = "addAdditionalSaveData",at = @At("RETURN"))
-    private void addExtra(CompoundTag $$0, CallbackInfo ci) {
+    private void addExtra(CompoundTag tag, CallbackInfo ci) {
         Ability ability = getAbility();
         if (ability != null) {
-            $$0.putInt("ability", getAbility().ordinal());
+            tag.putInt("ability", getAbility().ordinal());
         }
     }
 
     @Inject(method = "readAdditionalSaveData",at = @At("RETURN"))
-    private void readExtra(CompoundTag $$0, CallbackInfo ci) {
-
+    private void readExtra(CompoundTag tag, CallbackInfo ci) {
+        if (tag.contains("ability")) {
+            setAbility(Ability.values()[tag.getInt("ability")]);
+        }
     }
-
-
 
     @Override
     @Nullable
