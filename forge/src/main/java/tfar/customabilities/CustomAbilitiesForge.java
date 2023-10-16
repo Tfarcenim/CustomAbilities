@@ -15,6 +15,7 @@ import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 
@@ -36,6 +37,7 @@ public class CustomAbilitiesForge {
         MinecraftForge.EVENT_BUS.addListener(this::playertick);
         MinecraftForge.EVENT_BUS.addListener(this::damage);
         MinecraftForge.EVENT_BUS.addListener(this::heal);
+        MinecraftForge.EVENT_BUS.addListener(this::clonePlayer);
     }
 
     private void targetPlayer(LivingChangeTargetEvent e) {
@@ -94,6 +96,12 @@ public class CustomAbilitiesForge {
 
             }
         }
+    }
+
+    private void clonePlayer(PlayerEvent.Clone event) {
+        Player original = event.getOriginal();
+        Player player = event.getEntity();
+        ((PlayerDuck)player).setAbility(((PlayerDuck)original).getAbility());
     }
 
     private static boolean lessThan25PercentHealth(LivingEntity player) {

@@ -29,6 +29,7 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
     @Inject(method = "defineSynchedData",at = @At("RETURN"))
     private void registerCustom(CallbackInfo ci) {
         this.entityData.define(ABILITY, -1);
+        constructed = true;
     }
 
 
@@ -50,6 +51,7 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
     @Override
     @Nullable
     public Ability getAbility() {
+        if (!constructed) return null;
         int index = entityData.get(ABILITY);
         return (index >= 0 && index < Ability.values().length) ? Ability.values()[index] : null;
     }
@@ -57,5 +59,12 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
     @Override
     public void setAbility(@Nullable Ability ability) {
         entityData.set(ABILITY,ability == null ? -1:ability.ordinal());
+    }
+
+    private boolean constructed;
+
+    @Override
+    public boolean constructed() {
+        return constructed;
     }
 }

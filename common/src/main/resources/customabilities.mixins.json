@@ -7,6 +7,7 @@
   "mixins": [
     "AbstractHorseMixin",
     "EnchantmentHelperMixin",
+    "EntityMixin",
     "FoodDataMixin",
     "LivingEntityMixin",
     "PlayerMixin"

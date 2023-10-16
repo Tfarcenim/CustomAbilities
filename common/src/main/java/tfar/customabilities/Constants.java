@@ -69,4 +69,6 @@ public class Constants {
 	public static boolean hasAbility(Player player,Ability ability) {
 		return ((PlayerDuck)player).getAbility() == ability;
 	}
+
+	public static final int OTTY_AIR = 20 * 60 * 8;
 }
