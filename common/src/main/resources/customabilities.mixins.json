@@ -13,7 +13,8 @@
     "PlayerMixin"
   ],
   "client": [
-    "LocalPlayerMixin"
+    "LocalPlayerMixin",
+    "MinecraftMixin"
   ],
   "server": [
   ],

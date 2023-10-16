@@ -36,7 +36,7 @@ public enum Ability {
     Barcode(Constants.NOTHING, Constants.NOTHING),
     //todo          -Turn into bat
 
-    Basil(Constants.createPermanentEffect(MobEffects.WATER_BREATHING), Constants.removePermanentEffect(MobEffects.WATER_BREATHING),true),
+    Basil(Constants.createPermanentEffect(MobEffects.WATER_BREATHING), Constants.removePermanentEffect(MobEffects.WATER_BREATHING),true,false),
 //-Water breathing
 //-Swim and mine speed unaffected in water
 //-Any horse can be ridden, even without saddle
@@ -46,13 +46,13 @@ public enum Ability {
     //-Speed boost when on less than 25% health
     //-Hunger decreases slower
 
-    Miblex(Constants.NOTHING, Constants.NOTHING),
+    Miblex(Constants.NOTHING, Constants.NOTHING,false,true),
 //-Full moon triggers mining fatigue and slowness
 //-New moon triggers strength, hunger, night vision and speed
 //todo-teleportation ability
 //-water contact deals damage
 
-    Otty(Constants.NOTHING, player -> player.setAirSupply(300),true),
+    Otty(Constants.NOTHING, player -> player.setAirSupply(300),true,false),
     //todo-water breathing 8 minutes
 //-swim and mine speed unaffected in water
 //-can see in water clearly
@@ -64,11 +64,11 @@ public enum Ability {
 //todo            -Kills also grant speed and damage boost for 1 minute (stackable). Soul particles when enabled.
 //todo            -invisibility toggle (no armor or particles shown)
 
-    Spriteboba(Constants.NOTHING, Constants.NOTHING),
+    Spriteboba(Constants.NOTHING, Constants.NOTHING,false,true),
     //todo       -Permanent invisible elytra (chestplate compatible) with flight boost every 2 minutes. Cooldown will only recharge when on ground.
 //todo-Immune to fire damage.
     //todo          -Standing on light sources regenerates health.
-    //todo        -Water contact deals damage
+    //-Water contact deals damage
 
     Saus(Constants.NOTHING, Constants.NOTHING);
     //todo    -Shapeshift into mobs (exclude ender dragon) and players
@@ -78,14 +78,16 @@ public enum Ability {
     public final Consumer<Player> onAbilityAcquired;
     public final Consumer<Player> onAbilityRemoved;
     public final boolean nativeAquaAffinity;
+    public final boolean hurtByWater;
 
     Ability(Consumer<Player> onAbilityAcquired, Consumer<Player> onAbilityRemoved) {
-        this(onAbilityAcquired,onAbilityRemoved,false);
+        this(onAbilityAcquired,onAbilityRemoved,false,false);
     }
 
-    Ability(Consumer<Player> onAbilityAcquired, Consumer<Player> onAbilityRemoved,boolean nativeAquaAffinity) {
+    Ability(Consumer<Player> onAbilityAcquired, Consumer<Player> onAbilityRemoved,boolean nativeAquaAffinity,boolean hurtByWater) {
         this.onAbilityAcquired = onAbilityAcquired;
         this.onAbilityRemoved = onAbilityRemoved;
         this.nativeAquaAffinity = nativeAquaAffinity;
+        this.hurtByWater = hurtByWater;
     }
 }

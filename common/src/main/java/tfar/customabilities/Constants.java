@@ -70,5 +70,15 @@ public class Constants {
 		return ((PlayerDuck)player).getAbility() == ability;
 	}
 
+	public static boolean nativeAquaAffinity(Player player) {
+		Ability ability = ((PlayerDuck)player).getAbility();
+		return ability != null && ability.nativeAquaAffinity;
+	}
+
+	public static boolean hurtByWater(Player player) {
+		Ability ability = ((PlayerDuck)player).getAbility();
+		return ability != null && ability.hurtByWater;
+	}
+
 	public static final int OTTY_AIR = 20 * 60 * 8;
 }
