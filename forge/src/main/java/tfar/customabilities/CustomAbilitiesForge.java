@@ -1,5 +1,6 @@
 package tfar.customabilities;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -9,20 +10,25 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingHealEvent;
-import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
+import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.entity.player.SleepingLocationCheckEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.IModBusEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.core.jmx.Server;
+import tfar.customabilities.client.Client;
+import tfar.customabilities.datagen.ModDatagen;
 
 import java.util.List;
 
@@ -46,6 +52,17 @@ public class CustomAbilitiesForge {
         //MinecraftForge.EVENT_BUS.addListener(this::heal);
         MinecraftForge.EVENT_BUS.addListener(this::clonePlayer);
         MinecraftForge.EVENT_BUS.addListener(this::sleepInBed);
+        MinecraftForge.EVENT_BUS.addListener(this::onKill);
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        bus.addListener(ModDatagen::start);
+        if (FMLEnvironment.dist.isClient()) {
+            bus.addListener(this::setup);
+            bus.addListener(Client::registerKeybinds);
+        }
+    }
+
+    private void setup(FMLClientSetupEvent e) {
+        Client.setupClient();
     }
 
     private void targetPlayer(LivingChangeTargetEvent e) {
@@ -88,7 +105,12 @@ public class CustomAbilitiesForge {
             if (Constants.hasAbility(player,Ability.Gar) && lessThan25PercentHealth(player)) {
                 player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 40, 0, true, true));
             }
-
+            if (Constants.hasAbility(player,Ability.Spriteboba)) {
+                BlockState feetBlockState = player.getBlockStateOn();
+                if (feetBlockState != null && feetBlockState.getLightEmission() > 0) {
+                    player.addEffect(new MobEffectInstance(MobEffects.REGENERATION,40,0,true,true));
+                }
+            }
         }
     }
 
@@ -134,11 +156,26 @@ public class CustomAbilitiesForge {
         return player.getHealth() / player.getMaxHealth() < .25;
     }
 
+    public static void setTrueInvis(Player player,boolean invis) {
+        player.getPersistentData().putBoolean("invis",invis);
+    }
+
+    public static boolean hasTrueInvis(Player player) {
+        return player.getPersistentData().getBoolean("invis");
+    }
+
     //this event is crap
     private void knockback(LivingKnockBackEvent e) {
     }
 
     private void commands(RegisterCommandsEvent e) {
         ModCommands.register(e.getDispatcher());
+    }
+
+    private void onKill(LivingDeathEvent event) {
+        Entity trueEntity = event.getSource().getEntity();
+        if (trueEntity instanceof Player player&& Constants.hasAbility(player,Ability.Ramsey)) {
+            player.setAbsorptionAmount(player.getAbsorptionAmount()+2);
+        }
     }
 }

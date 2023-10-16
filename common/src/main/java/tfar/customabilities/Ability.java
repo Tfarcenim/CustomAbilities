@@ -60,14 +60,14 @@ public enum Ability {
 //-cannot sleep unless a player is sleeping within a 3 block radius
 
     Ramsey(Constants.NOTHING, Constants.NOTHING),
-//todo            -Kills grant 1 extra heart (stackable) until hearts are lost via damage.
+//            -Kills grant 1 extra heart (stackable) until hearts are lost via damage.
 //todo            -Kills also grant speed and damage boost for 1 minute (stackable). Soul particles when enabled.
 //todo            -invisibility toggle (no armor or particles shown)
 
     Spriteboba(Constants.NOTHING, Constants.NOTHING,false,true),
     //todo       -Permanent invisible elytra (chestplate compatible) with flight boost every 2 minutes. Cooldown will only recharge when on ground.
-//todo-Immune to fire damage.
-    //todo          -Standing on light sources regenerates health.
+    //todo-Immune to fire damage.
+    //-Standing on light sources regenerates health.
     //-Water contact deals damage
 
     Saus(Constants.NOTHING, Constants.NOTHING);
