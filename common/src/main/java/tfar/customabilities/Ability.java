@@ -43,8 +43,8 @@ public enum Ability {
 
     Gar(Constants.NOTHING, Constants.NOTHING),
     //todo-Crouching for 10 seconds will toggle spectral arrow view on entities within a 5 block radius
-    // todo-Speed boost when on less than 25% health
-    // -Hunger decreases slower
+    //-Speed boost when on less than 25% health
+    //-Hunger decreases slower
 
     Miblex(Constants.NOTHING, Constants.NOTHING),
 //-Full moon triggers mining fatigue and slowness
@@ -52,12 +52,12 @@ public enum Ability {
 //todo-teleportation ability
 //-water contact deals damage
 
-    Otty(Constants.NOTHING, Constants.NOTHING,true),
+    Otty(Constants.NOTHING, player -> player.setAirSupply(300),true),
     //todo-water breathing 8 minutes
 //-swim and mine speed unaffected in water
-//todo-can see in water clearly
-//todo-can sleep underwater
-//todo-cannot sleep unless a player is sleeping within a 3 block radius
+//-can see in water clearly
+//-can sleep underwater already possible?
+//-cannot sleep unless a player is sleeping within a 3 block radius
 
     Ramsey(Constants.NOTHING, Constants.NOTHING),
 //todo            -Kills grant 1 extra heart (stackable) until hearts are lost via damage.

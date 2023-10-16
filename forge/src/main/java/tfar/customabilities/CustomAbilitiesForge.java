@@ -1,6 +1,7 @@
 package tfar.customabilities;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -8,6 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
@@ -16,8 +18,13 @@ import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
+import net.minecraftforge.event.entity.player.SleepingLocationCheckEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.logging.log4j.core.jmx.Server;
+
+import java.util.List;
 
 @Mod(CustomAbilities.MOD_ID)
 public class CustomAbilitiesForge {
@@ -35,9 +42,10 @@ public class CustomAbilitiesForge {
         MinecraftForge.EVENT_BUS.addListener(this::targetPlayer);
         MinecraftForge.EVENT_BUS.addListener(this::knockback);
         MinecraftForge.EVENT_BUS.addListener(this::playertick);
-        MinecraftForge.EVENT_BUS.addListener(this::damage);
-        MinecraftForge.EVENT_BUS.addListener(this::heal);
+        //MinecraftForge.EVENT_BUS.addListener(this::damage);
+        //MinecraftForge.EVENT_BUS.addListener(this::heal);
         MinecraftForge.EVENT_BUS.addListener(this::clonePlayer);
+        MinecraftForge.EVENT_BUS.addListener(this::sleepInBed);
     }
 
     private void targetPlayer(LivingChangeTargetEvent e) {
@@ -66,15 +74,19 @@ public class CustomAbilitiesForge {
             if (Constants.hasAbility(player,Ability.Miblex) && !player.level().isDay() &&player.level().getGameTime() % 20 == 0) {
                 //-New moon triggers strength, hunger, night vision and speed
                 if (player.level().getMoonBrightness() == 0) {
-                    player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST,40,0));
-                    player.addEffect(new MobEffectInstance(MobEffects.HUNGER,40,0));
-                    player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION,600,0));
-                    player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,40,0));
+                    player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST,40,0,true,true));
+                    player.addEffect(new MobEffectInstance(MobEffects.HUNGER,40,0,true,true));
+                    player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION,600,0,true,true));
+                    player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,40,0,true,true));
                     //-Full moon triggers mining fatigue and slowness
                 } else if (player.level().getMoonBrightness() == 1) {
-                    player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 40, 0));
-                    player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 0));
+                    player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 40, 0,true,true));
+                    player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 0,true,true));
                 }
+            }
+
+            if (Constants.hasAbility(player,Ability.Gar) && lessThan25PercentHealth(player)) {
+                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 40, 0, true, true));
             }
 
         }
@@ -83,8 +95,9 @@ public class CustomAbilitiesForge {
     private void damage(LivingDamageEvent event) {
         LivingEntity living = event.getEntity();
         if (living instanceof Player player) {
-            if (Constants.hasAbility(player, Ability.Gar) && lessThan25PercentHealth(player)) {
-
+            if (Constants.hasAbility(player, Ability.Gar)) {
+                if (lessThan25PercentHealth(player)) {
+                }
             }
         }
     }
@@ -92,8 +105,10 @@ public class CustomAbilitiesForge {
     private void heal(LivingHealEvent event) {
         LivingEntity living = event.getEntity();
         if (living instanceof Player player) {
-            if (Constants.hasAbility(player, Ability.Gar) && lessThan25PercentHealth(player)) {
+            if (Constants.hasAbility(player, Ability.Gar)) {
+                if (lessThan25PercentHealth(player)) {
 
+                }
             }
         }
     }
@@ -102,6 +117,17 @@ public class CustomAbilitiesForge {
         Player original = event.getOriginal();
         Player player = event.getEntity();
         ((PlayerDuck)player).setAbility(((PlayerDuck)original).getAbility());
+    }
+
+    private void sleepInBed(PlayerSleepInBedEvent event) {
+        Player player = event.getEntity();
+        if (Constants.hasAbility(player,Ability.Otty)) {
+            int r = 3;
+            List<ServerPlayer> otherPlayers = player.level().getEntitiesOfClass(ServerPlayer.class,player.getBoundingBox().inflate(r), LivingEntity::isSleeping);
+            if (otherPlayers.isEmpty()) {
+                event.setResult(Player.BedSleepingProblem.OTHER_PROBLEM);
+            }
+        }
     }
 
     private static boolean lessThan25PercentHealth(LivingEntity player) {
