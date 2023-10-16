@@ -47,10 +47,10 @@ public enum Ability {
     // -Hunger decreases slower
 
     Miblex(Constants.NOTHING, Constants.NOTHING),
-//todo            -Full moon triggers mining fatigue and slowness
-//todo-New moon triggers strength, hunger, night vision and speed
+//-Full moon triggers mining fatigue and slowness
+//-New moon triggers strength, hunger, night vision and speed
 //todo-teleportation ability
-//todo-water contact deals damage
+//-water contact deals damage
 
     Otty(Constants.NOTHING, Constants.NOTHING),
     //todo          -water breathing 8 minutes
