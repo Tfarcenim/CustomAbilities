@@ -1,7 +1,7 @@
-package com.example.examplemod.platform;
+package tfar.customabilities.platform;
 
-import com.example.examplemod.Constants;
-import com.example.examplemod.platform.services.IPlatformHelper;
+import tfar.customabilities.Constants;
+import tfar.customabilities.platform.services.IPlatformHelper;
 
 import java.util.ServiceLoader;
 
