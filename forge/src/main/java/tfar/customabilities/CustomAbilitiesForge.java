@@ -1,34 +1,30 @@
 package tfar.customabilities;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
-import net.minecraftforge.event.entity.player.SleepingLocationCheckEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.IModBusEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import org.apache.logging.log4j.core.jmx.Server;
 import tfar.customabilities.client.Client;
 import tfar.customabilities.datagen.ModDatagen;
+import tfar.customabilities.net.PacketHandler;
 
 import java.util.List;
 
@@ -55,13 +51,20 @@ public class CustomAbilitiesForge {
         MinecraftForge.EVENT_BUS.addListener(this::onKill);
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(ModDatagen::start);
+        bus.addListener(this::setup);
         if (FMLEnvironment.dist.isClient()) {
-            bus.addListener(this::setup);
+            bus.addListener(this::clientSetup);
             bus.addListener(Client::registerKeybinds);
         }
     }
 
-    private void setup(FMLClientSetupEvent e) {
+    private void setup(FMLCommonSetupEvent e) {
+        PacketHandler.registerMessages();
+    }
+
+
+
+    private void clientSetup(FMLClientSetupEvent e) {
         Client.setupClient();
     }
 
@@ -158,6 +161,13 @@ public class CustomAbilitiesForge {
 
     public static void setTrueInvis(Player player,boolean invis) {
         player.getPersistentData().putBoolean("invis",invis);
+    }
+
+    public static void toggleTrueInvis(Player player) {
+        CompoundTag tag = player.getPersistentData();
+        boolean invis = tag.getBoolean("invis");
+        tag.putBoolean("invis",!invis);
+        player.setInvisible(!invis);
     }
 
     public static boolean hasTrueInvis(Player player) {
