@@ -10,6 +10,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.server.level.ServerPlayer;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,9 @@ public class ModCommands {
         try {
             String s = StringArgumentType.getString(context,"name");
             Ability ability = Ability.valueOf(s);
+            Ability original = ((PlayerDuck)serverPlayer).getAbility();
             ((PlayerDuck)serverPlayer).setAbility(ability);
+            onChange(serverPlayer,original,ability);
         } catch (IllegalArgumentException e) {
             return 0;
         }
@@ -36,7 +39,18 @@ public class ModCommands {
             (context, builder) -> SharedSuggestionProvider.suggest(Arrays.stream(Ability.values()).map(Enum::name).collect(Collectors.toList()), builder);
     private static int clearAbility(CommandContext<CommandSourceStack>context) throws CommandSyntaxException {
         ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
+        Ability original = ((PlayerDuck)serverPlayer).getAbility();
         ((PlayerDuck)serverPlayer).setAbility(null);
+        onChange(serverPlayer,original,null);
         return 1;
+    }
+
+    private static void onChange(ServerPlayer player,@Nullable Ability original, @Nullable Ability newA) {
+        if (original != null) {
+            original.onAbilityRemoved.accept(player);
+        }
+        if (newA != null) {
+            newA.onAbilityAcquired.accept(player);
+        }
     }
 }
