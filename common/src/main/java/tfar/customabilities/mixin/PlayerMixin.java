@@ -9,16 +9,21 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tfar.customabilities.Ability;
+import tfar.customabilities.Constants;
 import tfar.customabilities.PlayerDuck;
 
 import javax.annotation.Nullable;
 
 @Mixin(Player.class)
 public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
+    @Shadow public abstract void remove(RemovalReason $$0);
+
     @SuppressWarnings("all") //shush
     private static final EntityDataAccessor<Integer> ABILITY = SynchedEntityData.defineId(Player.class, EntityDataSerializers.INT);
 
@@ -45,6 +50,15 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
     private void readExtra(CompoundTag tag, CallbackInfo ci) {
         if (tag.contains("ability")) {
             setAbility(Ability.values()[tag.getInt("ability")]);
+        }
+    }
+
+    @Inject(method = "tryToStartFallFlying",at = @At("RETURN"), cancellable = true)
+    private void hijackFlightCheck(CallbackInfoReturnable<Boolean> cir) {
+        boolean alreadyTrue = cir.getReturnValue();
+        if (alreadyTrue) return;
+        if (Constants.fakeElytra((Player) (Object)this)) {
+            cir.setReturnValue(true);
         }
     }
 

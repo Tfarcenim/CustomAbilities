@@ -75,6 +75,15 @@ public class Constants {
 		return ((PlayerDuck)player).getAbility() == ability;
 	}
 
+	public static boolean hasFakeElytra(LivingEntity living) {
+		return living instanceof Player player && fakeElytra(player);
+	}
+
+	public static boolean fakeElytra(Player player) {
+		Ability ability = ((PlayerDuck)player).getAbility();
+		return ability != null && ability.fakeElytra;
+	}
+
 	public static boolean nativeAquaAffinity(Player player) {
 		Ability ability = ((PlayerDuck)player).getAbility();
 		return ability != null && ability.nativeAquaAffinity;

@@ -21,7 +21,7 @@ public enum Ability {
 //-Water breathing
 
 
-    Mari(Constants.NOTHING, Constants.NOTHING),
+    Mari(Constants.NOTHING, Constants.NOTHING,false,false,true),
 //todo            -Permanent invisible elytra (chestplate compatible) with flight boost every 30 seconds
 //todo-15 second speed boost ability. Cooldown of 5 minutes. If possible lightning effects when enabled
 //todo-Ability to summon a lightning strike at a chosen location. Teleport to location when struck. Cooldown 10 minutes.
@@ -36,7 +36,7 @@ public enum Ability {
     Barcode(Constants.NOTHING, Constants.NOTHING),
     //todo          -Turn into bat
 
-    Basil(Constants.createPermanentEffect(MobEffects.WATER_BREATHING), Constants.removePermanentEffect(MobEffects.WATER_BREATHING),true,false),
+    Basil(Constants.createPermanentEffect(MobEffects.WATER_BREATHING), Constants.removePermanentEffect(MobEffects.WATER_BREATHING),true,false,false),
 //-Water breathing
 //-Swim and mine speed unaffected in water
 //-Any horse can be ridden, even without saddle
@@ -46,13 +46,13 @@ public enum Ability {
     //-Speed boost when on less than 25% health
     //-Hunger decreases slower
 
-    Miblex(Constants.NOTHING, Constants.NOTHING,false,true),
+    Miblex(Constants.NOTHING, Constants.NOTHING,false,true,false),
 //-Full moon triggers mining fatigue and slowness
 //-New moon triggers strength, hunger, night vision and speed
 //todo-teleportation ability
 //-water contact deals damage
 
-    Otty(Constants.NOTHING, player -> player.setAirSupply(300),true,false),
+    Otty(Constants.NOTHING, player -> player.setAirSupply(300),true,false,false),
     //todo-water breathing 8 minutes
 //-swim and mine speed unaffected in water
 //-can see in water clearly
@@ -64,7 +64,7 @@ public enum Ability {
 //todo-Kills also grant speed and damage boost for 1 minute (stackable). Soul particles when enabled.
 //-invisibility toggle (no armor or particles shown)
 
-    Spriteboba(Constants.createPermanentEffect(MobEffects.FIRE_RESISTANCE), Constants.removePermanentEffect(MobEffects.FIRE_RESISTANCE),false,true),
+    Spriteboba(Constants.createPermanentEffect(MobEffects.FIRE_RESISTANCE), Constants.removePermanentEffect(MobEffects.FIRE_RESISTANCE),false,true,true),
     //todo       -Permanent invisible elytra (chestplate compatible) with flight boost every 2 minutes. Cooldown will only recharge when on ground.
     //-Immune to fire damage.
     //-Standing on light sources regenerates health.
@@ -79,15 +79,17 @@ public enum Ability {
     public final Consumer<Player> onAbilityRemoved;
     public final boolean nativeAquaAffinity;
     public final boolean hurtByWater;
+    public final boolean fakeElytra;
 
     Ability(Consumer<Player> onAbilityAcquired, Consumer<Player> onAbilityRemoved) {
-        this(onAbilityAcquired,onAbilityRemoved,false,false);
+        this(onAbilityAcquired,onAbilityRemoved,false,false,false);
     }
 
-    Ability(Consumer<Player> onAbilityAcquired, Consumer<Player> onAbilityRemoved,boolean nativeAquaAffinity,boolean hurtByWater) {
+    Ability(Consumer<Player> onAbilityAcquired, Consumer<Player> onAbilityRemoved,boolean nativeAquaAffinity,boolean hurtByWater,boolean fakeElytra) {
         this.onAbilityAcquired = onAbilityAcquired;
         this.onAbilityRemoved = onAbilityRemoved;
         this.nativeAquaAffinity = nativeAquaAffinity;
         this.hurtByWater = hurtByWater;
+        this.fakeElytra = fakeElytra;
     }
 }
