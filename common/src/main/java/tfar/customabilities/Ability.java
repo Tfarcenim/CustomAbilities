@@ -59,7 +59,7 @@ public enum Ability {
 //-can sleep underwater already possible?
 //-cannot sleep unless a player is sleeping within a 3 block radius
 
-    Ramsey(Constants.NOTHING, Constants.NOTHING),
+    Ramsey(Constants.NOTHING, player -> player.setInvisible(false)),
 //            -Kills grant 1 extra heart (stackable) until hearts are lost via damage.
 //todo            -Kills also grant speed and damage boost for 1 minute (stackable). Soul particles when enabled.
 //todo            -invisibility toggle (no armor or particles shown)

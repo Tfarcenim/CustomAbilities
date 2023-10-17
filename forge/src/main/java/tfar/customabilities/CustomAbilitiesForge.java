@@ -49,6 +49,7 @@ public class CustomAbilitiesForge {
         MinecraftForge.EVENT_BUS.addListener(this::clonePlayer);
         MinecraftForge.EVENT_BUS.addListener(this::sleepInBed);
         MinecraftForge.EVENT_BUS.addListener(this::onKill);
+        MinecraftForge.EVENT_BUS.addListener(this::visibility);
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(ModDatagen::start);
         bus.addListener(this::setup);
@@ -159,10 +160,6 @@ public class CustomAbilitiesForge {
         return player.getHealth() / player.getMaxHealth() < .25;
     }
 
-    public static void setTrueInvis(Player player,boolean invis) {
-        player.getPersistentData().putBoolean("invis",invis);
-    }
-
     public static void toggleTrueInvis(Player player) {
         CompoundTag tag = player.getPersistentData();
         boolean invis = tag.getBoolean("invis");
@@ -171,7 +168,7 @@ public class CustomAbilitiesForge {
     }
 
     public static boolean hasTrueInvis(Player player) {
-        return player.getPersistentData().getBoolean("invis");
+        return Constants.hasAbility(player,Ability.Ramsey) && player.getPersistentData().getBoolean("invis");
     }
 
     //this event is crap
@@ -186,6 +183,13 @@ public class CustomAbilitiesForge {
         Entity trueEntity = event.getSource().getEntity();
         if (trueEntity instanceof Player player&& Constants.hasAbility(player,Ability.Ramsey)) {
             player.setAbsorptionAmount(player.getAbsorptionAmount()+2);
+        }
+    }
+
+    private void visibility(LivingEvent.LivingVisibilityEvent event) {
+        LivingEntity living = event.getEntity();
+        if (living instanceof Player player && hasTrueInvis(player)) {
+            event.modifyVisibility(0);
         }
     }
 }
