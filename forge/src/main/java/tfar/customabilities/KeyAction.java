@@ -5,7 +5,8 @@ import net.minecraft.world.entity.player.Player;
 import java.util.function.Consumer;
 
 public enum KeyAction {
-    TOGGLE_INVISIBILITY(Ability.Ramsey, CustomAbilitiesForge::toggleTrueInvis);
+    TOGGLE_INVISIBILITY(Ability.Ramsey, CustomAbilitiesForge::toggleTrueInvis),
+    TELEPORT(Ability.Miblex,Constants::teleport);
 
     private final Ability required;
     private final Consumer<Player> playerConsumer;

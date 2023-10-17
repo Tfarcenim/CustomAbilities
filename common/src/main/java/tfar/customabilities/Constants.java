@@ -1,5 +1,7 @@
 package tfar.customabilities;
 
+import com.mojang.datafixers.util.Either;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -9,8 +11,11 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tfar.customabilities.platform.Services;
 
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -56,8 +61,8 @@ public class Constants {
 	}
 
 	public static Consumer<Player> createPermanentEffect(MobEffect effect) {
-			return player -> {
-				MobEffectInstance mobeffectinstance = new MobEffectInstance(effect, -1,0,true,true);//infinite 0 amplifier effect that's ambient and visible
+		return player -> {
+			MobEffectInstance mobeffectinstance = new MobEffectInstance(effect, -1,0,true,true);//infinite 0 amplifier effect that's ambient and visible
 			player.addEffect(mobeffectinstance,null);
 		};
 	}
@@ -78,6 +83,20 @@ public class Constants {
 	public static boolean hurtByWater(Player player) {
 		Ability ability = ((PlayerDuck)player).getAbility();
 		return ability != null && ability.hurtByWater;
+	}
+
+	public static void teleport(Player player) {
+		HitResult pick = player.pick(20, 0, false);
+		Vec3 pos = pick.getLocation();
+		Either<Boolean, Vec3> eventResult = Services.PLATFORM.fireTeleportEvent(player, pos.x, pos.y, pos.z);
+		if (eventResult.right().isEmpty()) return;//the event was cancelled
+		Vec3 targetPos = eventResult.right().get();
+		if (player.isPassenger()) {
+			player.dismountTo(pos.x,pos.y,pos.z);
+		} else {
+			player.teleportTo(pos.x,pos.y,pos.z);
+		}
+		player.teleportTo(targetPos.x,targetPos.y,targetPos.z);
 	}
 
 	public static final int OTTY_AIR = 20 * 60 * 8;

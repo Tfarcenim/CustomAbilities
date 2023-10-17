@@ -4,14 +4,11 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
-import tfar.customabilities.Ability;
 import tfar.customabilities.KeyAction;
 import tfar.customabilities.net.C2SKeybindPacket;
 
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +22,9 @@ public class Client {
 
     public static void registerKeybinds(RegisterKeyMappingsEvent e) {
         e.register(ModKeybinds.INVIS_TOGGLE);
+        e.register(ModKeybinds.TELEPORT);
         mappingMap.put(KeyAction.TOGGLE_INVISIBILITY, ModKeybinds.INVIS_TOGGLE);
+        mappingMap.put(KeyAction.TELEPORT, ModKeybinds.TELEPORT);
     }
 
     public static void keyPressed(TickEvent.ClientTickEvent e) {

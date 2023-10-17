@@ -14,5 +14,6 @@ public class ModLangProvider extends LanguageProvider {
     protected void addTranslations() {
         add("key.categories."+ CustomAbilities.MOD_ID, Constants.MOD_NAME);
         add("key.toggle_invisibility","Toggle Invisibility");
+        add("key.teleport","Teleport");
     }
 }
