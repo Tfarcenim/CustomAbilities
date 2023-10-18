@@ -1,6 +1,7 @@
 package tfar.customabilities;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -8,6 +9,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.FireworkRocketEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -92,29 +96,9 @@ public class CustomAbilitiesForge {
                 tag.remove("crouchTimer");
             }
 
-            if (Constants.hasAbility(player,Ability.Miblex) && !player.level().isDay() &&player.level().getGameTime() % 20 == 0) {
-                //-New moon triggers strength, hunger, night vision and speed
-                if (player.level().getMoonBrightness() == 0) {
-                    player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST,40,0,true,true));
-                    player.addEffect(new MobEffectInstance(MobEffects.HUNGER,40,0,true,true));
-                    player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION,600,0,true,true));
-                    player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,40,0,true,true));
-                    //-Full moon triggers mining fatigue and slowness
-                } else if (player.level().getMoonBrightness() == 1) {
-                    player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 40, 0,true,true));
-                    player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 0,true,true));
-                }
-            }
+            Ability ability = ((PlayerDuck)player).getAbility();
+            if (ability != null) ability.tickAbility.accept(player);
 
-            if (Constants.hasAbility(player,Ability.Gar) && lessThan25PercentHealth(player)) {
-                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 40, 0, true, true));
-            }
-            if (Constants.hasAbility(player,Ability.Spriteboba)) {
-                BlockState feetBlockState = player.getBlockStateOn();
-                if (feetBlockState != null && feetBlockState.getLightEmission() > 0) {
-                    player.addEffect(new MobEffectInstance(MobEffects.REGENERATION,40,0,true,true));
-                }
-            }
         }
     }
 
@@ -122,8 +106,8 @@ public class CustomAbilitiesForge {
         LivingEntity living = event.getEntity();
         if (living instanceof Player player) {
             if (Constants.hasAbility(player, Ability.Gar)) {
-                if (lessThan25PercentHealth(player)) {
-                }
+              //  if (lessThan25PercentHealth(player)) {
+              //  }
             }
         }
     }
@@ -132,9 +116,9 @@ public class CustomAbilitiesForge {
         LivingEntity living = event.getEntity();
         if (living instanceof Player player) {
             if (Constants.hasAbility(player, Ability.Gar)) {
-                if (lessThan25PercentHealth(player)) {
+            //    if (lessThan25PercentHealth(player)) {
 
-                }
+              //  }
             }
         }
     }
@@ -156,9 +140,24 @@ public class CustomAbilitiesForge {
         }
     }
 
-    private static boolean lessThan25PercentHealth(LivingEntity player) {
-        return player.getHealth() / player.getMaxHealth() < .25;
+    public static void flightBoost(Player player) {
+        PlayerDuck playerDuck = (PlayerDuck) player;
+        Ability ability = playerDuck.getAbility();
+        if (playerDuck.getFlightBoostCooldown() > 0) {
+            player.sendSystemMessage(Component.translatable("Flight Boost on Cooldown"));
+            return;
+        }
+
+        ItemStack firework = new ItemStack(Items.FIREWORK_ROCKET);
+        FireworkRocketEntity fireworkRocketEntity = new FireworkRocketEntity(player.level(),firework,player);
+        player.level().addFreshEntity(fireworkRocketEntity);
+        int cooldown = 0;
+        if (ability == Ability.Mari) cooldown = 30 * 20;
+        else if (ability == Ability.Spriteboba) cooldown = 120 * 20;
+        playerDuck.setFlightBoostCooldown(cooldown);
     }
+
+
 
     public static void toggleTrueInvis(Player player) {
         CompoundTag tag = player.getPersistentData();

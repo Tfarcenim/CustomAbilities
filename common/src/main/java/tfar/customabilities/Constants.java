@@ -108,5 +108,7 @@ public class Constants {
 		player.teleportTo(targetPos.x,targetPos.y,targetPos.z);
 	}
 
+
+
 	public static final int OTTY_AIR = 20 * 60 * 8;
 }

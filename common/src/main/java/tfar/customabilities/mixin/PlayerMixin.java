@@ -26,6 +26,8 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
 
     @SuppressWarnings("all") //shush
     private static final EntityDataAccessor<Integer> ABILITY = SynchedEntityData.defineId(Player.class, EntityDataSerializers.INT);
+    @SuppressWarnings("all") //I said shush
+    private static final EntityDataAccessor<Integer> FLIGHT_BOOST_COOLDOWN = SynchedEntityData.defineId(Player.class,EntityDataSerializers.INT);
 
     protected PlayerMixin(EntityType<? extends LivingEntity> $$0, Level $$1) {
         super($$0, $$1);
@@ -34,7 +36,18 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
     @Inject(method = "defineSynchedData",at = @At("RETURN"))
     private void registerCustom(CallbackInfo ci) {
         this.entityData.define(ABILITY, -1);
+        this.entityData.define(FLIGHT_BOOST_COOLDOWN,0);
         constructed = true;
+    }
+
+    @Override
+    public void setFlightBoostCooldown(int flightBoostCooldown) {
+        this.entityData.set(FLIGHT_BOOST_COOLDOWN,flightBoostCooldown);
+    }
+
+    @Override
+    public int getFlightBoostCooldown() {
+        return this.entityData.get(FLIGHT_BOOST_COOLDOWN);
     }
 
 
@@ -44,6 +57,7 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
         if (ability != null) {
             tag.putInt("ability", getAbility().ordinal());
         }
+        tag.putInt("flight_boost",getFlightBoostCooldown());
     }
 
     @Inject(method = "readAdditionalSaveData",at = @At("RETURN"))
@@ -51,6 +65,7 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
         if (tag.contains("ability")) {
             setAbility(Ability.values()[tag.getInt("ability")]);
         }
+        setFlightBoostCooldown(tag.getInt("flight_boost"));
     }
 
     @Inject(method = "tryToStartFallFlying",at = @At("RETURN"), cancellable = true)

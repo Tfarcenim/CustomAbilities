@@ -15,5 +15,6 @@ public class ModLangProvider extends LanguageProvider {
         add("key.categories."+ CustomAbilities.MOD_ID, Constants.MOD_NAME);
         add("key.toggle_invisibility","Toggle Invisibility");
         add("key.teleport","Teleport");
+        add("key.flight_boost","Flight Boost");
     }
 }
