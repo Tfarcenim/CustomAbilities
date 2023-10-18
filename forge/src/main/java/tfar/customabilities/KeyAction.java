@@ -8,7 +8,9 @@ import java.util.function.Consumer;
 public enum KeyAction {
     TOGGLE_INVISIBILITY(Ability.Ramsey, CustomAbilitiesForge::toggleTrueInvis),
     TELEPORT(Set.of(Ability.Mari,Ability.Miblex),Constants::teleportMari),
-    FLIGHT_BOOST(Set.of(Ability.Mari,Ability.Spriteboba),CustomAbilitiesForge::flightBoost);
+    FLIGHT_BOOST(Set.of(Ability.Mari,Ability.Spriteboba),CustomAbilitiesForge::flightBoost),
+    TOGGLE_LEVITATION(Ability.Bug,Constants::toggleLevitation)
+    ;
 
     private final Set<Ability> required;
     private final Consumer<Player> onActivate;
@@ -23,7 +25,8 @@ public enum KeyAction {
     }
 
     public boolean canUse(Player player) {
-        return required.contains(((PlayerDuck)player).getAbility());
+        Ability ability = ((PlayerDuck)player).getAbility();
+        return ability != null && required.contains(ability);
     }
 
     public void performAction(Player player) {

@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
@@ -128,6 +129,14 @@ public class Constants {
 		teleportPlayerToLocation(player,pos);
 	}
 
+	public static void toggleLevitation(Player player) {
+		if (player.hasEffect(MobEffects.LEVITATION)) {
+			player.removeEffect(MobEffects.LEVITATION);
+		} else {
+			player.addEffect(new MobEffectInstance(MobEffects.LEVITATION, -1,0,true,true));
+		}
+	}
+
 	public static void teleportPlayerToLocation(Player player,Vec3 position) {
 		Either<Boolean, Vec3> eventResult = Services.PLATFORM.fireTeleportEvent(player, position.x, position.y, position.z);
 		if (eventResult.right().isEmpty()) return;//the event was cancelled
@@ -139,7 +148,6 @@ public class Constants {
 		}
 		player.teleportTo(targetPos.x,targetPos.y,targetPos.z);
 	}
-
 
 
 	public static final int OTTY_AIR = 20 * 60 * 8;

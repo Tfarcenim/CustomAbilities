@@ -31,7 +31,7 @@ public enum Ability {
 //todo-Strength boost in darker light values
 //-Warden will not attack
 
-    Barcode,
+    Barcode(Constants.NOTHING,Constants.NOTHING,Constants.NOTHING),
     //todo          -Turn into bat
 
     Basil(Constants.createPermanentEffect(MobEffects.WATER_BREATHING), Constants.removePermanentEffect(MobEffects.WATER_BREATHING),Constants.NOTHING,true,false,false),
