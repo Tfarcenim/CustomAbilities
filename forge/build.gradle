@@ -80,6 +80,9 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     compileOnly project(":common")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
+    implementation fg.deobf("dev.architectury:architectury-forge:$architectury_version")
+    implementation fg.deobf("curse.maven:identity-391390:4687498")
+
 }
 
 tasks.withType(JavaCompile).configureEach {

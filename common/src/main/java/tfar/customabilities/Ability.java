@@ -23,7 +23,7 @@ public enum Ability {
     Mari(Constants.NOTHING, Constants.NOTHING, AbilityTickers::tickMari,false,false,true),
 //-Permanent invisible elytra (chestplate compatible) with flight boost every 30 seconds
 //todo-15 second speed boost ability. Cooldown of 5 minutes. If possible lightning effects when enabled
-//todo-Ability to summon a lightning strike at a chosen location. Teleport to location when struck. Cooldown 10 minutes.
+//-Ability to summon a lightning strike at a chosen location. Teleport to location when struck. Cooldown 10 minutes.
 
     Syd(Constants.createPermanentEffect(MobEffects.NIGHT_VISION), Constants.removePermanentEffect(MobEffects.NIGHT_VISION),Constants.NOTHING),
 //-Night vision
@@ -47,7 +47,7 @@ public enum Ability {
     Miblex(Constants.NOTHING, Constants.NOTHING,AbilityTickers::tickMiblex,false,true,false),
 //-Full moon triggers mining fatigue and slowness
 //-New moon triggers strength, hunger, night vision and speed
-//todo-teleportation ability
+//-teleportation ability
 //-water contact deals damage
 
     Otty(Constants.NOTHING, player -> player.setAirSupply(300),Constants.NOTHING,true,false,false),
