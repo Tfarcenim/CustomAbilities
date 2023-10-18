@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 public enum KeyAction {
     TOGGLE_INVISIBILITY(Ability.Ramsey, CustomAbilitiesForge::toggleTrueInvis),
-    TELEPORT(Ability.Miblex,Constants::teleport),
+    TELEPORT(Set.of(Ability.Mari,Ability.Miblex),Constants::teleportMari),
     FLIGHT_BOOST(Set.of(Ability.Mari,Ability.Spriteboba),CustomAbilitiesForge::flightBoost);
 
     private final Set<Ability> required;

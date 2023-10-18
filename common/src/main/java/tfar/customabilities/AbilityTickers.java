@@ -42,6 +42,10 @@ public class AbilityTickers {
 
     public static void tickMari(Player player) {
         PlayerDuck playerDuck = (PlayerDuck) player;
+
+        if (playerDuck.getTeleportCooldown() > 0) {
+            playerDuck.setTeleportCooldown(playerDuck.getTeleportCooldown()-1);
+        }
         tickFlightBoostCooldown(playerDuck);
     }
 

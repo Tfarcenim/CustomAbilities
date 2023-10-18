@@ -1,10 +1,13 @@
 package tfar.customabilities;
 
 import com.mojang.datafixers.util.Either;
-import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -94,16 +97,45 @@ public class Constants {
 		return ability != null && ability.hurtByWater;
 	}
 
-	public static void teleport(Player player) {
+	public static void teleportMari(Player player) {
+		PlayerDuck playerDuck = (PlayerDuck)player;
+
 		HitResult pick = player.pick(20, 0, false);
 		Vec3 pos = pick.getLocation();
-		Either<Boolean, Vec3> eventResult = Services.PLATFORM.fireTeleportEvent(player, pos.x, pos.y, pos.z);
+
+		if (playerDuck.getAbility() == Ability.Mari) {
+			int cooldown = playerDuck.getTeleportCooldown();
+			if (cooldown > 0) {
+				player.sendSystemMessage(Component.translatable("Teleport on Cooldown"));
+				return;
+			}
+			LightningBolt lightningbolt = EntityType.LIGHTNING_BOLT.create(player.level());
+			if (lightningbolt != null) {
+				lightningbolt.moveTo(pos);
+				lightningbolt.setCause((ServerPlayer) player);
+				lightningbolt.setVisualOnly(true);
+				player.level().addFreshEntity(lightningbolt);
+				lightningbolt.playSound(SoundEvents.TRIDENT_THUNDER,5,1);
+			}
+			playerDuck.setTeleportCooldown(20 * 60 * 10);
+		}
+		teleportPlayerToLocation(player,pos);
+	}
+
+	public static void teleportPlayerToFacing(Player player) {
+		HitResult pick = player.pick(20, 0, false);
+		Vec3 pos = pick.getLocation();
+		teleportPlayerToLocation(player,pos);
+	}
+
+	public static void teleportPlayerToLocation(Player player,Vec3 position) {
+		Either<Boolean, Vec3> eventResult = Services.PLATFORM.fireTeleportEvent(player, position.x, position.y, position.z);
 		if (eventResult.right().isEmpty()) return;//the event was cancelled
 		Vec3 targetPos = eventResult.right().get();
 		if (player.isPassenger()) {
-			player.dismountTo(pos.x,pos.y,pos.z);
+			player.dismountTo(position.x,position.y,position.z);
 		} else {
-			player.teleportTo(pos.x,pos.y,pos.z);
+			player.teleportTo(position.x,position.y,position.z);
 		}
 		player.teleportTo(targetPos.x,targetPos.y,targetPos.z);
 	}

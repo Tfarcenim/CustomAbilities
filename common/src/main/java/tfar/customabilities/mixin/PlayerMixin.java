@@ -7,6 +7,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -24,10 +25,14 @@ import javax.annotation.Nullable;
 public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
     @Shadow public abstract void remove(RemovalReason $$0);
 
+    @Shadow public abstract ItemCooldowns getCooldowns();
+
     @SuppressWarnings("all") //shush
     private static final EntityDataAccessor<Integer> ABILITY = SynchedEntityData.defineId(Player.class, EntityDataSerializers.INT);
     @SuppressWarnings("all") //I said shush
     private static final EntityDataAccessor<Integer> FLIGHT_BOOST_COOLDOWN = SynchedEntityData.defineId(Player.class,EntityDataSerializers.INT);
+    @SuppressWarnings("all") //I said shush
+    private static final EntityDataAccessor<Integer> TELEPORT_COOLDOWN = SynchedEntityData.defineId(Player.class,EntityDataSerializers.INT);
 
     protected PlayerMixin(EntityType<? extends LivingEntity> $$0, Level $$1) {
         super($$0, $$1);
@@ -37,6 +42,7 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
     private void registerCustom(CallbackInfo ci) {
         this.entityData.define(ABILITY, -1);
         this.entityData.define(FLIGHT_BOOST_COOLDOWN,0);
+        this.entityData.define(TELEPORT_COOLDOWN,0);
         constructed = true;
     }
 
@@ -50,6 +56,15 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
         return this.entityData.get(FLIGHT_BOOST_COOLDOWN);
     }
 
+    @Override
+    public int getTeleportCooldown() {
+        return entityData.get(TELEPORT_COOLDOWN);
+    }
+
+    @Override
+    public void setTeleportCooldown(int cooldown) {
+        entityData.set(TELEPORT_COOLDOWN,cooldown);
+    }
 
     @Inject(method = "addAdditionalSaveData",at = @At("RETURN"))
     private void addExtra(CompoundTag tag, CallbackInfo ci) {
@@ -58,6 +73,7 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
             tag.putInt("ability", getAbility().ordinal());
         }
         tag.putInt("flight_boost",getFlightBoostCooldown());
+        tag.putInt("teleport",getTeleportCooldown());
     }
 
     @Inject(method = "readAdditionalSaveData",at = @At("RETURN"))
@@ -66,6 +82,7 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
             setAbility(Ability.values()[tag.getInt("ability")]);
         }
         setFlightBoostCooldown(tag.getInt("flight_boost"));
+        setTeleportCooldown(tag.getInt("teleport"));
     }
 
     @Inject(method = "tryToStartFallFlying",at = @At("RETURN"), cancellable = true)

@@ -10,4 +10,7 @@ public interface PlayerDuck {
     int getFlightBoostCooldown();
     void setFlightBoostCooldown(int cooldown);
 
+    int getTeleportCooldown();
+    void setTeleportCooldown(int cooldown);
+
 }
