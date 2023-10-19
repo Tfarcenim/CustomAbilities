@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 public enum Ability {
     Bug(),
-//todo            -Levitation toggle
+//-Levitation toggle
 //todo-Emit light source toggle (player head becomes light source)
 
     Flo(

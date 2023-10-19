@@ -23,17 +23,13 @@ import javax.annotation.Nullable;
 
 @Mixin(Player.class)
 public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
-    @Shadow public abstract void remove(RemovalReason $$0);
 
-    @Shadow public abstract ItemCooldowns getCooldowns();
+    @SuppressWarnings("all") //shush
+    private static final EntityDataAccessor<CompoundTag> MOD_DATA = SynchedEntityData.defineId(Player.class,EntityDataSerializers.COMPOUND_TAG);
 
     @SuppressWarnings("all") //shush
     private static final EntityDataAccessor<Integer> ABILITY = SynchedEntityData.defineId(Player.class, EntityDataSerializers.INT);
-    @SuppressWarnings("all") //I said shush
-    private static final EntityDataAccessor<Integer> FLIGHT_BOOST_COOLDOWN = SynchedEntityData.defineId(Player.class,EntityDataSerializers.INT);
-    @SuppressWarnings("all") //I said shush
-    private static final EntityDataAccessor<Integer> TELEPORT_COOLDOWN = SynchedEntityData.defineId(Player.class,EntityDataSerializers.INT);
-
+    
     protected PlayerMixin(EntityType<? extends LivingEntity> $$0, Level $$1) {
         super($$0, $$1);
     }
@@ -41,29 +37,38 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
     @Inject(method = "defineSynchedData",at = @At("RETURN"))
     private void registerCustom(CallbackInfo ci) {
         this.entityData.define(ABILITY, -1);
-        this.entityData.define(FLIGHT_BOOST_COOLDOWN,0);
-        this.entityData.define(TELEPORT_COOLDOWN,0);
+        this.entityData.define(MOD_DATA,new CompoundTag());
         constructed = true;
     }
 
     @Override
+    public CompoundTag getModData() {
+        return entityData.get(MOD_DATA);
+    }
+
+    @Override
+    public void setModData(CompoundTag tag) {
+        entityData.set(MOD_DATA,tag);
+    }
+
+    @Override
     public void setFlightBoostCooldown(int flightBoostCooldown) {
-        this.entityData.set(FLIGHT_BOOST_COOLDOWN,flightBoostCooldown);
+        this.getModData().putInt("flight_boost",flightBoostCooldown);
     }
 
     @Override
     public int getFlightBoostCooldown() {
-        return this.entityData.get(FLIGHT_BOOST_COOLDOWN);
+        return getModData().getInt("flight_boost");
     }
 
     @Override
     public int getTeleportCooldown() {
-        return entityData.get(TELEPORT_COOLDOWN);
+        return getModData().getInt("teleport");
     }
 
     @Override
     public void setTeleportCooldown(int cooldown) {
-        entityData.set(TELEPORT_COOLDOWN,cooldown);
+        this.getModData().putInt("teleport",cooldown);
     }
 
     @Inject(method = "addAdditionalSaveData",at = @At("RETURN"))
@@ -72,8 +77,7 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
         if (ability != null) {
             tag.putInt("ability", getAbility().ordinal());
         }
-        tag.putInt("flight_boost",getFlightBoostCooldown());
-        tag.putInt("teleport",getTeleportCooldown());
+        tag.put("mod_data",getModData());
     }
 
     @Inject(method = "readAdditionalSaveData",at = @At("RETURN"))
@@ -81,8 +85,7 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
         if (tag.contains("ability")) {
             setAbility(Ability.values()[tag.getInt("ability")]);
         }
-        setFlightBoostCooldown(tag.getInt("flight_boost"));
-        setTeleportCooldown(tag.getInt("teleport"));
+        setModData(tag.getCompound("mod_data"));
     }
 
     @Inject(method = "tryToStartFallFlying",at = @At("RETURN"), cancellable = true)
