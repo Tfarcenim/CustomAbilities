@@ -3,6 +3,7 @@ package tfar.customabilities;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import tfar.customabilities.platform.Services;
 
 import java.util.function.Consumer;
 
@@ -32,7 +33,7 @@ public enum Ability {
 //-Warden will not attack
 
     Barcode(Constants.NOTHING,Constants.NOTHING,Constants.NOTHING),
-    //todo          -Turn into bat
+    //-Turn into bat
 
     Basil(Constants.createPermanentEffect(MobEffects.WATER_BREATHING), Constants.removePermanentEffect(MobEffects.WATER_BREATHING),Constants.NOTHING,true,false,false),
 //-Water breathing
@@ -68,7 +69,7 @@ public enum Ability {
     //-Standing on light sources regenerates health.
     //-Water contact deals damage
 
-    Saus;
+    Saus( Services.PLATFORM::addAllIdentities, Services.PLATFORM::removeAllIdentities,Constants.NOTHING);
     //todo    -Shapeshift into mobs (exclude ender dragon) and players
 //todo-Can see dropped ores with a spectral arrow glow effect
 

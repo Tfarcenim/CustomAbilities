@@ -1,7 +1,6 @@
 package tfar.customabilities.platform.services;
 
 import com.mojang.datafixers.util.Either;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -41,5 +40,9 @@ public interface IPlatformHelper {
     }
 
     Either<Boolean, Vec3> fireTeleportEvent(LivingEntity living, double x, double y, double z);
+
+    void addAllIdentities(Player player);
+
+    void removeAllIdentities(Player player);
 
 }

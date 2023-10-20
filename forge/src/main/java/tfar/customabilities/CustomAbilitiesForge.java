@@ -1,9 +1,12 @@
 package tfar.customabilities;
 
 import draylar.identity.Identity;
+import draylar.identity.api.PlayerAbilities;
 import draylar.identity.api.PlayerIdentity;
+import draylar.identity.api.PlayerUnlocks;
 import draylar.identity.api.platform.IdentityConfig;
 import draylar.identity.api.variant.IdentityType;
+import draylar.identity.impl.PlayerDataProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -184,6 +187,27 @@ public class CustomAbilitiesForge {
             if (defaultType != null) {
                 PlayerIdentity.updateIdentity((ServerPlayer) player, defaultType, bat);
             }
+        }
+    }
+
+    public static void addAllIdentities(Player player) {
+        for (EntityType<?> entityType :BuiltInRegistries.ENTITY_TYPE) {
+            if (entityType != EntityType.ENDER_DRAGON) {
+                Entity entity = entityType.create(player.level());
+                if (entity instanceof LivingEntity living) {
+                    IdentityType<?> defaultType = IdentityType.from(living);
+                    if (defaultType != null) {
+                        PlayerUnlocks.unlock((ServerPlayer) player, defaultType);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void removeAllIdentities(Player player) {
+        PlayerDataProvider provider = (PlayerDataProvider)player;
+        for (IdentityType<?> identityType : provider.getUnlocked()) {
+            PlayerUnlocks.revoke((ServerPlayer) player,identityType);
         }
     }
 

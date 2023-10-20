@@ -2,7 +2,9 @@ package tfar.customabilities.platform;
 
 import com.mojang.datafixers.util.Either;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import tfar.customabilities.CustomAbilitiesForge;
 import tfar.customabilities.platform.services.IPlatformHelper;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
@@ -34,5 +36,15 @@ public class ForgePlatformHelper implements IPlatformHelper {
             return Either.left(true);
         }
         return Either.right(new Vec3(event.getTargetX(),event.getTargetY(),event.getTargetZ()));
+    }
+
+    @Override
+    public void addAllIdentities(Player player) {
+        CustomAbilitiesForge.addAllIdentities(player);
+    }
+
+    @Override
+    public void removeAllIdentities(Player player) {
+        CustomAbilitiesForge.removeAllIdentities(player);
     }
 }
