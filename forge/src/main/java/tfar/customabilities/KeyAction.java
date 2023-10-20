@@ -9,7 +9,8 @@ public enum KeyAction {
     TOGGLE_INVISIBILITY(Ability.Ramsey, CustomAbilitiesForge::toggleTrueInvis),
     TELEPORT(Set.of(Ability.Mari,Ability.Miblex),Constants::teleportMari),
     FLIGHT_BOOST(Set.of(Ability.Mari,Ability.Spriteboba),CustomAbilitiesForge::flightBoost),
-    TOGGLE_LEVITATION(Ability.Bug,Constants::toggleLevitation)
+    TOGGLE_LEVITATION(Ability.Bug,Constants::toggleLevitation),
+    BAT_MORPH(Ability.Barcode,CustomAbilitiesForge::toggleBatForm)
     ;
 
     private final Set<Ability> required;

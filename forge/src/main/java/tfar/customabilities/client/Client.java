@@ -25,10 +25,12 @@ public class Client {
         e.register(ModKeybinds.TELEPORT);
         e.register(ModKeybinds.FLIGHT_BOOST);
         e.register(ModKeybinds.LEVITATION);
+        e.register(ModKeybinds.BAT_MORPH);
         mappingMap.put(KeyAction.TOGGLE_INVISIBILITY, ModKeybinds.INVIS_TOGGLE);
         mappingMap.put(KeyAction.TELEPORT, ModKeybinds.TELEPORT);
         mappingMap.put(KeyAction.FLIGHT_BOOST,ModKeybinds.FLIGHT_BOOST);
         mappingMap.put(KeyAction.TOGGLE_LEVITATION,ModKeybinds.LEVITATION);
+        mappingMap.put(KeyAction.BAT_MORPH,ModKeybinds.BAT_MORPH);
     }
 
     public static void keyPressed(TickEvent.ClientTickEvent e) {

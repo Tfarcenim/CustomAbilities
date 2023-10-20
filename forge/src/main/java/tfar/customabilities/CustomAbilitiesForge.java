@@ -1,10 +1,19 @@
 package tfar.customabilities;
 
+import draylar.identity.Identity;
+import draylar.identity.api.PlayerIdentity;
+import draylar.identity.api.platform.IdentityConfig;
+import draylar.identity.api.variant.IdentityType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
@@ -23,6 +32,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import org.jetbrains.annotations.Nullable;
 import tfar.customabilities.client.Client;
 import tfar.customabilities.datagen.ModDatagen;
 import tfar.customabilities.net.PacketHandler;
@@ -162,6 +172,57 @@ public class CustomAbilitiesForge {
         tag.putBoolean("invis",!invis);
         player.setInvisible(!invis);
     }
+
+    public static void toggleBatForm(Player player) {
+        LivingEntity identity = PlayerIdentity.getIdentity(player);
+        if (identity != null) {
+            PlayerIdentity.updateIdentity((ServerPlayer) player, null, null);
+        } else {
+            EntityType<Bat> batEntityType = EntityType.BAT;
+            Bat bat = batEntityType.create(player.level());
+            IdentityType<?> defaultType = IdentityType.from(bat);
+            if (defaultType != null) {
+                PlayerIdentity.updateIdentity((ServerPlayer) player, defaultType, bat);
+            }
+        }
+    }
+
+
+    private static void equip(ServerPlayer source, ServerPlayer player, ResourceLocation identity, @Nullable CompoundTag nbt) {
+        Entity created;
+        if (nbt != null) {
+            CompoundTag copy = nbt.copy();
+            copy.putString("id", identity.toString());
+            ServerLevel serverWorld = source.serverLevel();
+            created = EntityType.loadEntityRecursive(copy, serverWorld, (it) -> {
+                return it;
+            });
+        } else {
+            EntityType<?> entity = BuiltInRegistries.ENTITY_TYPE.get(identity);
+            created = entity.create(player.level());
+        }
+
+        if (created instanceof LivingEntity living) {
+            IdentityType<?> defaultType = IdentityType.from(living);
+            if (defaultType != null) {
+                boolean result = PlayerIdentity.updateIdentity(player, defaultType, (LivingEntity)created);
+                if (result && IdentityConfig.getInstance().logCommands()) {
+                    source.displayClientMessage(Component.translatable("identity.equip_success", Component.translatable(created.getType().getDescriptionId()), player.getDisplayName()), true);
+                }
+            }
+        }
+
+    }
+
+    private static void unequip(ServerPlayer source, ServerPlayer player) {
+        boolean result = PlayerIdentity.updateIdentity(player, null, null);
+        if (result && IdentityConfig.getInstance().logCommands()) {
+            source.displayClientMessage(Component.translatable("identity.unequip_success", player.getDisplayName()), false);
+        }
+
+    }
+
+
 
     public static boolean hasTrueInvis(Player player) {
         return Constants.hasAbility(player,Ability.Ramsey) && player.getPersistentData().getBoolean("invis");
