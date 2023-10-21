@@ -26,10 +26,10 @@ public enum Ability {
 //-15 second speed boost ability. Cooldown of 5 minutes. If possible lightning effects when enabled
 //-Ability to summon a lightning strike at a chosen location. Teleport to location when struck. Cooldown 10 minutes.
 
-    Syd(Constants.createPermanentEffect(MobEffects.NIGHT_VISION), Constants.removePermanentEffect(MobEffects.NIGHT_VISION),Constants.NOTHING),
+    Syd(Constants.createPermanentEffect(MobEffects.NIGHT_VISION), Constants.removePermanentEffect(MobEffects.NIGHT_VISION),AbilityTickers::tickSyd),
 //-Night vision
-//todo-Sculk sensors alert syd (spectral arrow effect)
-//todo-Strength boost in darker light values
+//-Sculk sensors alert syd (spectral arrow effect)
+//-Strength boost in darker light values
 //-Warden will not attack
 
     Barcode(Constants.NOTHING,Constants.NOTHING,Constants.NOTHING),

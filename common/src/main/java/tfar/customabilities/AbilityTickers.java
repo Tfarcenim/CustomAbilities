@@ -1,9 +1,12 @@
 package tfar.customabilities;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class AbilityTickers {
@@ -61,6 +64,21 @@ public class AbilityTickers {
         if (playerDuck.getSpeedBoostCooldown() > 0) {
             playerDuck.setSpeedBoostCooldown(playerDuck.getSpeedBoostCooldown()-1);
         }
+    }
+
+    public static void tickSyd(Player player) {
+        if (player.level().getGameTime() % 20 == 0 && isDark(player)) {
+            player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 39, 0, true, true));
+        }
+    }
+
+    public static boolean isDark(Player player) {
+        ServerLevel serverLevel = (ServerLevel) player.level();
+        BlockPos pos = player.blockPosition();
+
+        float f = player.level().hasChunkAt(player.getBlockX(), player.getBlockZ()) ? player.level().getLightLevelDependentMagicValue(BlockPos.containing(player.getX(), player.getEyeY(), player.getZ())) : 0.0F;
+
+        return serverLevel.getBrightness(LightLayer.BLOCK, pos) < 8 && f * 15 < 8;
     }
 
     public static void tickFlightBoostCooldown(PlayerDuck playerDuck) {
