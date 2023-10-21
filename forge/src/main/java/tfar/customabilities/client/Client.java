@@ -21,16 +21,17 @@ public class Client {
     }
 
     public static void registerKeybinds(RegisterKeyMappingsEvent e) {
-        e.register(ModKeybinds.INVIS_TOGGLE);
-        e.register(ModKeybinds.TELEPORT);
-        e.register(ModKeybinds.FLIGHT_BOOST);
-        e.register(ModKeybinds.LEVITATION);
-        e.register(ModKeybinds.BAT_MORPH);
-        mappingMap.put(KeyAction.TOGGLE_INVISIBILITY, ModKeybinds.INVIS_TOGGLE);
-        mappingMap.put(KeyAction.TELEPORT, ModKeybinds.TELEPORT);
-        mappingMap.put(KeyAction.FLIGHT_BOOST,ModKeybinds.FLIGHT_BOOST);
-        mappingMap.put(KeyAction.TOGGLE_LEVITATION,ModKeybinds.LEVITATION);
-        mappingMap.put(KeyAction.BAT_MORPH,ModKeybinds.BAT_MORPH);
+        registerAbilityKeybind(e,KeyAction.TOGGLE_INVISIBILITY, ModKeybinds.INVIS_TOGGLE);
+        registerAbilityKeybind(e,KeyAction.TELEPORT, ModKeybinds.TELEPORT);
+        registerAbilityKeybind(e,KeyAction.FLIGHT_BOOST,ModKeybinds.FLIGHT_BOOST);
+        registerAbilityKeybind(e,KeyAction.TOGGLE_LEVITATION,ModKeybinds.LEVITATION);
+        registerAbilityKeybind(e,KeyAction.BAT_MORPH,ModKeybinds.BAT_MORPH);
+        registerAbilityKeybind(e,KeyAction.SPEED_BOOST,ModKeybinds.SPEED_BOOST);
+    }
+
+    private static void registerAbilityKeybind(RegisterKeyMappingsEvent e,KeyAction keyAction,KeyMapping keyBind) {
+        e.register(keyBind);
+        mappingMap.put(keyAction,keyBind);
     }
 
     public static void keyPressed(TickEvent.ClientTickEvent e) {
@@ -39,7 +40,7 @@ public class Client {
             if (player != null) {
                 for (Map.Entry<KeyAction, KeyMapping> entry : mappingMap.entrySet()) {
                     KeyAction action = entry.getKey();
-                    if (action.canUse(player) && entry.getValue().consumeClick()) {
+                    if (action.canUse(player) && entry.getValue().isDown()) {
                         C2SKeybindPacket.send(action);
                         return;
                     }

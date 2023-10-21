@@ -13,6 +13,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -257,6 +259,10 @@ public class CustomAbilitiesForge {
         Entity trueEntity = event.getSource().getEntity();
         if (trueEntity instanceof Player player&& Constants.hasAbility(player,Ability.Ramsey)) {
             player.setAbsorptionAmount(player.getAbsorptionAmount()+2);
+
+
+            Constants.addStackableEffect(player,new MobEffectInstance(MobEffects.DAMAGE_BOOST, 20 * 60,0,true,false));
+            Constants.addStackableEffect(player,new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60,0,true,false));
         }
     }
 

@@ -58,6 +58,9 @@ public class AbilityTickers {
             playerDuck.setTeleportCooldown(playerDuck.getTeleportCooldown()-1);
         }
         tickFlightBoostCooldown(playerDuck);
+        if (playerDuck.getSpeedBoostCooldown() > 0) {
+            playerDuck.setSpeedBoostCooldown(playerDuck.getSpeedBoostCooldown()-1);
+        }
     }
 
     public static void tickFlightBoostCooldown(PlayerDuck playerDuck) {

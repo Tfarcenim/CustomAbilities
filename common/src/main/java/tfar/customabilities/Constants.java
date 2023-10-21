@@ -26,6 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tfar.customabilities.platform.Services;
 
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -41,11 +43,7 @@ public class Constants {
 	public static final Consumer<Player> NOTHING = player -> {};
 
 	public static Consumer<Player> combine(Consumer<Player>... consumers) {
-		return player -> {
-			for (Consumer<Player> consumer : consumers) {
-				consumer.accept(player);
-			}
-		};
+		return player -> Arrays.stream(consumers).forEach(consumer -> consumer.accept(player));
 	}
 
 	public static Consumer<Player> addAttributeModifier(Attribute attribute,AttributeModifier attributeModifier) {
@@ -74,6 +72,22 @@ public class Constants {
 			MobEffectInstance mobeffectinstance = new MobEffectInstance(effect, -1,0,true,true);//infinite 0 amplifier effect that's ambient and visible
 			player.addEffect(mobeffectinstance,null);
 		};
+	}
+
+	public static void addStackableEffect(LivingEntity living,MobEffectInstance instance) {
+		if (living.hasEffect(instance.getEffect())) {
+			Map<MobEffect, MobEffectInstance> activeEffectsMap = living.getActiveEffectsMap();
+			MobEffectInstance existing = activeEffectsMap.get(instance.getEffect());
+
+			if (existing.isInfiniteDuration()) return;
+			if (existing.getAmplifier() != instance.getAmplifier()) return;
+
+			MobEffectInstance newEffect = new MobEffectInstance(instance.getEffect(),instance.getDuration() + existing.getDuration(),
+					instance.getAmplifier(),instance.isAmbient(),instance.isVisible());
+			living.addEffect(newEffect);
+		} else {
+			living.addEffect(instance);
+		}
 	}
 
 	public static Consumer<Player> removePermanentEffect(MobEffect effect) {
@@ -126,6 +140,16 @@ public class Constants {
 			playerDuck.setTeleportCooldown(20 * 60 * 10);
 		}
 		teleportPlayerToLocation(player,pos);
+	}
+
+	public static void mariSpeedBoost(Player player) {
+		PlayerDuck playerDuck = (PlayerDuck)player;
+		if (playerDuck.getSpeedBoostCooldown()> 0) {
+			player.sendSystemMessage(Component.translatable("Speed Boost on Cooldown"));
+		} else {
+			MobEffectInstance mobeffectinstance = new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 15, 1, true, true);
+			player.addEffect(mobeffectinstance, null);
+		}
 	}
 
 	public static void teleportPlayerToFacing(Player player) {

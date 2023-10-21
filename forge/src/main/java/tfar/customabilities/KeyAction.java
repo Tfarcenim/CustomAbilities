@@ -10,8 +10,8 @@ public enum KeyAction {
     TELEPORT(Set.of(Ability.Mari,Ability.Miblex),Constants::teleportMari),
     FLIGHT_BOOST(Set.of(Ability.Mari,Ability.Spriteboba),CustomAbilitiesForge::flightBoost),
     TOGGLE_LEVITATION(Ability.Bug,Constants::toggleLevitation),
-    BAT_MORPH(Ability.Barcode,CustomAbilitiesForge::toggleBatForm)
-    ;
+    BAT_MORPH(Ability.Barcode,CustomAbilitiesForge::toggleBatForm),
+    SPEED_BOOST(Ability.Mari,Constants::mariSpeedBoost);
 
     private final Set<Ability> required;
     private final Consumer<Player> onActivate;

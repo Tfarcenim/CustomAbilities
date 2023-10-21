@@ -11,4 +11,5 @@ public class ModKeybinds {
     public static final KeyMapping FLIGHT_BOOST = new KeyMapping("key.flight_boost", GLFW.GLFW_KEY_U,"key.categories."+ CustomAbilities.MOD_ID);
     public static final KeyMapping LEVITATION = new KeyMapping("key.levitation", GLFW.GLFW_KEY_L,"key.categories."+ CustomAbilities.MOD_ID);
     public static final KeyMapping BAT_MORPH = new KeyMapping("key.bat_morph", GLFW.GLFW_KEY_B,"key.categories."+ CustomAbilities.MOD_ID);
+    public static final KeyMapping SPEED_BOOST = new KeyMapping("key.speed_boost", GLFW.GLFW_KEY_B,"key.categories."+ CustomAbilities.MOD_ID);
 }

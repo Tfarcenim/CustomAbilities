@@ -23,7 +23,7 @@ public enum Ability {
 
     Mari(Constants.NOTHING, Constants.NOTHING, AbilityTickers::tickMari,false,false,true),
 //-Permanent invisible elytra (chestplate compatible) with flight boost every 30 seconds
-//todo-15 second speed boost ability. Cooldown of 5 minutes. If possible lightning effects when enabled
+//-15 second speed boost ability. Cooldown of 5 minutes. If possible lightning effects when enabled
 //-Ability to summon a lightning strike at a chosen location. Teleport to location when struck. Cooldown 10 minutes.
 
     Syd(Constants.createPermanentEffect(MobEffects.NIGHT_VISION), Constants.removePermanentEffect(MobEffects.NIGHT_VISION),Constants.NOTHING),

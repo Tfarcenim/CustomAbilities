@@ -27,6 +27,14 @@ public interface PlayerDuck {
         this.getModData().putInt("teleport",cooldown);
     }
 
+    default int getSpeedBoostCooldown() {
+        return getModData().getInt("speed_boost");
+    }
+
+    default void setSpeedBoostCooldown(int cooldown) {
+        getModData().putInt("speed_boost",cooldown);
+    }
+
     default int getCrouchTime() {
         return getModData().getInt("crouchTime");
     }
