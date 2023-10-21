@@ -24,9 +24,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.VanillaGameEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
@@ -69,6 +72,7 @@ public class CustomAbilitiesForge {
         MinecraftForge.EVENT_BUS.addListener(this::sleepInBed);
         MinecraftForge.EVENT_BUS.addListener(this::onKill);
         MinecraftForge.EVENT_BUS.addListener(this::visibility);
+        MinecraftForge.EVENT_BUS.addListener(this::vanillaEvent);
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(ModDatagen::start);
         bus.addListener(this::setup);
@@ -263,6 +267,18 @@ public class CustomAbilitiesForge {
 
             Constants.addStackableEffect(player,new MobEffectInstance(MobEffects.DAMAGE_BOOST, 20 * 60,0,true,false));
             Constants.addStackableEffect(player,new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60,0,true,false));
+        }
+    }
+
+    private void vanillaEvent(VanillaGameEvent event) {
+        if (event.getVanillaEvent() == GameEvent.SCULK_SENSOR_TENDRILS_CLICKING) {
+            GameEvent.Context context = event.getContext();
+            Level level = event.getLevel();
+                Entity caught = context.sourceEntity();
+                if (caught != null) {
+                    EntityDuck entityDuck = (EntityDuck) caught;
+                    entityDuck.setGlowForSid(true);
+                }
         }
     }
 

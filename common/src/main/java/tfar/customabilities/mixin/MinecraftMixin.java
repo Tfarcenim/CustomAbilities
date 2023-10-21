@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tfar.customabilities.Ability;
 import tfar.customabilities.Constants;
+import tfar.customabilities.EntityDuck;
 import tfar.customabilities.PlayerDuck;
 
 import javax.annotation.Nullable;
@@ -42,7 +43,13 @@ public class MinecraftMixin {
                             cir.setReturnValue(true);
                         }
                     }
-                }
+                    case Syd -> {
+                        EntityDuck entityDuck = (EntityDuck) entity;
+                        if (entityDuck.getSidGlow()) {
+                            cir.setReturnValue(true);
+                        }
+                    }
+                 }
             }
         }
     }

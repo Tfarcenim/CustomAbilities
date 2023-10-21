@@ -60,7 +60,7 @@ public enum Ability {
 
     Ramsey(Constants.NOTHING, player -> player.setInvisible(false),Constants.NOTHING),
 //-Kills grant 1 extra heart (stackable) until hearts are lost via damage.
-//todo-Kills also grant speed and damage boost for 1 minute (stackable). Soul particles when enabled.
+//-Kills also grant speed and damage boost for 1 minute (stackable). Soul particles when enabled.
 //-invisibility toggle (no armor or particles shown)
 
     Spriteboba(Constants.createPermanentEffect(MobEffects.FIRE_RESISTANCE), Constants.removePermanentEffect(MobEffects.FIRE_RESISTANCE),AbilityTickers::tickSpriteBoba,false,true,true),
