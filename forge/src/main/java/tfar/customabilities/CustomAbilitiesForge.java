@@ -40,7 +40,10 @@ import tfar.customabilities.client.Client;
 import tfar.customabilities.datagen.ModDatagen;
 import tfar.customabilities.net.PacketHandler;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
 
 @Mod(CustomAbilities.MOD_ID)
 public class CustomAbilitiesForge {
@@ -98,17 +101,8 @@ public class CustomAbilitiesForge {
     private void playertick(TickEvent.PlayerTickEvent event) {
         if (event.side == LogicalSide.SERVER && event.phase == TickEvent.Phase.START) {
             Player player = event.player;
-            CompoundTag tag = player.getPersistentData();
-            if (player.isCrouching()) {
-                int crouchTimer = tag.getInt("crouchTimer");
-                tag.putInt("crouchTimer", crouchTimer + 1);
-            } else {
-                tag.remove("crouchTimer");
-            }
-
             Ability ability = ((PlayerDuck)player).getAbility();
             if (ability != null) ability.tickAbility.accept(player);
-
         }
     }
 
@@ -206,7 +200,8 @@ public class CustomAbilitiesForge {
 
     public static void removeAllIdentities(Player player) {
         PlayerDataProvider provider = (PlayerDataProvider)player;
-        for (IdentityType<?> identityType : provider.getUnlocked()) {
+        Set<IdentityType<?>> unlocked = new HashSet<>(provider.getUnlocked());//make a copy to avoid cc
+        for (IdentityType<?> identityType : unlocked) {
             PlayerUnlocks.revoke((ServerPlayer) player,identityType);
         }
     }
@@ -218,9 +213,7 @@ public class CustomAbilitiesForge {
             CompoundTag copy = nbt.copy();
             copy.putString("id", identity.toString());
             ServerLevel serverWorld = source.serverLevel();
-            created = EntityType.loadEntityRecursive(copy, serverWorld, (it) -> {
-                return it;
-            });
+            created = EntityType.loadEntityRecursive(copy, serverWorld, Function.identity());
         } else {
             EntityType<?> entity = BuiltInRegistries.ENTITY_TYPE.get(identity);
             created = entity.create(player.level());

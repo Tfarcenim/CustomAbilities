@@ -1,9 +1,12 @@
 package tfar.customabilities;
 
 import com.mojang.datafixers.util.Either;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -15,6 +18,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
@@ -135,6 +140,12 @@ public class Constants {
 		} else {
 			player.addEffect(new MobEffectInstance(MobEffects.LEVITATION, -1,0,true,true));
 		}
+	}
+
+	public static final TagKey<Item> ores = TagKey.create(Registries.ITEM, new ResourceLocation("forge","ores"));
+
+	public static boolean isOre(ItemStack stack) {
+		return stack.is(ores);
 	}
 
 	public static void teleportPlayerToLocation(Player player,Vec3 position) {

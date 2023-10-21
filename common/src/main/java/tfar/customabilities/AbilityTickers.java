@@ -25,8 +25,19 @@ public class AbilityTickers {
     }
 
     public static void tickGar(Player player) {
-        if (Constants.hasAbility(player, Ability.Gar) && lessThan25PercentHealth(player)) {
+        if (lessThan25PercentHealth(player)) {
             player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 40, 0, true, true));
+        }
+
+        PlayerDuck playerDuck = (PlayerDuck) player;
+        if (player.isCrouching()) {
+            int crouchTime = playerDuck.getCrouchTime();
+            playerDuck.setCrouchTime(crouchTime + 1);
+            System.out.println(crouchTime);
+            if (crouchTime > 200) {
+                playerDuck.setGarAbility(!playerDuck.garAbilityActive());
+                playerDuck.setCrouchTime(0);
+            }
         }
     }
 

@@ -41,7 +41,7 @@ public enum Ability {
 //-Any horse can be ridden, even without saddle
 
     Gar(Constants.NOTHING, Constants.NOTHING,AbilityTickers::tickGar),
-    //todo-Crouching for 10 seconds will toggle spectral arrow view on entities within a 5 block radius
+    //-Crouching for 10 seconds will toggle spectral arrow view on entities within a 5 block radius
     //-Speed boost when on less than 25% health
     //-Hunger decreases slower
 
@@ -71,7 +71,7 @@ public enum Ability {
 
     Saus( Services.PLATFORM::addAllIdentities, Services.PLATFORM::removeAllIdentities,Constants.NOTHING);
     //todo    -Shapeshift into mobs (exclude ender dragon) and players
-//todo-Can see dropped ores with a spectral arrow glow effect
+//-Can see dropped ores with a spectral arrow glow effect
 
 
     public final Consumer<Player> onAbilityAcquired;

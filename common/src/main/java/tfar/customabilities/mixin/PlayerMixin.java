@@ -7,10 +7,8 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -51,25 +49,6 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
         entityData.set(MOD_DATA,tag);
     }
 
-    @Override
-    public void setFlightBoostCooldown(int flightBoostCooldown) {
-        this.getModData().putInt("flight_boost",flightBoostCooldown);
-    }
-
-    @Override
-    public int getFlightBoostCooldown() {
-        return getModData().getInt("flight_boost");
-    }
-
-    @Override
-    public int getTeleportCooldown() {
-        return getModData().getInt("teleport");
-    }
-
-    @Override
-    public void setTeleportCooldown(int cooldown) {
-        this.getModData().putInt("teleport",cooldown);
-    }
 
     @Inject(method = "addAdditionalSaveData",at = @At("RETURN"))
     private void addExtra(CompoundTag tag, CallbackInfo ci) {
@@ -112,8 +91,4 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
 
     private boolean constructed;
 
-    @Override
-    public boolean constructed() {
-        return constructed;
-    }
 }
