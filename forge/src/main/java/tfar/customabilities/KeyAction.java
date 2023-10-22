@@ -11,7 +11,8 @@ public enum KeyAction {
     FLIGHT_BOOST(Set.of(Ability.Mari,Ability.Spriteboba),CustomAbilitiesForge::flightBoost),
     TOGGLE_LEVITATION(Ability.Bug,Constants::toggleLevitation),
     BAT_MORPH(Ability.Barcode,CustomAbilitiesForge::toggleBatForm),
-    SPEED_BOOST(Ability.Mari,Constants::mariSpeedBoost);
+    SPEED_BOOST(Ability.Mari,Constants::mariSpeedBoost),
+    LIGHT_TOGGLE(Ability.Bug,CustomAbilitiesForge::toggleLights);
 
     private final Set<Ability> required;
     private final Consumer<Player> onActivate;

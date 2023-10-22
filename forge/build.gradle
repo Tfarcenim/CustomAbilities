@@ -82,6 +82,8 @@ dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
     implementation fg.deobf("dev.architectury:architectury-forge:$architectury_version")
     implementation fg.deobf("curse.maven:identity-391390:4687498")
+    implementation fg.deobf("curse.maven:dynamic-lights-227874:4721525")
+
 
 }
 

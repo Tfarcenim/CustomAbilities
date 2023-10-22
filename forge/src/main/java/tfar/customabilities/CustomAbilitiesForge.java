@@ -1,7 +1,7 @@
 package tfar.customabilities;
 
-import draylar.identity.Identity;
-import draylar.identity.api.PlayerAbilities;
+import atomicstryker.dynamiclights.server.DynamicLights;
+import atomicstryker.dynamiclights.server.IDynamicLightSource;
 import draylar.identity.api.PlayerIdentity;
 import draylar.identity.api.PlayerUnlocks;
 import draylar.identity.api.platform.IdentityConfig;
@@ -45,9 +45,7 @@ import tfar.customabilities.client.Client;
 import tfar.customabilities.datagen.ModDatagen;
 import tfar.customabilities.net.PacketHandler;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 
 @Mod(CustomAbilities.MOD_ID)
@@ -273,12 +271,49 @@ public class CustomAbilitiesForge {
     private void vanillaEvent(VanillaGameEvent event) {
         if (event.getVanillaEvent() == GameEvent.SCULK_SENSOR_TENDRILS_CLICKING) {
             GameEvent.Context context = event.getContext();
-            Level level = event.getLevel();
-                Entity caught = context.sourceEntity();
+            Entity caught = context.sourceEntity();
                 if (caught != null) {
                     EntityDuck entityDuck = (EntityDuck) caught;
                     entityDuck.setGlowForSid(true);
                 }
+        }
+    }
+
+    static class Light implements IDynamicLightSource {
+
+        private final Player player;
+        boolean active = true;
+
+        Light(Player player) {
+            this.player = player;
+        }
+
+        @Override
+        public Entity getAttachmentEntity() {
+            return player;
+        }
+
+        @Override
+        public int getLightLevel() {
+            return active ? 15 : 0;
+        }
+    }
+
+     static Map<UUID,Light> map = new HashMap<>();
+
+    public static void toggleLights(Player player) {
+
+        Light light = map.get(player.getUUID());
+
+        if (light == null || !light.active) {
+            if (light == null) {
+                light = new Light(player);
+                map.put(player.getUUID(), light);
+                DynamicLights.addLightSource(light);
+            }
+            light.active = true;
+        } else {
+            light.active = false;
         }
     }
 

@@ -3,6 +3,7 @@ package tfar.customabilities;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import org.spongepowered.asm.mixin.injection.Constant;
 import tfar.customabilities.platform.Services;
 
 import java.util.function.Consumer;
@@ -51,7 +52,7 @@ public enum Ability {
 //-teleportation ability
 //-water contact deals damage
 
-    Otty(Constants.NOTHING, player -> player.setAirSupply(300),Constants.NOTHING,true,false,false),
+    Otty(player -> player.setAirSupply(Constants.OTTY_AIR), player -> player.setAirSupply(300),Constants.NOTHING,true,false,false),
     //todo-water breathing 8 minutes
 //-swim and mine speed unaffected in water
 //-can see in water clearly

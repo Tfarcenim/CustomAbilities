@@ -75,7 +75,9 @@ subprojects {
                 "mod_author": mod_author,
                 "mod_id": mod_id,
                 "license": license,
-                "description": project.description
+                "description": project.description,
+                "identity_version_range":identity_version_range,
+                "dynamic_lights_version_range":dynamic_lights_version_range
         ]
 
         filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', '*.mixins.json']) {

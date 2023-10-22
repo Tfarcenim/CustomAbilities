@@ -24,3 +24,16 @@ mandatory = true
 versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "identity"
+mandatory = true
+versionRange = "${identity_version_range}"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.${mod_id}]]
+modId = "dynamiclights"
+mandatory = true
+versionRange = "${dynamic_lights_version_range}"
+ordering = "NONE"
+side = "BOTH"
