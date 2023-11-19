@@ -64,6 +64,14 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
         return !constructed ? super.getMaxAirSupply() : Constants.hasAbility((Player) (Object) this, Ability.Otty) ? Constants.OTTY_AIR : super.getMaxAirSupply();
     }
 
+    @Override
+    protected int increaseAirSupply(int pCurrentAir) {
+        if (getAbility() == Ability.Otty) {//otty has roughly 30x more air than normal so air should refill faster as well
+            return Math.min(pCurrentAir + 120, this.getMaxAirSupply());
+        }
+        return super.increaseAirSupply(pCurrentAir);
+    }
+
     @Inject(method = "readAdditionalSaveData",at = @At("RETURN"))
     private void readExtra(CompoundTag tag, CallbackInfo ci) {
         if (tag.contains("ability")) {
