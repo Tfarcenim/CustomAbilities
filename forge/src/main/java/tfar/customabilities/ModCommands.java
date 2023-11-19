@@ -8,6 +8,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
@@ -31,6 +32,7 @@ public class ModCommands {
             ((PlayerDuck)serverPlayer).setAbility(ability);
             onChange(serverPlayer,original,ability);
         } catch (IllegalArgumentException e) {
+            context.getSource().sendFailure(Component.literal("Something went wrong: "+e));
             return 0;
         }
         return 1;

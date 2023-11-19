@@ -34,12 +34,18 @@ minecraft {
             taskName 'Client'
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            property 'forge.logging.console.level', 'trace'
             mods {
                 modClientRun {
                     source sourceSets.main
                     source project(":common").sourceSets.main
                 }
             }
+        }
+
+        client2 {
+            parent runs.client
+            args '--username', "Dev2"
         }
 
         server {
@@ -74,7 +80,7 @@ minecraft {
     }
 }
 
-sourceSets.main.resources.srcDir 'src/generated/resources'
+//sourceSets.main.resources.srcDir 'src/generated/resources'
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"

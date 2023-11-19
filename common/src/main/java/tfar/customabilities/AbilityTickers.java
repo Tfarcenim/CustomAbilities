@@ -36,8 +36,8 @@ public class AbilityTickers {
         if (player.isCrouching()) {
             int crouchTime = playerDuck.getCrouchTime();
             playerDuck.setCrouchTime(crouchTime + 1);
-            System.out.println(crouchTime);
             if (crouchTime > 200) {
+           //     System.out.println(crouchTime);
                 playerDuck.setGarAbility(!playerDuck.garAbilityActive());
                 playerDuck.setCrouchTime(0);
             }
@@ -47,7 +47,7 @@ public class AbilityTickers {
     public static void tickSpriteBoba(Player player) {
         BlockState feetBlockState = player.getBlockStateOn();
         if (feetBlockState.getLightEmission() > 0) {
-            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 40, 0, true, true));
+            player.heal(0.05f);
         }
         if (player.onGround()) {
             tickFlightBoostCooldown((PlayerDuck) player);

@@ -6,11 +6,13 @@ import javax.annotation.Nullable;
 
 public interface PlayerDuck {
 
-    @Nullable Ability getAbility();
-    void setAbility(@Nullable Ability ability);
+
 
     CompoundTag getModData();
-    void setModData(CompoundTag tag);
+    default void setModData(CompoundTag tag) {
+        setModData(tag,false);
+    }
+    void setModData(CompoundTag tag,boolean forceSync);
     default void setFlightBoostCooldown(int flightBoostCooldown) {
         this.getModData().putInt("flight_boost",flightBoostCooldown);
     }
@@ -35,6 +37,9 @@ public interface PlayerDuck {
         getModData().putInt("speed_boost",cooldown);
     }
 
+    @Nullable Ability getAbility();
+    void setAbility(@Nullable Ability ability);
+
     default int getCrouchTime() {
         return getModData().getInt("crouchTime");
     }
@@ -47,7 +52,19 @@ public interface PlayerDuck {
         return getModData().getBoolean("gar_glowing");
     }
 
+    default boolean ramseyParticles() {
+        return getModData().getBoolean("ramsey_particles");
+    }
+
+    default void setRamseyParticles(boolean active) {
+        CompoundTag tag = getModData();
+        tag.putBoolean("ramsey_particles",active);
+        setModData(tag,true);
+    }
+
     default void setGarAbility(boolean active) {
-        getModData().putBoolean("gar_glowing",active);
+        CompoundTag tag = getModData();
+        tag.putBoolean("gar_glowing",active);
+        setModData(tag,true);
     }
 }

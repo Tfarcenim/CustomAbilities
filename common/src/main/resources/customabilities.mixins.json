@@ -11,7 +11,11 @@
     "FoodDataMixin",
     "LivingEntityMixin",
     "PlayerMixin",
-    "SculkSensorBlockMiin"
+    "SculkSensorBlockEntityMixin",
+    "SculkSensorBlockMixin",
+    "SculkShriekerBlockEntityMixin",
+    "SculkShriekerBlockMixin",
+    "WardenMixin"
   ],
   "client": [
     "LocalPlayerMixin",

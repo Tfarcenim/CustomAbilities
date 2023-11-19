@@ -42,6 +42,7 @@ public class Constants {
 
 	public static final Consumer<Player> NOTHING = player -> {};
 
+	@SafeVarargs
 	public static Consumer<Player> combine(Consumer<Player>... consumers) {
 		return player -> Arrays.stream(consumers).forEach(consumer -> consumer.accept(player));
 	}
@@ -69,7 +70,7 @@ public class Constants {
 
 	public static Consumer<Player> createPermanentEffect(MobEffect effect) {
 		return player -> {
-			MobEffectInstance mobeffectinstance = new MobEffectInstance(effect, -1,0,true,true);//infinite 0 amplifier effect that's ambient and visible
+			MobEffectInstance mobeffectinstance = new MobEffectInstance(effect, -1,0,false,false);//infinite 0 amplifier effect that's not ambient and invisible
 			player.addEffect(mobeffectinstance,null);
 		};
 	}
@@ -162,14 +163,17 @@ public class Constants {
 		if (player.hasEffect(MobEffects.LEVITATION)) {
 			player.removeEffect(MobEffects.LEVITATION);
 		} else {
-			player.addEffect(new MobEffectInstance(MobEffects.LEVITATION, -1,0,true,true));
+			player.addEffect(new MobEffectInstance(MobEffects.LEVITATION, -1,0,false,false));
 		}
 	}
 
 	public static final TagKey<Item> ores = TagKey.create(Registries.ITEM, new ResourceLocation("forge","ores"));
+	public static final TagKey<Item> gems = TagKey.create(Registries.ITEM, new ResourceLocation("forge","gems"));
+	public static final TagKey<Item> ingots = TagKey.create(Registries.ITEM, new ResourceLocation("forge","ingots"));
+	public static final TagKey<Item> raw_materials = TagKey.create(Registries.ITEM, new ResourceLocation("forge","raw_materials"));
 
 	public static boolean isOre(ItemStack stack) {
-		return stack.is(ores);
+		return stack.is(ores) || stack.is(gems) || stack.is(ingots) || stack.is(raw_materials);
 	}
 
 	public static void teleportPlayerToLocation(Player player,Vec3 position) {

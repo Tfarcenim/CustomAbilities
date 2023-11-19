@@ -45,8 +45,8 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
     }
 
     @Override
-    public void setModData(CompoundTag tag) {
-        entityData.set(MOD_DATA,tag);
+    public void setModData(CompoundTag tag,boolean forceSync) {
+        entityData.set(MOD_DATA,tag,forceSync);
     }
 
 
@@ -57,6 +57,11 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
             tag.putInt("ability", getAbility().ordinal());
         }
         tag.put("mod_data",getModData());
+    }
+
+    @Override
+    public int getMaxAirSupply() {
+        return !constructed ? super.getMaxAirSupply() : Constants.hasAbility((Player) (Object) this, Ability.Otty) ? Constants.OTTY_AIR : super.getMaxAirSupply();
     }
 
     @Inject(method = "readAdditionalSaveData",at = @At("RETURN"))

@@ -13,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -61,7 +62,6 @@ public class CustomAbilitiesForge {
         //Constants.LOG.info("Hello Forge world!");
         CustomAbilities.init();
         MinecraftForge.EVENT_BUS.addListener(this::commands);
-        MinecraftForge.EVENT_BUS.addListener(this::targetPlayer);
         MinecraftForge.EVENT_BUS.addListener(this::knockback);
         MinecraftForge.EVENT_BUS.addListener(this::playertick);
         //MinecraftForge.EVENT_BUS.addListener(this::damage);
@@ -71,12 +71,14 @@ public class CustomAbilitiesForge {
         MinecraftForge.EVENT_BUS.addListener(this::onKill);
         MinecraftForge.EVENT_BUS.addListener(this::visibility);
         MinecraftForge.EVENT_BUS.addListener(this::vanillaEvent);
+        MinecraftForge.EVENT_BUS.addListener(this::potionExpire);
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(ModDatagen::start);
         bus.addListener(this::setup);
         if (FMLEnvironment.dist.isClient()) {
             bus.addListener(this::clientSetup);
             bus.addListener(Client::registerKeybinds);
+            bus.addListener(Client::registerOverlay);
         }
     }
 
@@ -88,17 +90,6 @@ public class CustomAbilitiesForge {
 
     private void clientSetup(FMLClientSetupEvent e) {
         Client.setupClient();
-    }
-
-    private void targetPlayer(LivingChangeTargetEvent e) {
-        LivingEntity originalTarget = e.getOriginalTarget();
-        LivingEntity attacker = e.getEntity();
-        if (originalTarget instanceof Player player && attacker instanceof Warden warden) {
-            Ability ability = ((PlayerDuck) player).getAbility();
-            if (ability == Ability.Syd) {
-                e.setCanceled(true);//wardens don't attack this ability
-            }
-        }
     }
 
 
@@ -168,10 +159,11 @@ public class CustomAbilitiesForge {
 
 
     public static void toggleTrueInvis(Player player) {
-        CompoundTag tag = player.getPersistentData();
-        boolean invis = tag.getBoolean("invis");
-        tag.putBoolean("invis",!invis);
-        player.setInvisible(!invis);
+        if (player.hasEffect(MobEffects.INVISIBILITY)) {
+            player.removeEffect(MobEffects.INVISIBILITY);
+        } else {
+            player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, -1,0,false,false));
+        }
     }
 
     public static void toggleBatForm(Player player) {
@@ -246,7 +238,7 @@ public class CustomAbilitiesForge {
 
 
     public static boolean hasTrueInvis(Player player) {
-        return Constants.hasAbility(player,Ability.Ramsey) && player.getPersistentData().getBoolean("invis");
+        return Constants.hasAbility(player,Ability.Ramsey) && player.hasEffect(MobEffects.INVISIBILITY);
     }
 
     //this event is crap
@@ -259,12 +251,21 @@ public class CustomAbilitiesForge {
 
     private void onKill(LivingDeathEvent event) {
         Entity trueEntity = event.getSource().getEntity();
-        if (trueEntity instanceof Player player&& Constants.hasAbility(player,Ability.Ramsey)) {
+        if (trueEntity instanceof Player player&& Constants.hasAbility(player,Ability.Ramsey) && event.getEntity() instanceof Player) {
             player.setAbsorptionAmount(player.getAbsorptionAmount()+2);
-
-
+            ((PlayerDuck)player).setRamseyParticles(true);
             Constants.addStackableEffect(player,new MobEffectInstance(MobEffects.DAMAGE_BOOST, 20 * 60,0,true,false));
             Constants.addStackableEffect(player,new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60,0,true,false));
+        }
+    }
+
+    private void potionExpire(MobEffectEvent.Expired event) {
+        LivingEntity living = event.getEntity();
+        if (living instanceof Player player && Constants.hasAbility(player,Ability.Ramsey)) {
+            MobEffect mobEffect = event.getEffectInstance().getEffect();
+            if (mobEffect == MobEffects.DAMAGE_BOOST || mobEffect == MobEffects.MOVEMENT_SPEED) {
+                ((PlayerDuck)player).setRamseyParticles(false);
+            }
         }
     }
 
@@ -279,7 +280,7 @@ public class CustomAbilitiesForge {
         }
     }
 
-    static class Light implements IDynamicLightSource {
+    public static class Light implements IDynamicLightSource {
 
         private final Player player;
         boolean active = true;

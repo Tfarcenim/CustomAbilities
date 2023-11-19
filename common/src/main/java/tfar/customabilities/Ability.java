@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 public enum Ability {
     Bug(),
 //-Levitation toggle
-//todo-Emit light source toggle (player head becomes light source)
+//-Emit light source toggle (player head becomes light source)
 
     Flo(
             Constants.combine(Constants.createPermanentEffect(MobEffects.WATER_BREATHING),
