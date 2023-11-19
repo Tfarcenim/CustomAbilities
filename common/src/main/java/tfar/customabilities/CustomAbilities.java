@@ -9,6 +9,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import tfar.customabilities.platform.Services;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Items;
+import tfar.customabilities.world.deferredevent.DeferredEvent;
+import tfar.customabilities.world.deferredevent.DeferredEventSystem;
 
 // This class is part of the common project meaning it is shared between all supported loaders. Code written here can only
 // import and access the vanilla codebase, libraries used by vanilla, and optionally third party libraries that provide
@@ -30,6 +32,15 @@ public class CustomAbilities {
         // your own abstraction layer. You can learn more about this in our provided services class. In this example
         // we have an interface in the common code and use a loader specific implementation to delegate our call to
         // the platform specific approach.
+    }
+
+    public static DeferredEventSystem getDeferredEventSystem(ServerLevel serverLevel) {
+        return serverLevel.getDataStorage()
+                .computeIfAbsent(DeferredEventSystem::loadStatic,DeferredEventSystem::new,MOD_ID+ ":deferredevents");
+    }
+
+    public static void addDeferredEvent(ServerLevel level, DeferredEvent event) {
+        getDeferredEventSystem(level).addDeferredEvent(event);
     }
 
     public static boolean onSculkEvent(ServerLevel pLevel, BlockPos pPos, GameEvent pGameEvent, GameEvent.Context pContext) {

@@ -45,6 +45,7 @@ import org.jetbrains.annotations.Nullable;
 import tfar.customabilities.client.Client;
 import tfar.customabilities.datagen.ModDatagen;
 import tfar.customabilities.net.PacketHandler;
+import tfar.customabilities.world.deferredevent.AddMobEffects;
 
 import java.util.*;
 import java.util.function.Function;
@@ -72,6 +73,7 @@ public class CustomAbilitiesForge {
         MinecraftForge.EVENT_BUS.addListener(this::visibility);
         MinecraftForge.EVENT_BUS.addListener(this::vanillaEvent);
         MinecraftForge.EVENT_BUS.addListener(this::potionExpire);
+        MinecraftForge.EVENT_BUS.addListener(this::worldTick);
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(ModDatagen::start);
         bus.addListener(this::setup);
@@ -79,6 +81,13 @@ public class CustomAbilitiesForge {
             bus.addListener(this::clientSetup);
             bus.addListener(Client::registerKeybinds);
             bus.addListener(Client::registerOverlay);
+        }
+    }
+
+    private void worldTick(TickEvent.LevelTickEvent event) {
+        if (event.phase == TickEvent.Phase.START && event.side == LogicalSide.SERVER) {
+            ServerLevel serverLevel = (ServerLevel) event.level;
+            CustomAbilities.getDeferredEventSystem(serverLevel).tickDeferredEvents(serverLevel);
         }
     }
 
@@ -116,7 +125,6 @@ public class CustomAbilitiesForge {
         if (living instanceof Player player) {
             if (Constants.hasAbility(player, Ability.Gar)) {
             //    if (lessThan25PercentHealth(player)) {
-
               //  }
             }
         }
@@ -125,7 +133,12 @@ public class CustomAbilitiesForge {
     private void clonePlayer(PlayerEvent.Clone event) {
         Player original = event.getOriginal();
         Player player = event.getEntity();
-        ((PlayerDuck)player).setAbility(((PlayerDuck)original).getAbility());
+        PlayerDuck playerDuck = (PlayerDuck)player;
+        Ability ability = ((PlayerDuck)original).getAbility();
+        playerDuck.setAbility(ability);
+        Constants.LOG.debug("Adding abilities to player later");
+        CustomAbilities.addDeferredEvent((ServerLevel) player.level(),new AddMobEffects(5, (ServerPlayer)player));
+        //this is important because the player doesn't exist yet
     }
 
     private void sleepInBed(PlayerSleepInBedEvent event) {

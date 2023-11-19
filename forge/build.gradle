@@ -34,7 +34,7 @@ minecraft {
             taskName 'Client'
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            property 'forge.logging.console.level', 'trace'
+            property 'forge.logging.console.level', 'debug'
             mods {
                 modClientRun {
                     source sourceSets.main
