@@ -21,20 +21,20 @@ public class CustomDynamic extends DynamicLightSourceContainer {
             return true;
         } else {
 
-            if (hasEntityMoved(ent)) {
+    //        if (hasEntityMoved(ent)) {
                 return super.onUpdate();
-            }
+         //   }
 
-            int currentLight = getLightSource().getLightLevel();
-            if (currentLight != lastLight) {
-                BlockPos nextPos = this.findNewCurLightPos(ent.level());
-                if (nextPos != null) {
-                    this.removeLight(ent.level());
-                    this.addLight(ent.level(), nextPos, this.getLightSource().getLightLevel());
-                }
-            }
-            lastLight = currentLight;
-            return false;
+  //          int currentLight = getLightSource().getLightLevel();
+   //         if (currentLight != lastLight) {
+   //             BlockPos nextPos = this.findNewCurLightPos(ent.level());
+    //            if (nextPos != null) {
+     //               this.removeLight(ent.level());
+    //                this.addLight(ent.level(), nextPos, this.getLightSource().getLightLevel());
+  //              }
+ //           }
+    //        lastLight = currentLight;
+    //        return false;
         }
     }
 

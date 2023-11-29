@@ -34,6 +34,7 @@ import net.minecraftforge.event.VanillaGameEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
@@ -74,6 +75,7 @@ public class CustomAbilitiesForge {
         MinecraftForge.EVENT_BUS.addListener(this::vanillaEvent);
         MinecraftForge.EVENT_BUS.addListener(this::potionExpire);
         MinecraftForge.EVENT_BUS.addListener(this::worldTick);
+        MinecraftForge.EVENT_BUS.addListener(this::canAffect);
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(ModDatagen::start);
         bus.addListener(this::setup);
@@ -81,6 +83,16 @@ public class CustomAbilitiesForge {
             bus.addListener(this::clientSetup);
             bus.addListener(Client::registerKeybinds);
             bus.addListener(Client::registerOverlay);
+        }
+    }
+
+    private void canAffect(MobEffectEvent.Applicable event) {
+        MobEffectInstance mobEffectInstance = event.getEffectInstance();
+        LivingEntity living = event.getEntity();
+        if (living instanceof Player player) {
+            if (mobEffectInstance.getEffect() == MobEffects.DARKNESS && Constants.hasAbility(player,Ability.Syd)) {
+                event.setResult(Event.Result.DENY);
+            }
         }
     }
 
@@ -165,7 +177,7 @@ public class CustomAbilitiesForge {
         player.level().addFreshEntity(fireworkRocketEntity);
         int cooldown = 0;
         if (ability == Ability.Mari) cooldown = 30 * 20;
-        else if (ability == Ability.Spriteboba) cooldown = 120 * 20;
+        else if (ability == Ability.Spriteboba) cooldown = 30 * 20;
         playerDuck.setFlightBoostCooldown(cooldown);
     }
 
@@ -296,8 +308,6 @@ public class CustomAbilitiesForge {
     public static class Light implements IDynamicLightSource {
 
         private final Player player;
-        boolean active = true;
-
         Light(Player player) {
             this.player = player;
         }
@@ -309,7 +319,7 @@ public class CustomAbilitiesForge {
 
         @Override
         public int getLightLevel() {
-            return active ? 15 : 0;
+            return 15;
         }
     }
 
@@ -319,15 +329,13 @@ public class CustomAbilitiesForge {
 
         Light light = map.get(player.getUUID());
 
-        if (light == null || !light.active) {
-            if (light == null) {
+        if (light == null) {
                 light = new Light(player);
                 map.put(player.getUUID(), light);
                 DynamicLights.addLightSource(light);
-            }
-            light.active = true;
         } else {
-            light.active = false;
+            map.remove(player.getUUID());
+            DynamicLights.removeLightSource(light);
         }
     }
 

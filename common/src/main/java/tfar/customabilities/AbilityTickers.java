@@ -38,15 +38,18 @@ public class AbilityTickers {
             playerDuck.setCrouchTime(crouchTime + 1);
             if (crouchTime > 200) {
            //     System.out.println(crouchTime);
-                playerDuck.setGarAbility(!playerDuck.garAbilityActive());
+                playerDuck.setGarAbility(true);
                 playerDuck.setCrouchTime(0);
             }
+        } else {
+            playerDuck.setGarAbility(false);
+            playerDuck.setCrouchTime(0);
         }
     }
 
     public static void tickSpriteBoba(Player player) {
         BlockState feetBlockState = player.getBlockStateOn();
-        if (feetBlockState.getLightEmission() > 0) {
+        if (feetBlockState.getLightEmission() > 13) {
             player.heal(0.05f);
         }
         if (player.onGround()) {
