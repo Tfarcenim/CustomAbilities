@@ -59,32 +59,20 @@ public class CustomAbilities {
     }
 }
 
-
-
-// bug- light toggle is buggy, activates kind of randomly? hard to explain. was activating when i got punched? levitation particles are not supposed to be there
+// LIST
+//sprite heals by just being in the sunlight, should only be phsyical block/item light tources, flight boost cooldown fixed to be 30 seconds
 //
-// todo mari- lightning bolt teleportation does not exist
+//syd is effected by warden blindness
 //
-// lore- waterbreathing particle effects show
+//new addition:
+//Muw abilities:
+//Guitar Strum:
+//When holding the Lute item (from immersive melodies mod) and pressing left click while sneaking, Muw can strum the strings (plays a randomized noteblock sound) and cause the effects of a Lingering potion of healing around her. There should be a small cooldown.
+//Evil guitar strum:
 //
-// syd- warden still attacks, syd does not alert sculk sensors (new specification)
+//When holding the Redstone Guitar item (from Music Maker mod) and pressing left click while sneaking, Muw can strum the strings (plays a randomized noteblock sound) and cause a shockwave that pushes all entities in 4x4 block radius away from her. There should be a small cooldown.
 //
-// barcode- all good !
+//(if there is no way to code that for those two specific items, maybe just make those abilities two hotkeys that muw can press at any time?)
 //
-// basil- mining speed is still affected when underwater, waterbreathing particle effects show,
-//
-// gar- crouching for ten seconds does not bring up a spectral arrow view on entities within 5 block radius,
-//
-// miblex- all good !
-//
-// otty- oxygen bubbles extend off screen when underwater, mining speed is still affected when underwater,
-//
-// ramsey- soul effects are client side only,
-//
-//  change the extra heart kills to only be from pvp and not mobs,
-//
-//  invisibilty is buggy and turns off randomly or hard to turn on, invisibilty turns off when effects run out
-//
-// todo sprite- light regen only works when hunger bar is full, Fire resistence disappears?
-//
-// sause- only ores in stone glow-> extend to raw and smelted ores
+//Other abilities:
+//Muw always spawns in with her acoustic guitar (Lute item), even upon death
