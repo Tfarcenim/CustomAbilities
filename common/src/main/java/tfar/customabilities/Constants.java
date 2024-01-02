@@ -1,7 +1,11 @@
 package tfar.customabilities;
 
 import com.mojang.datafixers.util.Either;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -186,6 +190,21 @@ public class Constants {
 			player.teleportTo(position.x,position.y,position.z);
 		}
 		player.teleportTo(targetPos.x,targetPos.y,targetPos.z);
+	}
+
+	public static void loadAllItems(CompoundTag tag, NonNullList<ItemStack> $$1) {
+		ListTag listTag = tag.getList("Items", 10);
+
+		for(int i = 0; i < listTag.size(); ++i) {
+			CompoundTag $$4 = listTag.getCompound(i);
+			$$1.add(ItemStack.of($$4));
+		}
+	}
+
+
+	public static void addItemToInv(Player player) {
+		Item item = BuiltInRegistries.ITEM.get(new ResourceLocation("immersive_melodies","lute"));
+		player.addItem(new ItemStack(item));
 	}
 
 

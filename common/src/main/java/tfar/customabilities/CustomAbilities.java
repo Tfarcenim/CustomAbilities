@@ -67,7 +67,8 @@ public class CustomAbilities {
 //new addition:
 //Muw abilities:
 //Guitar Strum:
-//When holding the Lute item (from immersive melodies mod) and pressing left click while sneaking, Muw can strum the strings (plays a randomized noteblock sound) and cause the effects of a Lingering potion of healing around her. There should be a small cooldown.
+//When holding the Lute item (from immersive melodies mod) and pressing left click while sneaking, Muw can strum the strings
+// (plays a randomized noteblock sound) and cause the effects of a Lingering potion of healing around her. There should be a small cooldown.
 //Evil guitar strum:
 //
 //When holding the Redstone Guitar item (from Music Maker mod) and pressing left click while sneaking, Muw can strum the strings (plays a randomized noteblock sound) and cause a shockwave that pushes all entities in 4x4 block radius away from her. There should be a small cooldown.

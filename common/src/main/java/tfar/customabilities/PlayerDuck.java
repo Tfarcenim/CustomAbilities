@@ -1,8 +1,13 @@
 package tfar.customabilities;
 
+import com.mojang.datafixers.kinds.Const;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public interface PlayerDuck {
 
@@ -15,6 +20,23 @@ public interface PlayerDuck {
     void setModData(CompoundTag tag,boolean forceSync);
     default void setFlightBoostCooldown(int flightBoostCooldown) {
         this.getModData().putInt("flight_boost",flightBoostCooldown);
+    }
+
+    default void setKeptItems(NonNullList<ItemStack> items) {
+        CompoundTag keptTag = new CompoundTag();
+        ContainerHelper.saveAllItems(keptTag,items);
+        getModData().put("kept_items",keptTag);
+    }
+
+    default NonNullList<ItemStack> getKeptItems() {
+        NonNullList<ItemStack> stacks = NonNullList.create();
+        CompoundTag tag = getModData().getCompound("kept_items");
+        Constants.loadAllItems(tag,stacks);
+        return stacks;
+    }
+
+    default void clearKept() {
+
     }
 
     default int getFlightBoostCooldown() {

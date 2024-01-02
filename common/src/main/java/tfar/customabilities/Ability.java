@@ -69,6 +69,9 @@ public enum Ability {
     //-Standing on light sources regenerates health.
     //-Water contact deals damage
 
+
+    Muw(player -> Constants.addItemToInv(player),false,Constants.NOTHING,Constants.NOTHING),
+
     Saus(Services.PLATFORM::addAllIdentities,false, Services.PLATFORM::removeAllIdentities,Constants.NOTHING);
     //todo    -Shapeshift into mobs (exclude ender dragon) and players
 //-Can see dropped ores with a spectral arrow glow effect

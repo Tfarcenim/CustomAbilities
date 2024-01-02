@@ -7,6 +7,7 @@ import draylar.identity.api.PlayerUnlocks;
 import draylar.identity.api.platform.IdentityConfig;
 import draylar.identity.api.variant.IdentityType;
 import draylar.identity.impl.PlayerDataProvider;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -21,6 +22,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.monster.warden.Warden;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.ItemStack;
@@ -50,6 +52,7 @@ import tfar.customabilities.world.deferredevent.AddMobEffects;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 @Mod(CustomAbilities.MOD_ID)
 public class CustomAbilitiesForge {
@@ -148,6 +151,15 @@ public class CustomAbilitiesForge {
         PlayerDuck playerDuck = (PlayerDuck)player;
         Ability ability = ((PlayerDuck)original).getAbility();
         playerDuck.setAbility(ability);
+
+        if (event.isWasDeath()) {
+            NonNullList<ItemStack> kept = ((PlayerDuck) original).getKeptItems();
+
+            for (ItemStack stack : kept) {
+                player.addItem(stack);
+            }
+        }
+
         Constants.LOG.debug("Adding abilities to player later");
         CustomAbilities.addDeferredEvent((ServerLevel) player.level(),new AddMobEffects(5, (ServerPlayer)player));
         //this is important because the player doesn't exist yet
@@ -276,12 +288,35 @@ public class CustomAbilitiesForge {
 
     private void onKill(LivingDeathEvent event) {
         Entity trueEntity = event.getSource().getEntity();
-        if (trueEntity instanceof Player player&& Constants.hasAbility(player,Ability.Ramsey) && event.getEntity() instanceof Player) {
+        LivingEntity died = event.getEntity();
+        if (trueEntity instanceof Player player&& Constants.hasAbility(player,Ability.Ramsey) && died instanceof Player) {
             player.setAbsorptionAmount(player.getAbsorptionAmount()+2);
             ((PlayerDuck)player).setRamseyParticles(true);
             Constants.addStackableEffect(player,new MobEffectInstance(MobEffects.DAMAGE_BOOST, 20 * 60,0,true,false));
             Constants.addStackableEffect(player,new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60,0,true,false));
         }
+
+
+        if (died instanceof Player player && Constants.hasAbility(player,Ability.Muw)) {
+            saveItemsMatching(player,KEEP);
+        }
+    }
+
+    static final Predicate<ItemStack> KEEP = stack -> {
+        return BuiltInRegistries.ITEM.getKey(stack.getItem()).equals(new ResourceLocation("immersive_melodies","lute"));
+    };
+
+    void saveItemsMatching(Player player,Predicate<ItemStack> predicate) {
+        NonNullList<ItemStack> keep = NonNullList.create();
+        Inventory inv = player.getInventory();
+        for (ItemStack stack : inv.items) {
+            if (predicate.test(stack)) {
+                keep.add(stack);
+            }
+        }
+
+        PlayerDuck playerDuck = (PlayerDuck) player;
+        playerDuck.setKeptItems(keep);
     }
 
     private void potionExpire(MobEffectEvent.Expired event) {
