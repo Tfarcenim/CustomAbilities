@@ -1,7 +1,10 @@
 package tfar.customabilities;
 
 import com.mojang.datafixers.util.Either;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -9,11 +12,14 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,16 +30,24 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.SkullBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tfar.customabilities.platform.Services;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.UUID;
+import javax.annotation.Nullable;
+import java.util.*;
 import java.util.function.Consumer;
+
+import static net.minecraft.world.level.block.NoteBlock.*;
 
 public class Constants {
 
@@ -192,6 +206,8 @@ public class Constants {
 		player.teleportTo(targetPos.x,targetPos.y,targetPos.z);
 	}
 
+	public static final ResourceLocation LUTE_RL = new ResourceLocation("immersive_melodies","lute");
+
 	public static void loadAllItems(CompoundTag tag, NonNullList<ItemStack> $$1) {
 		ListTag listTag = tag.getList("Items", 10);
 
@@ -203,9 +219,52 @@ public class Constants {
 
 
 	public static void addItemToInv(Player player) {
-		Item item = BuiltInRegistries.ITEM.get(new ResourceLocation("immersive_melodies","lute"));
+		Item item = BuiltInRegistries.ITEM.get(LUTE_RL);
 		player.addItem(new ItemStack(item));
 	}
+
+	public static void playNote(@Nullable Entity entity, Level level, BlockPos pos) {
+		level.blockEvent(pos, Blocks.NOTE_BLOCK, 0, 0);
+		level.gameEvent(entity, GameEvent.NOTE_BLOCK_PLAY, pos);
+	}
+
+
+	public static boolean triggerEvent(Level level, BlockPos $$2) {
+		NoteBlockInstrument instrument = NoteBlockInstrument.values()[level.getRandom().nextInt(NoteBlockInstrument.values().length)];
+		float $$7;
+		if (instrument.isTunable()) {
+			List<Integer> values = new ArrayList<>(NOTE.getPossibleValues());
+			int note = values.get(level.random.nextInt(values.size()));
+			$$7 = getPitchFromNote(note);
+			level.addParticle(ParticleTypes.NOTE, (double)$$2.getX() + 0.5, (double)$$2.getY() + 1.2, (double)$$2.getZ() + 0.5, (double)note / 24.0, 0.0, 0.0);
+		} else {
+			$$7 = 1.0F;
+		}
+
+		Holder<SoundEvent> $$10;
+		if (instrument.hasCustomSound()) {
+			ResourceLocation $$9 = getCustomSoundId(level, $$2);
+			if ($$9 == null) {
+				return false;
+			}
+
+			$$10 = Holder.direct(SoundEvent.createVariableRangeEvent($$9));
+		} else {
+			$$10 = instrument.getSoundEvent();
+		}
+
+		level.playSeededSound(
+				null, (double)$$2.getX() + 0.5, (double)$$2.getY() + 0.5, (double)$$2.getZ() + 0.5, $$10, SoundSource.RECORDS, 3.0F, $$7, level.random.nextLong()
+		);
+		return true;
+	}
+
+	@Nullable
+	private static ResourceLocation getCustomSoundId(Level $$0, BlockPos $$1) {
+		BlockEntity var4 = $$0.getBlockEntity($$1.above());
+		return var4 instanceof SkullBlockEntity $$2 ? $$2.getNoteBlockSound() : null;
+	}
+
 
 
 	public static final int OTTY_AIR = 20 * 60 * 8;

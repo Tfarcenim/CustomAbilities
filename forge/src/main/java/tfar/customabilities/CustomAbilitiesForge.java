@@ -7,6 +7,7 @@ import draylar.identity.api.PlayerUnlocks;
 import draylar.identity.api.platform.IdentityConfig;
 import draylar.identity.api.variant.IdentityType;
 import draylar.identity.impl.PlayerDataProvider;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -21,13 +22,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ambient.Bat;
-import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -35,6 +35,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.VanillaGameEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -79,6 +80,7 @@ public class CustomAbilitiesForge {
         MinecraftForge.EVENT_BUS.addListener(this::potionExpire);
         MinecraftForge.EVENT_BUS.addListener(this::worldTick);
         MinecraftForge.EVENT_BUS.addListener(this::canAffect);
+        MinecraftForge.EVENT_BUS.addListener(this::onLeftClick);
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(ModDatagen::start);
         bus.addListener(this::setup);
@@ -89,6 +91,15 @@ public class CustomAbilitiesForge {
         }
     }
 
+    private void onLeftClick(PlayerInteractEvent.LeftClickBlock event) {
+        ItemStack stack = event.getItemStack();
+        Player player = event.getEntity();
+        BlockPos pos = event.getPos();
+        if (BuiltInRegistries.ITEM.getKey(stack.getItem()).equals(Constants.LUTE_RL) && player.isCrouching()) {
+            Constants.triggerEvent(event.getLevel(),pos);
+            event.setCanceled(true);
+        }
+    }
     private void canAffect(MobEffectEvent.Applicable event) {
         MobEffectInstance mobEffectInstance = event.getEffectInstance();
         LivingEntity living = event.getEntity();
@@ -309,9 +320,12 @@ public class CustomAbilitiesForge {
     void saveItemsMatching(Player player,Predicate<ItemStack> predicate) {
         NonNullList<ItemStack> keep = NonNullList.create();
         Inventory inv = player.getInventory();
-        for (ItemStack stack : inv.items) {
+        NonNullList<ItemStack> items = inv.items;
+        for (int i = 0; i < items.size(); i++) {
+            ItemStack stack = items.get(i);
             if (predicate.test(stack)) {
                 keep.add(stack);
+                items.set(i,ItemStack.EMPTY);
             }
         }
 
