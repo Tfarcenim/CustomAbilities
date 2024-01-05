@@ -91,6 +91,9 @@ dependencies {
     implementation fg.deobf("curse.maven:dynamic-lights-227874:4721525")
     implementation fg.deobf("curse.maven:immersive-melodies-904471:4760710")
 
+    implementation fg.deobf("curse.maven:music-maker-mod-341448:4923626")
+
+
 
 
 }

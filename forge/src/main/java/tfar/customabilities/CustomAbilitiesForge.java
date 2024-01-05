@@ -2,6 +2,7 @@ package tfar.customabilities;
 
 import atomicstryker.dynamiclights.server.DynamicLights;
 import atomicstryker.dynamiclights.server.IDynamicLightSource;
+import com.google.common.collect.Sets;
 import draylar.identity.api.PlayerIdentity;
 import draylar.identity.api.PlayerUnlocks;
 import draylar.identity.api.platform.IdentityConfig;
@@ -15,20 +16,32 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.enchantment.ProtectionEnchantment;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
@@ -95,16 +108,72 @@ public class CustomAbilitiesForge {
         ItemStack stack = event.getItemStack();
         Player player = event.getEntity();
         BlockPos pos = event.getPos();
-        if (BuiltInRegistries.ITEM.getKey(stack.getItem()).equals(Constants.LUTE_RL) && player.isCrouching()) {
-            Constants.triggerEvent(event.getLevel(),pos);
-            event.setCanceled(true);
+        Level level = event.getLevel();
+        ResourceLocation rl = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (player.isCrouching()) {
+            boolean cooldown = player.getCooldowns().isOnCooldown(stack.getItem());
+            if (!cooldown) {
+                if (rl.equals(Constants.LUTE_RL)) {
+                    Constants.triggerEvent(event.getLevel(), pos);
+                    player.getCooldowns().addCooldown(stack.getItem(), 100);
+                    if (!level.isClientSide) {
+                        makeAreaOfEffectCloud(player, Potions.HEALING, pos);
+                    }
+                    event.setCanceled(true);
+                } else if (rl.equals(Constants.GUITAR_RL)) {
+                    Constants.triggerEvent(event.getLevel(), pos);
+                    player.getCooldowns().addCooldown(stack.getItem(), 100);
+                    if (!level.isClientSide) {
+                        makeShockwave(player);
+                    }
+                    event.setCanceled(true);
+                }
+            }
         }
     }
+
+
+    private static void makeShockwave(LivingEntity living) {
+        //this.level.gameEvent(this.source, GameEvent.EXPLODE, new Vec3(this.x, this.y, this.z));
+        float f2 = 16;
+        Vec3 vec3 = living.position();
+        List<Entity> list = living.level().getEntities(living, new AABB(vec3.add(-2, -2, -2), vec3.add(2, 2, 2)));
+
+        for (int k2 = 0; k2 < list.size(); ++k2) {
+            Entity entity = list.get(k2);
+            if (!entity.ignoreExplosion()) {
+                double distX = entity.getX() - living.getX();
+                double distY = (entity instanceof PrimedTnt ? entity.getY() : entity.getEyeY()) - living.getY();
+                double distZ = entity.getZ() - living.getZ();
+                Vec3 motion = new Vec3(distX, distY, distZ).normalize();
+                entity.setDeltaMovement(entity.getDeltaMovement().add(motion));
+                if (entity instanceof Player player) {
+                    if (!player.isSpectator() && (!player.isCreative() || !player.getAbilities().flying)) {
+
+                    }
+                }
+            }
+        }
+    }
+
+    private static void makeAreaOfEffectCloud(LivingEntity entity, Potion pPotion, BlockPos pos) {
+        AreaEffectCloud areaeffectcloud = new AreaEffectCloud(entity.level(), pos.getX(), pos.getY(), pos.getZ());
+        areaeffectcloud.setOwner(entity);
+        areaeffectcloud.setRadius(3.0F);
+        areaeffectcloud.setRadiusOnUse(-0.5F);
+        areaeffectcloud.setWaitTime(10);
+        areaeffectcloud.setRadiusPerTick(-areaeffectcloud.getRadius() / (float) areaeffectcloud.getDuration());
+        areaeffectcloud.setPotion(pPotion);
+
+
+        entity.level().addFreshEntity(areaeffectcloud);
+    }
+
     private void canAffect(MobEffectEvent.Applicable event) {
         MobEffectInstance mobEffectInstance = event.getEffectInstance();
         LivingEntity living = event.getEntity();
         if (living instanceof Player player) {
-            if (mobEffectInstance.getEffect() == MobEffects.DARKNESS && Constants.hasAbility(player,Ability.Syd)) {
+            if (mobEffectInstance.getEffect() == MobEffects.DARKNESS && Constants.hasAbility(player, Ability.Syd)) {
                 event.setResult(Event.Result.DENY);
             }
         }
@@ -122,7 +191,6 @@ public class CustomAbilitiesForge {
     }
 
 
-
     private void clientSetup(FMLClientSetupEvent e) {
         Client.setupClient();
     }
@@ -131,7 +199,7 @@ public class CustomAbilitiesForge {
     private void playertick(TickEvent.PlayerTickEvent event) {
         if (event.side == LogicalSide.SERVER && event.phase == TickEvent.Phase.START) {
             Player player = event.player;
-            Ability ability = ((PlayerDuck)player).getAbility();
+            Ability ability = ((PlayerDuck) player).getAbility();
             if (ability != null) ability.tickAbility.accept(player);
         }
     }
@@ -140,8 +208,8 @@ public class CustomAbilitiesForge {
         LivingEntity living = event.getEntity();
         if (living instanceof Player player) {
             if (Constants.hasAbility(player, Ability.Gar)) {
-              //  if (lessThan25PercentHealth(player)) {
-              //  }
+                //  if (lessThan25PercentHealth(player)) {
+                //  }
             }
         }
     }
@@ -150,8 +218,8 @@ public class CustomAbilitiesForge {
         LivingEntity living = event.getEntity();
         if (living instanceof Player player) {
             if (Constants.hasAbility(player, Ability.Gar)) {
-            //    if (lessThan25PercentHealth(player)) {
-              //  }
+                //    if (lessThan25PercentHealth(player)) {
+                //  }
             }
         }
     }
@@ -159,8 +227,8 @@ public class CustomAbilitiesForge {
     private void clonePlayer(PlayerEvent.Clone event) {
         Player original = event.getOriginal();
         Player player = event.getEntity();
-        PlayerDuck playerDuck = (PlayerDuck)player;
-        Ability ability = ((PlayerDuck)original).getAbility();
+        PlayerDuck playerDuck = (PlayerDuck) player;
+        Ability ability = ((PlayerDuck) original).getAbility();
         playerDuck.setAbility(ability);
 
         if (event.isWasDeath()) {
@@ -172,15 +240,15 @@ public class CustomAbilitiesForge {
         }
 
         Constants.LOG.debug("Adding abilities to player later");
-        CustomAbilities.addDeferredEvent((ServerLevel) player.level(),new AddMobEffects(5, (ServerPlayer)player));
+        CustomAbilities.addDeferredEvent((ServerLevel) player.level(), new AddMobEffects(5, (ServerPlayer) player));
         //this is important because the player doesn't exist yet
     }
 
     private void sleepInBed(PlayerSleepInBedEvent event) {
         Player player = event.getEntity();
-        if (Constants.hasAbility(player,Ability.Otty)) {
+        if (Constants.hasAbility(player, Ability.Otty)) {
             int r = 3;
-            List<ServerPlayer> otherPlayers = player.level().getEntitiesOfClass(ServerPlayer.class,player.getBoundingBox().inflate(r), LivingEntity::isSleeping);
+            List<ServerPlayer> otherPlayers = player.level().getEntitiesOfClass(ServerPlayer.class, player.getBoundingBox().inflate(r), LivingEntity::isSleeping);
             if (otherPlayers.isEmpty()) {
                 event.setResult(Player.BedSleepingProblem.OTHER_PROBLEM);
             }
@@ -196,7 +264,7 @@ public class CustomAbilitiesForge {
         }
 
         ItemStack firework = new ItemStack(Items.FIREWORK_ROCKET);
-        FireworkRocketEntity fireworkRocketEntity = new FireworkRocketEntity(player.level(),firework,player);
+        FireworkRocketEntity fireworkRocketEntity = new FireworkRocketEntity(player.level(), firework, player);
         player.level().addFreshEntity(fireworkRocketEntity);
         int cooldown = 0;
         if (ability == Ability.Mari) cooldown = 30 * 20;
@@ -205,12 +273,11 @@ public class CustomAbilitiesForge {
     }
 
 
-
     public static void toggleTrueInvis(Player player) {
         if (player.hasEffect(MobEffects.INVISIBILITY)) {
             player.removeEffect(MobEffects.INVISIBILITY);
         } else {
-            player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, -1,0,false,false));
+            player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, -1, 0, false, false));
         }
     }
 
@@ -229,7 +296,7 @@ public class CustomAbilitiesForge {
     }
 
     public static void addAllIdentities(Player player) {
-        for (EntityType<?> entityType :BuiltInRegistries.ENTITY_TYPE) {
+        for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
             if (entityType != EntityType.ENDER_DRAGON) {
                 Entity entity = entityType.create(player.level());
                 if (entity instanceof LivingEntity living) {
@@ -243,10 +310,10 @@ public class CustomAbilitiesForge {
     }
 
     public static void removeAllIdentities(Player player) {
-        PlayerDataProvider provider = (PlayerDataProvider)player;
+        PlayerDataProvider provider = (PlayerDataProvider) player;
         Set<IdentityType<?>> unlocked = new HashSet<>(provider.getUnlocked());//make a copy to avoid cc
         for (IdentityType<?> identityType : unlocked) {
-            PlayerUnlocks.revoke((ServerPlayer) player,identityType);
+            PlayerUnlocks.revoke((ServerPlayer) player, identityType);
         }
     }
 
@@ -266,7 +333,7 @@ public class CustomAbilitiesForge {
         if (created instanceof LivingEntity living) {
             IdentityType<?> defaultType = IdentityType.from(living);
             if (defaultType != null) {
-                boolean result = PlayerIdentity.updateIdentity(player, defaultType, (LivingEntity)created);
+                boolean result = PlayerIdentity.updateIdentity(player, defaultType, (LivingEntity) created);
                 if (result && IdentityConfig.getInstance().logCommands()) {
                     source.displayClientMessage(Component.translatable("identity.equip_success", Component.translatable(created.getType().getDescriptionId()), player.getDisplayName()), true);
                 }
@@ -284,9 +351,8 @@ public class CustomAbilitiesForge {
     }
 
 
-
     public static boolean hasTrueInvis(Player player) {
-        return Constants.hasAbility(player,Ability.Ramsey) && player.hasEffect(MobEffects.INVISIBILITY);
+        return Constants.hasAbility(player, Ability.Ramsey) && player.hasEffect(MobEffects.INVISIBILITY);
     }
 
     //this event is crap
@@ -300,24 +366,24 @@ public class CustomAbilitiesForge {
     private void onKill(LivingDeathEvent event) {
         Entity trueEntity = event.getSource().getEntity();
         LivingEntity died = event.getEntity();
-        if (trueEntity instanceof Player player&& Constants.hasAbility(player,Ability.Ramsey) && died instanceof Player) {
-            player.setAbsorptionAmount(player.getAbsorptionAmount()+2);
-            ((PlayerDuck)player).setRamseyParticles(true);
-            Constants.addStackableEffect(player,new MobEffectInstance(MobEffects.DAMAGE_BOOST, 20 * 60,0,true,false));
-            Constants.addStackableEffect(player,new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60,0,true,false));
+        if (trueEntity instanceof Player player && Constants.hasAbility(player, Ability.Ramsey) && died instanceof Player) {
+            player.setAbsorptionAmount(player.getAbsorptionAmount() + 2);
+            ((PlayerDuck) player).setRamseyParticles(true);
+            Constants.addStackableEffect(player, new MobEffectInstance(MobEffects.DAMAGE_BOOST, 20 * 60, 0, true, false));
+            Constants.addStackableEffect(player, new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60, 0, true, false));
         }
 
 
-        if (died instanceof Player player && Constants.hasAbility(player,Ability.Muw)) {
-            saveItemsMatching(player,KEEP);
+        if (died instanceof Player player && Constants.hasAbility(player, Ability.Muw)) {
+            saveItemsMatching(player, KEEP);
         }
     }
 
     static final Predicate<ItemStack> KEEP = stack -> {
-        return BuiltInRegistries.ITEM.getKey(stack.getItem()).equals(new ResourceLocation("immersive_melodies","lute"));
+        return BuiltInRegistries.ITEM.getKey(stack.getItem()).equals(new ResourceLocation("immersive_melodies", "lute"));
     };
 
-    void saveItemsMatching(Player player,Predicate<ItemStack> predicate) {
+    void saveItemsMatching(Player player, Predicate<ItemStack> predicate) {
         NonNullList<ItemStack> keep = NonNullList.create();
         Inventory inv = player.getInventory();
         NonNullList<ItemStack> items = inv.items;
@@ -325,7 +391,7 @@ public class CustomAbilitiesForge {
             ItemStack stack = items.get(i);
             if (predicate.test(stack)) {
                 keep.add(stack);
-                items.set(i,ItemStack.EMPTY);
+                items.set(i, ItemStack.EMPTY);
             }
         }
 
@@ -335,10 +401,10 @@ public class CustomAbilitiesForge {
 
     private void potionExpire(MobEffectEvent.Expired event) {
         LivingEntity living = event.getEntity();
-        if (living instanceof Player player && Constants.hasAbility(player,Ability.Ramsey)) {
+        if (living instanceof Player player && Constants.hasAbility(player, Ability.Ramsey)) {
             MobEffect mobEffect = event.getEffectInstance().getEffect();
             if (mobEffect == MobEffects.DAMAGE_BOOST || mobEffect == MobEffects.MOVEMENT_SPEED) {
-                ((PlayerDuck)player).setRamseyParticles(false);
+                ((PlayerDuck) player).setRamseyParticles(false);
             }
         }
     }
@@ -347,16 +413,17 @@ public class CustomAbilitiesForge {
         if (event.getVanillaEvent() == GameEvent.SCULK_SENSOR_TENDRILS_CLICKING) {
             GameEvent.Context context = event.getContext();
             Entity caught = context.sourceEntity();
-                if (caught != null) {
-                    EntityDuck entityDuck = (EntityDuck) caught;
-                    entityDuck.setGlowForSid(true);
-                }
+            if (caught != null) {
+                EntityDuck entityDuck = (EntityDuck) caught;
+                entityDuck.setGlowForSid(true);
+            }
         }
     }
 
     public static class Light implements IDynamicLightSource {
 
         private final Player player;
+
         Light(Player player) {
             this.player = player;
         }
@@ -372,16 +439,16 @@ public class CustomAbilitiesForge {
         }
     }
 
-     static Map<UUID,Light> map = new HashMap<>();
+    static Map<UUID, Light> map = new HashMap<>();
 
     public static void toggleLights(Player player) {
 
         Light light = map.get(player.getUUID());
 
         if (light == null) {
-                light = new Light(player);
-                map.put(player.getUUID(), light);
-                DynamicLights.addLightSource(light);
+            light = new Light(player);
+            map.put(player.getUUID(), light);
+            DynamicLights.addLightSource(light);
         } else {
             map.remove(player.getUUID());
             DynamicLights.removeLightSource(light);

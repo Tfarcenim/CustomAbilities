@@ -207,6 +207,8 @@ public class Constants {
 	}
 
 	public static final ResourceLocation LUTE_RL = new ResourceLocation("immersive_melodies","lute");
+	public static final ResourceLocation GUITAR_RL = new ResourceLocation("xercamusic","redstone_guitar");
+
 
 	public static void loadAllItems(CompoundTag tag, NonNullList<ItemStack> $$1) {
 		ListTag listTag = tag.getList("Items", 10);
@@ -221,11 +223,6 @@ public class Constants {
 	public static void addItemToInv(Player player) {
 		Item item = BuiltInRegistries.ITEM.get(LUTE_RL);
 		player.addItem(new ItemStack(item));
-	}
-
-	public static void playNote(@Nullable Entity entity, Level level, BlockPos pos) {
-		level.blockEvent(pos, Blocks.NOTE_BLOCK, 0, 0);
-		level.gameEvent(entity, GameEvent.NOTE_BLOCK_PLAY, pos);
 	}
 
 
