@@ -226,21 +226,21 @@ public class Constants {
 	}
 
 
-	public static boolean triggerEvent(Level level, BlockPos $$2) {
+	public static boolean triggerEvent(Level level, double x,double y,double z) {
 		NoteBlockInstrument instrument = NoteBlockInstrument.values()[level.getRandom().nextInt(NoteBlockInstrument.values().length)];
 		float $$7;
 		if (instrument.isTunable()) {
 			List<Integer> values = new ArrayList<>(NOTE.getPossibleValues());
 			int note = values.get(level.random.nextInt(values.size()));
 			$$7 = getPitchFromNote(note);
-			level.addParticle(ParticleTypes.NOTE, (double)$$2.getX() + 0.5, (double)$$2.getY() + 1.2, (double)$$2.getZ() + 0.5, (double)note / 24.0, 0.0, 0.0);
+			level.addParticle(ParticleTypes.NOTE, x + 0.5, y+ 1.2, z + 0.5, note / 24.0, 0.0, 0.0);
 		} else {
 			$$7 = 1.0F;
 		}
 
 		Holder<SoundEvent> $$10;
 		if (instrument.hasCustomSound()) {
-			ResourceLocation $$9 = getCustomSoundId(level, $$2);
+			ResourceLocation $$9 = getCustomSoundId(level, new BlockPos((int) x,(int) y,(int) z));
 			if ($$9 == null) {
 				return false;
 			}
@@ -251,7 +251,7 @@ public class Constants {
 		}
 
 		level.playSeededSound(
-				null, (double)$$2.getX() + 0.5, (double)$$2.getY() + 0.5, (double)$$2.getZ() + 0.5, $$10, SoundSource.RECORDS, 3.0F, $$7, level.random.nextLong()
+				null, x + 0.5, y + 0.5, z + 0.5, $$10, SoundSource.RECORDS, 3.0F, $$7, level.random.nextLong()
 		);
 		return true;
 	}

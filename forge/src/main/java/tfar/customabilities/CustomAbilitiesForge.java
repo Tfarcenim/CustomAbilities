@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -76,7 +77,7 @@ public class CustomAbilitiesForge {
         MinecraftForge.EVENT_BUS.addListener(this::commands);
         MinecraftForge.EVENT_BUS.addListener(this::knockback);
         MinecraftForge.EVENT_BUS.addListener(this::playertick);
-        //MinecraftForge.EVENT_BUS.addListener(this::damage);
+        MinecraftForge.EVENT_BUS.addListener(this::attack);
         //MinecraftForge.EVENT_BUS.addListener(this::heal);
         MinecraftForge.EVENT_BUS.addListener(this::clonePlayer);
         MinecraftForge.EVENT_BUS.addListener(this::sleepInBed);
@@ -86,7 +87,7 @@ public class CustomAbilitiesForge {
         MinecraftForge.EVENT_BUS.addListener(this::potionExpire);
         MinecraftForge.EVENT_BUS.addListener(this::worldTick);
         MinecraftForge.EVENT_BUS.addListener(this::canAffect);
-        MinecraftForge.EVENT_BUS.addListener(this::onLeftClick);
+        MinecraftForge.EVENT_BUS.addListener(this::onLeftClickBlock);
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(ModDatagen::start);
         bus.addListener(this::setup);
@@ -97,7 +98,9 @@ public class CustomAbilitiesForge {
         }
     }
 
-    private void onLeftClick(PlayerInteractEvent.LeftClickBlock event) {
+
+
+    private void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
         ItemStack stack = event.getItemStack();
         Player player = event.getEntity();
         BlockPos pos = event.getPos();
@@ -107,19 +110,19 @@ public class CustomAbilitiesForge {
             boolean cooldown = player.getCooldowns().isOnCooldown(stack.getItem());
             if (!cooldown) {
                 if (rl.equals(Constants.LUTE_RL)) {
-                    Constants.triggerEvent(event.getLevel(), pos);
+                    Constants.triggerEvent(event.getLevel(), pos.getX(),pos.getY(),pos.getZ());
                     player.getCooldowns().addCooldown(stack.getItem(), 100);
                     if (!level.isClientSide) {
-                        makeAreaOfEffectCloud(player, Potions.HEALING, pos);
+                        makeAreaOfEffectCloud(player, Potions.STRONG_REGENERATION, pos.getX(),pos.getY(),pos.getZ());
                     }
-                    event.setCanceled(true);
+                  //  event.setCanceled(true);
                 } else if (rl.equals(Constants.GUITAR_RL)) {
-                    Constants.triggerEvent(event.getLevel(), pos);
+                    Constants.triggerEvent(event.getLevel(), pos.getX(),pos.getY(),pos.getZ());
                     player.getCooldowns().addCooldown(stack.getItem(), 100);
                     if (!level.isClientSide) {
                         makeShockwave(player);
                     }
-                    event.setCanceled(true);
+                   // event.setCanceled(true);
                 }
             }
         }
@@ -142,15 +145,15 @@ public class CustomAbilitiesForge {
                 entity.setDeltaMovement(entity.getDeltaMovement().add(motion));
                 if (entity instanceof Player player) {
                     if (!player.isSpectator() && (!player.isCreative() || !player.getAbilities().flying)) {
-
+                        player.hurtMarked = true;
                     }
                 }
             }
         }
     }
 
-    private static void makeAreaOfEffectCloud(LivingEntity entity, Potion pPotion, BlockPos pos) {
-        AreaEffectCloud areaeffectcloud = new AreaEffectCloud(entity.level(), pos.getX(), pos.getY(), pos.getZ());
+    private static void makeAreaOfEffectCloud(LivingEntity entity, Potion pPotion, double x,double y,double z) {
+        AreaEffectCloud areaeffectcloud = new AreaEffectCloud(entity.level(), x +.5,y + 1, z+.5);
         areaeffectcloud.setOwner(entity);
         areaeffectcloud.setRadius(3.0F);
         areaeffectcloud.setRadiusOnUse(-0.5F);
@@ -197,12 +200,34 @@ public class CustomAbilitiesForge {
         }
     }
 
-    private void damage(LivingDamageEvent event) {
+    private void attack(LivingAttackEvent event) {
         LivingEntity living = event.getEntity();
-        if (living instanceof Player player) {
-            if (Constants.hasAbility(player, Ability.Gar)) {
-                //  if (lessThan25PercentHealth(player)) {
-                //  }
+        DamageSource source = event.getSource();
+        Level level = living.level();
+        Vec3 pos = living.position();
+        Entity attacker = source.getEntity();
+        if (attacker instanceof Player player) {
+            ItemStack stack = player.getMainHandItem();
+            ResourceLocation rl = BuiltInRegistries.ITEM.getKey(stack.getItem());
+            if (player.isCrouching()) {
+                boolean cooldown = player.getCooldowns().isOnCooldown(stack.getItem());
+                if (!cooldown) {
+                    if (rl.equals(Constants.LUTE_RL)) {
+                        Constants.triggerEvent(level, pos.x,pos.y,pos.z);
+                        player.getCooldowns().addCooldown(stack.getItem(), 100);
+                        if (!level.isClientSide) {
+                            makeAreaOfEffectCloud(player, Potions.STRONG_REGENERATION, pos.x,pos.y,pos.z);
+                        }
+                        event.setCanceled(true);
+                    } else if (rl.equals(Constants.GUITAR_RL)) {
+                        Constants.triggerEvent(level, pos.x,pos.y,pos.z);
+                        player.getCooldowns().addCooldown(stack.getItem(), 100);
+                        if (!level.isClientSide) {
+                            makeShockwave(player);
+                        }
+                        event.setCanceled(true);
+                    }
+                }
             }
         }
     }
@@ -252,7 +277,8 @@ public class CustomAbilitiesForge {
         PlayerDuck playerDuck = (PlayerDuck) player;
         Ability ability = playerDuck.getAbility();
         if (playerDuck.getFlightBoostCooldown() > 0) {
-            player.sendSystemMessage(Component.translatable("Flight Boost on Cooldown"));
+            player.sendSystemMessage(Component.translatable("Flight Boost on Cooldown: "+
+                    (int)Math.ceil(playerDuck.getFlightBoostCooldown()/20d) + " seconds left"));
             return;
         }
 
