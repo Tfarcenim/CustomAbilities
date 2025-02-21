@@ -4,12 +4,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
+import tfar.customabilities.ability.NewAbility;
+import tfar.customabilities.platform.Services;
 
-public class AbilityTickers {
+public class Utils {
+
+    public static boolean hasAbility(Entity entity, NewAbility ability) {
+        return Services.PLATFORM.getAbility(entity) == ability;
+    }
 
     public static void tickMiblex(Player player) {
         if (!player.level().isDay() && player.level().getGameTime() % 20 == 0) {

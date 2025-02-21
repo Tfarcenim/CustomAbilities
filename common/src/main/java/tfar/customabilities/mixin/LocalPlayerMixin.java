@@ -6,7 +6,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tfar.customabilities.Ability;
-import tfar.customabilities.PlayerDuck;
 
 @Mixin(LocalPlayer.class)
 public class LocalPlayerMixin {

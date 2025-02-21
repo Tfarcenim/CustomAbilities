@@ -2,10 +2,15 @@ package tfar.customabilities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.gameevent.GameEvent;
+import tfar.customabilities.ability.NewAbility;
 import tfar.customabilities.platform.Services;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Items;
@@ -57,24 +62,23 @@ public class CustomAbilities {
                     1,0, 0, 0,0);
         }
     }
-}
 
-// LIST
-//sprite heals by just being in the sunlight, should only be phsyical block/item light tources, flight boost cooldown fixed to be 30 seconds
-//
-//syd is effected by warden blindness
-//
-//new addition:
-//Muw abilities:
-//Guitar Strum:
-//When holding the Lute item (from immersive melodies mod) and pressing left click while sneaking, Muw can strum the strings
-// (plays a randomized noteblock sound) and cause the effects of a Lingering potion of healing around her. There should be a small cooldown.
-//Evil guitar strum:
-//
-//When holding the Redstone Guitar item (from Music Maker mod) and pressing left click while sneaking, Muw can strum the strings
-// (plays a randomized noteblock sound) and cause a shockwave that pushes all entities in 4x4 block radius away from her. There should be a small cooldown.
-//
-//(if there is no way to code that for those two specific items, maybe just make those abilities two hotkeys that muw can press at any time?)
-//
-//Other abilities:
-//Muw always spawns in with her acoustic guitar (Lute item), even upon death
+    public static ResourceLocation id(String ability) {
+        return new ResourceLocation(MOD_ID,ability);
+    }
+
+    public static void tick(ServerPlayer serverPlayer) {
+        NewAbility ability = Services.PLATFORM.getAbility(serverPlayer);
+        if (ability != null) {
+            ability.tick(serverPlayer);
+        }
+    }
+
+    public static float onLivingHurt(LivingEntity target, DamageSource source,float amount) {
+        if (Utils.hasAbility(target,Abilities.BARCODE)) {
+
+        }
+        return amount;
+    }
+
+}

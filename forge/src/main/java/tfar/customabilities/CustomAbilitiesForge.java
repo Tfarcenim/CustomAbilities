@@ -246,8 +246,6 @@ public class CustomAbilitiesForge {
         Player original = event.getOriginal();
         Player player = event.getEntity();
         PlayerDuck playerDuck = (PlayerDuck) player;
-        Ability ability = ((PlayerDuck) original).getAbility();
-        playerDuck.setAbility(ability);
 
         if (event.isWasDeath()) {
             NonNullList<ItemStack> kept = ((PlayerDuck) original).getKeptItems();

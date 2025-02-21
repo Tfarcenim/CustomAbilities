@@ -5,7 +5,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import tfar.customabilities.Ability;
 import tfar.customabilities.Constants;
-import tfar.customabilities.PlayerDuck;
 
 import java.util.UUID;
 

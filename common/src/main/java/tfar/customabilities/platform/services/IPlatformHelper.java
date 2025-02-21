@@ -1,9 +1,11 @@
 package tfar.customabilities.platform.services;
 
 import com.mojang.datafixers.util.Either;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import tfar.customabilities.ability.NewAbility;
 
 public interface IPlatformHelper {
 
@@ -44,5 +46,8 @@ public interface IPlatformHelper {
     void addAllIdentities(Player player);
 
     void removeAllIdentities(Player player);
+
+    NewAbility getAbility(Entity entity);
+    void setAbility(Entity entity,NewAbility ability);
 
 }

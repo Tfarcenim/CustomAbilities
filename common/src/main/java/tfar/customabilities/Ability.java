@@ -21,12 +21,12 @@ public enum Ability {
 //-Water breathing
 
 
-    Mari(Constants.NOTHING, true,Constants.NOTHING, AbilityTickers::tickMari,false,false,true),
+    Mari(Constants.NOTHING, true,Constants.NOTHING, Utils::tickMari,false,false,true),
 //-Permanent invisible elytra (chestplate compatible) with flight boost every 30 seconds
 //-15 second speed boost ability. Cooldown of 5 minutes. If possible lightning effects when enabled
 //-Ability to summon a lightning strike at a chosen location. Teleport to location when struck. Cooldown 10 minutes.
 
-    Syd(Constants.createPermanentEffect(MobEffects.NIGHT_VISION), true,Constants.removePermanentEffect(MobEffects.NIGHT_VISION),AbilityTickers::tickSyd),
+    Syd(Constants.createPermanentEffect(MobEffects.NIGHT_VISION), true,Constants.removePermanentEffect(MobEffects.NIGHT_VISION), Utils::tickSyd),
 //-Night vision
 //-Sculk sensors alert syd (spectral arrow effect)
 //-Strength boost in darker light values
@@ -40,12 +40,12 @@ public enum Ability {
 //-Swim and mine speed unaffected in water
 //-Any horse can be ridden, even without saddle
 
-    Gar(Constants.NOTHING,true ,Constants.NOTHING,AbilityTickers::tickGar),
+    Gar(Constants.NOTHING,true ,Constants.NOTHING, Utils::tickGar),
     //-Crouching for 10 seconds will toggle spectral arrow view on entities within a 5 block radius
     //-Speed boost when on less than 25% health
     //-Hunger decreases slower
 
-    Miblex(Constants.NOTHING,true, Constants.NOTHING,AbilityTickers::tickMiblex,false,true,false),
+    Miblex(Constants.NOTHING,true, Constants.NOTHING, Utils::tickMiblex,false,true,false),
 //-Full moon triggers mining fatigue and slowness
 //-New moon triggers strength, hunger, night vision and speed
 //-teleportation ability
@@ -63,7 +63,7 @@ public enum Ability {
 //-Kills also grant speed and damage boost for 1 minute (stackable). Soul particles when enabled.
 //-invisibility toggle (no armor or particles shown)
 
-    Spriteboba(Constants.createPermanentEffect(MobEffects.FIRE_RESISTANCE), true,Constants.removePermanentEffect(MobEffects.FIRE_RESISTANCE),AbilityTickers::tickSpriteBoba,false,true,true),
+    Spriteboba(Constants.createPermanentEffect(MobEffects.FIRE_RESISTANCE), true,Constants.removePermanentEffect(MobEffects.FIRE_RESISTANCE), Utils::tickSpriteBoba,false,true,true),
     //-Permanent invisible elytra (chestplate compatible) with flight boost every 2 minutes. Cooldown will only recharge when on ground.
     //-Immune to fire damage.
     //-Standing on light sources regenerates health.

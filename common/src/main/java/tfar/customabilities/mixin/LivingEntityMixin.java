@@ -17,7 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tfar.customabilities.Ability;
 import tfar.customabilities.Constants;
 import tfar.customabilities.CustomAbilities;
-import tfar.customabilities.PlayerDuck;
 
 import java.util.Map;
 

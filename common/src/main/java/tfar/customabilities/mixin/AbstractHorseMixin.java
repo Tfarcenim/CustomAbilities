@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tfar.customabilities.Ability;
 import tfar.customabilities.Constants;
-import tfar.customabilities.PlayerDuck;
 
 @Mixin(AbstractHorse.class)
 public abstract class AbstractHorseMixin extends Entity {
