@@ -17,6 +17,8 @@ public class Abilities {
                     .addMobEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,MobEffectInstance.INFINITE_DURATION,0,false,false))
                     .addMobEffect(new MobEffectInstance(MobEffects.JUMP,MobEffectInstance.INFINITE_DURATION,1,false,false))
             ,"jackalope");
+    public static final NewAbility STABBERZ = register(new StabberzAbility()
+    ,"stabberz");
 
     public static final NewAbility MARI = register(new MariAbility(),"mari");
 

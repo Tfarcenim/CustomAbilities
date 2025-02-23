@@ -16,7 +16,7 @@ import java.util.List;
 //- When under water, night vision is granted (No particles)
 //- Hitting Syd has a 15% chance to Poison (potency 1) the player/mob that hit Syd for 3 seconds.
 //
-//“Toxin” Keybind - This keybind grants Withering (potency 2) players/mobs within a 7x7x2 radius for 7 seconds.
+//"Toxin" Keybind - This keybind grants Withering (potency 2) players/mobs within a 7x7x2 radius for 7 seconds.
 // Will grant Syd Regeneration (potency 2) and Nausea for 5 seconds. This keybind has a 40 second cooldown. (No particles)
 public class SydAbility extends NewAbility{
 

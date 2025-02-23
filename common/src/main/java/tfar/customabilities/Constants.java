@@ -8,18 +8,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -32,8 +26,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SkullBlockEntity;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,11 +45,6 @@ public class Constants {
 	public static AttributeModifier modifier = new AttributeModifier(knockbackuuid, "ability boost", 1, AttributeModifier.Operation.ADDITION);
 
 	public static final Consumer<Player> NOTHING = player -> {};
-
-	@SafeVarargs
-	public static Consumer<Player> combine(Consumer<Player>... consumers) {
-		return player -> Arrays.stream(consumers).forEach(consumer -> consumer.accept(player));
-	}
 
 	public static Consumer<Player> addAttributeModifier(Attribute attribute,AttributeModifier attributeModifier) {
 		return player -> {
@@ -80,13 +67,6 @@ public class Constants {
 		};
 	}
 
-	public static Consumer<Player> createPermanentEffect(MobEffect effect) {
-		return player -> {
-			MobEffectInstance mobeffectinstance = new MobEffectInstance(effect, -1,0,false,false);//infinite 0 amplifier effect that's not ambient and invisible
-			player.addEffect(mobeffectinstance,null);
-		};
-	}
-
 	public static void addStackableEffect(LivingEntity living,MobEffectInstance instance) {
 		if (living.hasEffect(instance.getEffect())) {
 			Map<MobEffect, MobEffectInstance> activeEffectsMap = living.getActiveEffectsMap();
@@ -103,60 +83,12 @@ public class Constants {
 		}
 	}
 
-	public static Consumer<Player> removePermanentEffect(MobEffect effect) {
-		return player -> player.removeEffect(effect);
-	}
-
-	public static boolean hasFakeElytra(LivingEntity living) {
-		return living instanceof Player player && fakeElytra(player);
-	}
-
-	public static boolean fakeElytra(Player player) {
-		Ability ability = ((PlayerDuck)player).getAbility();
-		return ability != null && ability.fakeElytra;
-	}
-
 	public static boolean nativeAquaAffinity(Player player) {
-		Ability ability = ((PlayerDuck)player).getAbility();
-		return ability != null && ability.nativeAquaAffinity;
+		return false;
 	}
 
 	public static boolean hurtByWater(Player player) {
-		Ability ability = ((PlayerDuck)player).getAbility();
-		return ability != null && ability.hurtByWater;
-	}
-
-	public static void teleportMari(Player player) {
-		PlayerDuck playerDuck = (PlayerDuck)player;
-
-		HitResult pick = player.pick(20, 0, false);
-		Vec3 pos = pick.getLocation();
-
-		if (playerDuck.getAbility() == Ability.Mari) {
-			int cooldown = playerDuck.getTeleportCooldown();
-			if (cooldown > 0) {
-				player.sendSystemMessage(Component.translatable("Teleport on Cooldown"));
-				return;
-			}
-			LightningBolt lightningbolt = EntityType.LIGHTNING_BOLT.create(player.level());
-			if (lightningbolt != null) {
-				lightningbolt.moveTo(pos);
-				lightningbolt.setCause((ServerPlayer) player);
-				lightningbolt.setVisualOnly(true);
-				player.level().addFreshEntity(lightningbolt);
-				lightningbolt.playSound(SoundEvents.TRIDENT_THUNDER,5,1);
-			}
-			playerDuck.setTeleportCooldown(20 * 60 * 10);
-		}
-		Utils.teleportPlayerToLocation(player,pos);
-	}
-
-	public static void toggleLevitation(Player player) {
-		if (player.hasEffect(MobEffects.LEVITATION)) {
-			player.removeEffect(MobEffects.LEVITATION);
-		} else {
-			player.addEffect(new MobEffectInstance(MobEffects.LEVITATION, -1,0,false,false));
-		}
+		return false;
 	}
 
 	public static final TagKey<Item> ores = TagKey.create(Registries.ITEM, new ResourceLocation("forge","ores"));

@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.HitResult;
@@ -42,5 +43,10 @@ public class Utils {
             player.teleportTo(position.x,position.y,position.z);
         }
         player.teleportTo(targetPos.x,targetPos.y,targetPos.z);
+    }
+
+    public static boolean hasFakeElytra(LivingEntity living) {
+        NewAbility ability = Services.PLATFORM.getAbility(living);
+        return ability != null && ability.isElytra;
     }
 }

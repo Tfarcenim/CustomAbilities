@@ -1,9 +1,6 @@
 package tfar.customabilities;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
@@ -11,8 +8,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.gameevent.GameEvent;
 import tfar.customabilities.ability.NewAbility;
 import tfar.customabilities.network.PacketHandler;
 import tfar.customabilities.platform.Services;
@@ -37,21 +32,6 @@ public class CustomAbilities {
         // the platform specific approach.
     }
 
-    public static boolean onSculkEvent(ServerLevel pLevel, BlockPos pPos, GameEvent pGameEvent, GameEvent.Context pContext) {
-        Entity entity = pContext.sourceEntity();
-        if (entity instanceof Player player && Constants.hasAbility(player,Ability.Syd)) {
-            return true;
-        }
-        return false;
-    }
-
-    public static void spawnServersideParticles(Player player) {
-        if (player.level() instanceof ServerLevel serverLevel) {
-            serverLevel.sendParticles(ParticleTypes.SOUL,player.getRandomX(0.5D), player.getRandomY(), player.getRandomZ(0.5D),
-                    1,0, 0, 0,0);
-        }
-    }
-
     public static ResourceLocation id(String ability) {
         return new ResourceLocation(MOD_ID,ability);
     }
@@ -60,6 +40,15 @@ public class CustomAbilities {
         NewAbility ability = Services.PLATFORM.getAbility(serverPlayer);
         if (ability != null) {
             ability.tick(serverPlayer);
+        }
+        ScheduledCallback scheduledCallback = Services.PLATFORM.getScheduledCallback(serverPlayer);
+        if (scheduledCallback != null) {
+            if (scheduledCallback.timer > 0) {
+                scheduledCallback.timer--;
+                if (scheduledCallback.timer == 0) {
+                    scheduledCallback.consumer.accept(serverPlayer);
+                }
+            }
         }
     }
 

@@ -33,17 +33,4 @@ public abstract class LivingEntityMixin extends Entity {
             cir.setReturnValue(true);
         }
     }
-
-    @Inject(method = "tickEffects",at = @At(value = "INVOKE",target = "Lnet/minecraft/network/syncher/SynchedEntityData;get(Lnet/minecraft/network/syncher/EntityDataAccessor;)Ljava/lang/Object;",ordinal = 1))
-    private void addSoul(CallbackInfo ci) {
-        if ((Object) this instanceof Player player) {
-            if (Constants.hasAbility(player, Ability.Ramsey) && ((PlayerDuck)player).ramseyParticles()) {
-
-                //double d0 = (double)(i >> 16 & 255) / 255.0D;
-                //double d1 = (double)(i >> 8 & 255) / 255.0D;
-                //double d2 = (double)(i >> 0 & 255) / 255.0D;
-                CustomAbilities.spawnServersideParticles(player);
-            }
-        }
-    }
 }

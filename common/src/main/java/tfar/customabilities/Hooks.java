@@ -13,6 +13,8 @@ public class Hooks {
             if (stack.is(ModTags.RAW_MEATS)) {
                 return 6;
             }
+        } else if (Utils.hasAbility(player,Abilities.STABBERZ)) {
+
         }
         return original;
     }

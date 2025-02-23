@@ -10,10 +10,7 @@
     "EntityMixin",
     "FoodDataMixin",
     "LivingEntityMixin",
-    "PlayerMixin",
-    "SculkShriekerBlockEntityMixin",
-    "SculkShriekerBlockMixin",
-    "WardenMixin"
+    "PlayerMixin"
   ],
   "client": [
     "LocalPlayerMixin",

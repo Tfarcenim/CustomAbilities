@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import tfar.customabilities.ModAttachmentTypes;
+import tfar.customabilities.ScheduledCallback;
 import tfar.customabilities.ability.NewAbility;
 import tfar.customabilities.network.ClientPacketHandlerFabric;
 import tfar.customabilities.network.PacketHandlerFabric;
@@ -64,6 +65,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
     public void setAbility(Entity entity, NewAbility ability) {
+        IPlatformHelper.super.setAbility(entity, ability);
         entity.setAttached(ModAttachmentTypes.ABILITY_DATA,ability);
     }
 
@@ -98,4 +100,15 @@ public class FabricPlatformHelper implements IPlatformHelper {
         msg.write(buf);
         ClientPlayNetworking.send(PacketHandler.packet(msg.getClass()), buf);
     }
+
+    @Override
+    public ScheduledCallback getScheduledCallback(ServerPlayer player) {
+        return player.getAttached(ModAttachmentTypes.CALLBACK_DATA);
+    }
+
+    @Override
+    public void setScheduledCallback(ServerPlayer player, ScheduledCallback callback) {
+        player.setAttached(ModAttachmentTypes.CALLBACK_DATA,callback);
+    }
+
 }

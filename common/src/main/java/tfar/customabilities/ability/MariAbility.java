@@ -10,9 +10,9 @@ import tfar.customabilities.Utils;
 //
 //“Charge” Keybind - This ability causes the next punch with an empty hand to deal 8 health points of damage to the player/mob, regardless of armor. (Only one punch until the keybind is activated again.) This keybind has a cooldown of 30 seconds.
 //
-//“Teleportation” Keybind - Teleports Mari 12 blocks in the direction the player is looking. Mari cannot teleport through solid blocks to prevent them from suffocating.
+//"Teleportation" Keybind - Teleports Mari 12 blocks in the direction the player is looking. Mari cannot teleport through solid blocks to prevent them from suffocating.
 //
-//‘Fast” Keybind - Grants Mari Speed 1 for 15 seconds. This keybind has a cooldown of 15 seconds. (No particles)
+//"Fast" Keybind - Grants Mari Speed 1 for 15 seconds. This keybind has a cooldown of 15 seconds. (No particles)
 public class MariAbility extends NewAbility {
 
     @Override

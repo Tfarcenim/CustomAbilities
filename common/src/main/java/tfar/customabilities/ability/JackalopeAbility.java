@@ -11,7 +11,7 @@ Jackalope
         - No fall damage
 - Damage noise replaced with rabbit damage noise (if possible lol)
 
-“Escape” Keybind - Grants Jackalope Speed 2 for 5 seconds (+40% walking/running speed,) Jump Boost 3 for 5 seconds (+150% jump height.)
+"Escape" Keybind - Grants Jackalope Speed 2 for 5 seconds (+40% walking/running speed,) Jump Boost 3 for 5 seconds (+150% jump height.)
 After those effects wear off Jackalope gets Slowness 3 for 15 seconds after it wears off (-45% walking/running speed.)
 This keybind has a 30 second cooldown. (No particles)
 

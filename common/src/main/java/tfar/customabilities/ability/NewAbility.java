@@ -20,12 +20,18 @@ public abstract class NewAbility {
     private final Map<MobEffect, MobEffectInstance> mobEffects = Maps.newHashMap();
 
     private String name;
+    public boolean isElytra;
 
     public NewAbility() {
     }
 
     public NewAbility addMobEffect(MobEffectInstance instance) {
         mobEffects.put(instance.getEffect(),instance);
+        return this;
+    }
+
+    public NewAbility providesElytra() {
+        isElytra = true;
         return this;
     }
 
