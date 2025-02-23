@@ -11,8 +11,6 @@
     "FoodDataMixin",
     "LivingEntityMixin",
     "PlayerMixin",
-    "SculkSensorBlockEntityMixin",
-    "SculkSensorBlockMixin",
     "SculkShriekerBlockEntityMixin",
     "SculkShriekerBlockMixin",
     "WardenMixin"

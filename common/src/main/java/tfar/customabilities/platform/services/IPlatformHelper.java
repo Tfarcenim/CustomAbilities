@@ -1,11 +1,17 @@
 package tfar.customabilities.platform.services;
 
 import com.mojang.datafixers.util.Either;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import tfar.customabilities.ability.NewAbility;
+import tfar.customabilities.network.client.S2CModPacket;
+import tfar.customabilities.network.server.C2SModPacket;
+
+import java.util.function.Function;
 
 public interface IPlatformHelper {
 
@@ -49,5 +55,13 @@ public interface IPlatformHelper {
 
     NewAbility getAbility(Entity entity);
     void setAbility(Entity entity,NewAbility ability);
+
+    int[] getCooldown(Entity entity);
+
+    <MSG extends S2CModPacket> void registerClientPacket(Class<MSG> packetLocation, Function<FriendlyByteBuf,MSG> reader);
+    <MSG extends C2SModPacket> void registerServerPacket(Class<MSG> packetLocation, Function<FriendlyByteBuf,MSG> reader);
+    void sendToClient(S2CModPacket msg, ServerPlayer player);
+    void sendToServer(C2SModPacket msg);
+
 
 }

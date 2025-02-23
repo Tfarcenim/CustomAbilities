@@ -3,23 +3,6 @@ package tfar.customabilities;
 public class info {
 }
 /*
-        Syd
-- Permanent water breathing (No particles)
-- 30% speed boost when underwater (No particles)
-- When under water, night vision is granted (No particles)
-- Hitting Syd has a 15% chance to Poison (potency 1) the player/mob that hit Syd for 3 seconds.
-
-“Toxin” Keybind - This keybind grants Withering (potency 2) players/mobs within a 7x7x2 radius for 7 seconds. Will grant Syd Regeneration (potency 2) and Nausea for 5 seconds. This keybind has a 40 second cooldown. (No particles)
-
-Jackalope
-- Permanent speed 1 (+20% walking/running speed) (No particles)
-        - Permanent jump boost 2 (+100% jump height) (No particles)
-        - No fall damage
-- Damage noise replaced with rabbit damage noise (if possible lol)
-
-“Escape” Keybind - Grants Jackalope Speed 2 for 5 seconds (+40% walking/running speed,) Jump Boost 3 for 5 seconds (+150% jump height.) After those effects wear off Jackalope gets Slowness 3 for 15 seconds after it wears off (-45% walking/running speed.) This keybind has a 30 second cooldown. (No particles)
-
-
 Stabberz
 - Sweet foods restore more hunger points, can eat sugar. (Cookie: 5 points, Cake slice: 8 points, Full cake: 24 points, Honey: 6 points, Sweet Berry: 4 points, Sugar: 4 points)
 
@@ -128,15 +111,7 @@ Pepper
 “Launch” Keybind - Will rocket boost Pepper. (Like Mari’s ability in our previous commission) (This keybind has a 1 second cooldown)
 
 
-Mari
-- Every half a second, Mari passively has a 5% chance to deal half a heart of damage to any player within a five block radius. Damage dealt will play a small electric buzz noise. A menu to adjust the chance percentage to any value can be accessible through a keybind. This damage will lower the health of players, but cannot kill them (as in it cannot do the finishing blow, similar to the effects of poison.) When a player is at half a heart, they will not take damage from this effect. This effect does not affect Mari.
-        - Lightning that strikes within a 100 block radius will strike directly on top of Mari instead. Mari is immune to this damage.
 
-“Charge” Keybind - This ability causes the next punch with an empty hand to deal 8 health points of damage to the player/mob, regardless of armor. (Only one punch until the keybind is activated again.) This keybind has a cooldown of 30 seconds.
-
-“Teleportation” Keybind - Teleports Mari 12 blocks in the direction the player is looking. Mari cannot teleport through solid blocks to prevent them from suffocating.
-
-‘Fast” Keybind - Grants Mari Speed 1 for 15 seconds. This keybind has a cooldown of 15 seconds. (No particles)
 
 Kj
 - Always has an invisible elytra equipped. Can still equip armor in the chest slot (Like Mari’s ability in our previous commission)

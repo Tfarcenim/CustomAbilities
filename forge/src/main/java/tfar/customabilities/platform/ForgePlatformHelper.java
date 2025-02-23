@@ -1,13 +1,22 @@
 package tfar.customabilities.platform;
 
 import com.mojang.datafixers.util.Either;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import tfar.customabilities.CustomAbilitiesForge;
+import tfar.customabilities.ability.NewAbility;
+import tfar.customabilities.net.PacketHandlerForge;
+import tfar.customabilities.network.client.S2CModPacket;
+import tfar.customabilities.network.server.C2SModPacket;
 import tfar.customabilities.platform.services.IPlatformHelper;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
+
+import java.util.function.Function;
 
 public class ForgePlatformHelper implements IPlatformHelper {
 
@@ -47,4 +56,38 @@ public class ForgePlatformHelper implements IPlatformHelper {
     public void removeAllIdentities(Player player) {
         CustomAbilitiesForge.removeAllIdentities(player);
     }
+
+    @Override
+    public NewAbility getAbility(Entity entity) {
+        return null;
+    }
+
+    @Override
+    public void setAbility(Entity entity, NewAbility ability) {
+
+    }
+
+    int i;
+
+    @Override
+    public <MSG extends S2CModPacket> void registerClientPacket(Class<MSG> packetLocation, Function<FriendlyByteBuf, MSG> reader) {
+        PacketHandlerForge.INSTANCE.registerMessage(i++, packetLocation, MSG::write, reader, PacketHandlerForge.wrapS2C());
+    }
+
+    @Override
+    public <MSG extends C2SModPacket> void registerServerPacket(Class<MSG> packetLocation, Function<FriendlyByteBuf, MSG> reader) {
+        PacketHandlerForge.INSTANCE.registerMessage(i++, packetLocation, MSG::write, reader, PacketHandlerForge.wrapC2S());
+    }
+
+
+    @Override
+    public void sendToClient(S2CModPacket msg, ServerPlayer player) {
+        PacketHandlerForge.sendToClient(msg, player);
+    }
+
+    @Override
+    public void sendToServer(C2SModPacket msg) {
+        PacketHandlerForge.sendToServer(msg);
+    }
+
 }

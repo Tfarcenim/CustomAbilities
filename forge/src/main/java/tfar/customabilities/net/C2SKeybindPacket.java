@@ -2,7 +2,6 @@ package tfar.customabilities.net;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import tfar.customabilities.KeyAction;
 import tfar.customabilities.net.util.C2SPacketHelper;
 
 public class C2SKeybindPacket implements C2SPacketHelper {

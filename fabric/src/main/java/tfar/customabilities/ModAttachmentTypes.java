@@ -12,4 +12,8 @@ public class ModAttachmentTypes {
             .copyOnDeath()
             .buildAndRegister(CustomAbilities.id("ability"));
 
+    public static final AttachmentType<int[]> COOLDOWN_DATA = AttachmentRegistry.<int[]>builder()
+            .initializer(() -> new int[4])
+            .buildAndRegister(CustomAbilities.id("cooldown"));
+
 }

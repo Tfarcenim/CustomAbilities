@@ -10,7 +10,9 @@ public class Hooks {
     public static int getEatenHunger(int original, ItemStack stack) {
         Player player = eatingPlayer.get();
         if (Utils.hasAbility(player,Abilities.BARCODE)) {
-
+            if (stack.is(ModTags.RAW_MEATS)) {
+                return 6;
+            }
         }
         return original;
     }

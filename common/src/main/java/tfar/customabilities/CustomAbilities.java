@@ -5,17 +5,17 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.gameevent.GameEvent;
 import tfar.customabilities.ability.NewAbility;
+import tfar.customabilities.network.PacketHandler;
 import tfar.customabilities.platform.Services;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.Items;
-import tfar.customabilities.world.deferredevent.DeferredEvent;
-import tfar.customabilities.world.deferredevent.DeferredEventSystem;
 
 // This class is part of the common project meaning it is shared between all supported loaders. Code written here can only
 // import and access the vanilla codebase, libraries used by vanilla, and optionally third party libraries that provide
@@ -29,23 +29,12 @@ public class CustomAbilities {
     // write the majority of your code here and load it from your loader specific projects. This example has some
     // code that gets invoked by the entry point of the loader specific projects.
     public static void init() {
-        Constants.LOG.info("Hello from Common init on {}! we are currently in a {} environment!", Services.PLATFORM.getPlatformName(), Services.PLATFORM.getEnvironmentName());
-        Constants.LOG.info("The ID for diamonds is {}", BuiltInRegistries.ITEM.getKey(Items.DIAMOND));
-
+        PacketHandler.registerPackets();
         // It is common for all supported loaders to provide a similar feature that can not be used directly in the
         // common code. A popular way to get around this is using Java's built-in service loader feature to create
         // your own abstraction layer. You can learn more about this in our provided services class. In this example
         // we have an interface in the common code and use a loader specific implementation to delegate our call to
         // the platform specific approach.
-    }
-
-    public static DeferredEventSystem getDeferredEventSystem(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage()
-                .computeIfAbsent(DeferredEventSystem::loadStatic,DeferredEventSystem::new,MOD_ID+ ":deferredevents");
-    }
-
-    public static void addDeferredEvent(ServerLevel level, DeferredEvent event) {
-        getDeferredEventSystem(level).addDeferredEvent(event);
     }
 
     public static boolean onSculkEvent(ServerLevel pLevel, BlockPos pPos, GameEvent pGameEvent, GameEvent.Context pContext) {
@@ -75,10 +64,27 @@ public class CustomAbilities {
     }
 
     public static float onLivingHurt(LivingEntity target, DamageSource source,float amount) {
+        Entity attacker = source.getEntity();
         if (Utils.hasAbility(target,Abilities.BARCODE)) {
-
+            if (source.is(DamageTypeTags.IS_FIRE)) {
+                amount *=1.35f;
+            }
+        }else if (Utils.hasAbility(target,Abilities.SYD)) {
+            if (attacker instanceof LivingEntity livingAttacker) {
+                if (livingAttacker.getRandom().nextDouble() < .15) {
+                    livingAttacker.addEffect(new MobEffectInstance(MobEffects.POISON,3 * 20,0));
+                }
+            }
         }
         return amount;
     }
 
+    public static void afterRespawn(ServerPlayer oldPlayer, ServerPlayer player, boolean alive) {
+        if (!alive) {
+            NewAbility ability = Services.PLATFORM.getAbility(player);
+            if (ability != null) {
+                ability.onRespawn(player);
+            }
+        }
+    }
 }

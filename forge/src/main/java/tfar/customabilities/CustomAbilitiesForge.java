@@ -56,7 +56,6 @@ import org.jetbrains.annotations.Nullable;
 import tfar.customabilities.client.Client;
 import tfar.customabilities.datagen.ModDatagen;
 import tfar.customabilities.net.PacketHandler;
-import tfar.customabilities.world.deferredevent.AddMobEffects;
 
 import java.util.*;
 import java.util.function.Function;
@@ -254,10 +253,6 @@ public class CustomAbilitiesForge {
                 player.addItem(stack);
             }
         }
-
-        Constants.LOG.debug("Adding abilities to player later");
-        CustomAbilities.addDeferredEvent((ServerLevel) player.level(), new AddMobEffects(5, (ServerPlayer) player));
-        //this is important because the player doesn't exist yet
     }
 
     private void sleepInBed(PlayerSleepInBedEvent event) {

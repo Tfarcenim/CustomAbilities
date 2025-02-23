@@ -1,6 +1,5 @@
 package tfar.customabilities;
 
-import com.mojang.datafixers.util.Either;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
@@ -19,7 +18,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
@@ -31,17 +29,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SkullBlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tfar.customabilities.platform.Services;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -113,10 +107,6 @@ public class Constants {
 		return player -> player.removeEffect(effect);
 	}
 
-	public static boolean hasAbility(Player player,Ability ability) {
-		return ((PlayerDuck)player).getAbility() == ability;
-	}
-
 	public static boolean hasFakeElytra(LivingEntity living) {
 		return living instanceof Player player && fakeElytra(player);
 	}
@@ -158,23 +148,7 @@ public class Constants {
 			}
 			playerDuck.setTeleportCooldown(20 * 60 * 10);
 		}
-		teleportPlayerToLocation(player,pos);
-	}
-
-	public static void mariSpeedBoost(Player player) {
-		PlayerDuck playerDuck = (PlayerDuck)player;
-		if (playerDuck.getSpeedBoostCooldown()> 0) {
-			player.sendSystemMessage(Component.translatable("Speed Boost on Cooldown"));
-		} else {
-			MobEffectInstance mobeffectinstance = new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 15, 1, true, true);
-			player.addEffect(mobeffectinstance, null);
-		}
-	}
-
-	public static void teleportPlayerToFacing(Player player) {
-		HitResult pick = player.pick(20, 0, false);
-		Vec3 pos = pick.getLocation();
-		teleportPlayerToLocation(player,pos);
+		Utils.teleportPlayerToLocation(player,pos);
 	}
 
 	public static void toggleLevitation(Player player) {
@@ -194,17 +168,7 @@ public class Constants {
 		return stack.is(ores) || stack.is(gems) || stack.is(ingots) || stack.is(raw_materials);
 	}
 
-	public static void teleportPlayerToLocation(Player player,Vec3 position) {
-		Either<Boolean, Vec3> eventResult = Services.PLATFORM.fireTeleportEvent(player, position.x, position.y, position.z);
-		if (eventResult.right().isEmpty()) return;//the event was cancelled
-		Vec3 targetPos = eventResult.right().get();
-		if (player.isPassenger()) {
-			player.dismountTo(position.x,position.y,position.z);
-		} else {
-			player.teleportTo(position.x,position.y,position.z);
-		}
-		player.teleportTo(targetPos.x,targetPos.y,targetPos.z);
-	}
+
 
 	public static final ResourceLocation LUTE_RL = new ResourceLocation("immersive_melodies","lute");
 	public static final ResourceLocation GUITAR_RL = new ResourceLocation("xercamusic","redstone_guitar");
