@@ -19,7 +19,7 @@
             "tfar.customabilities.CustomAbilitiesFabric"
         ],
         "client": ["tfar.customabilities.client.CustomAbilitiesClientFabric"],
-        "lambdynlights:initializer": [
+        "dynamiclights": [
             "tfar.customabilities.Lights"
         ]
     },

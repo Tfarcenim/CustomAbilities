@@ -3,7 +3,7 @@ package tfar.customabilities.network.client;
 import net.minecraft.network.FriendlyByteBuf;
 import tfar.customabilities.attachments.CommonDataAttachment;
 import tfar.customabilities.attachments.CommonDataAttachments;
-import tfar.customabilities.client.CLientPacketHandler;
+import tfar.customabilities.client.ClientPacketHandler;
 
 public abstract class S2CSyncDataAttachmentPacket<T> implements S2CModPacket{
 
@@ -28,7 +28,7 @@ public abstract class S2CSyncDataAttachmentPacket<T> implements S2CModPacket{
 
     @Override
     public void handleClient() {
-        CLientPacketHandler.handle(this);
+        ClientPacketHandler.handle(this);
     }
 
     @Override

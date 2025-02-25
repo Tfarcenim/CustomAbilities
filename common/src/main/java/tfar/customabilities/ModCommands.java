@@ -20,8 +20,10 @@ public class ModCommands {
     public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
         commandDispatcher.register(Commands.literal(CustomAbilities.MOD_ID)
                 .then(Commands.literal("clear").executes(ModCommands::clearAbility))
-                .then(Commands.argument("name",StringArgumentType.string())
-                        .suggests(ALL_ABILITIES).executes(ModCommands::activateAbility))
+                .then(Commands.literal("give")
+                        .then(Commands.argument("name", StringArgumentType.string())
+                                .suggests(ALL_ABILITIES).executes(ModCommands::activateAbility))
+                )
                 .then(Commands.literal("get").executes(ModCommands::getAbility))
         );
     }
@@ -29,13 +31,13 @@ public class ModCommands {
     private static int activateAbility(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
         try {
-            String s = StringArgumentType.getString(context,"name");
+            String s = StringArgumentType.getString(context, "name");
             NewAbility newAbility = Abilities.ABILITIES_BY_NAME.get(s);
             NewAbility original = Utils.getAbility(serverPlayer);
-            Utils.setAbility(serverPlayer,newAbility);
-            onChange(serverPlayer,original,newAbility);
+            Utils.setAbility(serverPlayer, newAbility);
+            onChange(serverPlayer, original, newAbility);
         } catch (IllegalArgumentException e) {
-            context.getSource().sendFailure(Component.literal("Something went wrong: "+e));
+            context.getSource().sendFailure(Component.literal("Something went wrong: " + e));
             return 0;
         }
         return 1;
@@ -45,7 +47,7 @@ public class ModCommands {
         ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
         NewAbility ability = Utils.getAbility(serverPlayer);
         if (ability != null) {
-            context.getSource().sendSystemMessage(Component.literal("You have the "+ability.getName()+" ability"));
+            context.getSource().sendSystemMessage(Component.literal("You have the " + ability.getName() + " ability"));
         } else {
             context.getSource().sendSystemMessage(Component.literal("You have no ability enabled"));
         }
@@ -53,12 +55,13 @@ public class ModCommands {
     }
 
     protected static final SuggestionProvider<CommandSourceStack> ALL_ABILITIES = (commandContext, suggestionsBuilder) ->
-            SharedSuggestionProvider.suggest(Abilities.ABILITIES_BY_NAME.keySet(),suggestionsBuilder);
-    private static int clearAbility(CommandContext<CommandSourceStack>context) throws CommandSyntaxException {
+            SharedSuggestionProvider.suggest(Abilities.ABILITIES_BY_NAME.keySet(), suggestionsBuilder);
+
+    private static int clearAbility(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
         NewAbility original = Utils.getAbility(serverPlayer);
-        Utils.setAbility(serverPlayer,null);
-        onChange(serverPlayer,original,null);
+        Utils.setAbility(serverPlayer, null);
+        onChange(serverPlayer, original, null);
         return 1;
     }
 
@@ -69,6 +72,6 @@ public class ModCommands {
         if (newA != null) {
             newA.onGive(player);
         }
-        CustomAbilities.LOG.info("{} removed {} ability, got {} ability",player,original,newA);
+        CustomAbilities.LOG.info("{} removed {} ability, got {} ability", player, original, newA);
     }
 }

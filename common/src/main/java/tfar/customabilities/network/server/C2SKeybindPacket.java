@@ -32,6 +32,6 @@ public class C2SKeybindPacket implements C2SModPacket {
     }
 
     public enum Type {
-        PRIMARY,SECONDARY,TERTIARY;
+        PRIMARY,SECONDARY,TERTIARY,QUATERNARY;
     }
 }

@@ -1,10 +1,17 @@
 package tfar.customabilities.ability;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import tfar.customabilities.ModParticleTypes;
 import tfar.customabilities.Utils;
-import tfar.customabilities.platform.Services;
+
+import java.util.List;
 
 //Stabberz
 //- Sweet foods restore more hunger points, can eat sugar. (Cookie: 5 points, Cake slice: 8 points, Full cake: 24 points,
@@ -39,5 +46,27 @@ public class StabberzAbility extends NewAbility {
         } else {
             Utils.setLightLevel(player,13);
         }
+    }
+
+    @Override
+    public void handleTertiary(ServerPlayer player) {
+        super.handleTertiary(player);
+        ServerLevel level = player.serverLevel();
+        int x = 30;
+        for (int i = 0;i < x;i++) {
+            double radians = 2 *i* Math.PI / x;
+            level.sendParticles(ModParticleTypes.BUBBLE, player.getX(), player.getY() + 1, player.getZ(), 0,
+                    Mth.cos((float) radians), 0, Mth.sin((float) radians), 2);
+        }
+
+        AABB aabb = new AABB(player.position(),player.position()).inflate(20,10,10);
+        List<Entity> entities = level.getEntities(player, aabb, entity -> entity.isAlive() && entity.isAttackable());
+        for (Entity entity : entities) {
+            Vec3 add = entity.position().subtract(player.position()).normalize().scale(2);
+            entity.setDeltaMovement(entity.getDeltaMovement().add(add));
+            entity.hurtMarked = true;
+        }
+        player.addEffect(new MobEffectInstance(MobEffects.HUNGER,20 * 30));
+
     }
 }

@@ -61,6 +61,7 @@ public interface IPlatformHelper {
     <MSG extends C2SModPacket> void registerServerPacket(Class<MSG> packetLocation, Function<FriendlyByteBuf,MSG> reader);
     void sendToClient(S2CModPacket msg, ServerPlayer player);
     void sendToServer(C2SModPacket msg);
+    void sendToTracking(S2CModPacket msg, Entity entity);
 
     void setScheduledCallback(ServerPlayer player,ScheduledCallback callback);
     ScheduledCallback getScheduledCallback(ServerPlayer player);

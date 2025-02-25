@@ -19,6 +19,7 @@ public class Abilities {
             ,"jackalope");
     public static final NewAbility STABBERZ = register(new StabberzAbility()
     ,"stabberz");
+    public static final NewAbility CUBONE = register(new CuboneAbility().providesElytra(),"cubone");
 
     public static final NewAbility MARI = register(new MariAbility(),"mari");
 

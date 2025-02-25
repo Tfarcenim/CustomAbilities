@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,6 +26,8 @@ import tfar.customabilities.network.server.C2SModPacket;
 import tfar.customabilities.platform.services.IPlatformHelper;
 import net.fabricmc.loader.api.FabricLoader;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.function.Function;
 
 public class FabricPlatformHelper implements IPlatformHelper {
@@ -91,6 +94,17 @@ public class FabricPlatformHelper implements IPlatformHelper {
         FriendlyByteBuf buf = PacketByteBufs.create();
         msg.write(buf);
         ClientPlayNetworking.send(PacketHandler.packet(msg.getClass()), buf);
+    }
+
+    @Override
+    public void sendToTracking(S2CModPacket msg, Entity entity) {
+        Collection<ServerPlayer> tracking = new ArrayList<>(PlayerLookup.tracking(entity));
+        if (entity instanceof ServerPlayer self) {
+            sendToClient(msg,self);
+        }
+        for (ServerPlayer player : tracking) {
+            sendToClient(msg,player);
+        }
     }
 
     @Override

@@ -55,13 +55,14 @@ public class Utils {
     }
 
     public static int getLightLevel(Player player) {
-        return Services.PLATFORM.getAttachedValue(player, CommonDataAttachments.LIGHT);
+        Integer attachedValue = Services.PLATFORM.getAttachedValue(player, CommonDataAttachments.LIGHT);
+        return attachedValue == null ? 0 : attachedValue;
     }
 
     public static void setLightLevel(Player player,int light) {
         Services.PLATFORM.setAttachedValue(player,CommonDataAttachments.LIGHT,light);
         if (player instanceof ServerPlayer serverPlayer) {
-            Services.PLATFORM.sendToClient(new S2CSyncLightEmissionPacket(serverPlayer.getId(),light),serverPlayer);
+            Services.PLATFORM.sendToTracking(new S2CSyncLightEmissionPacket(serverPlayer.getId(),light),serverPlayer);
         }
     }
 

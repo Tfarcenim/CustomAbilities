@@ -64,6 +64,7 @@ public abstract class NewAbility {
             case PRIMARY -> handlePrimary(player);
             case SECONDARY -> handleSecondary(player);
             case TERTIARY -> handleTertiary(player);
+            case QUATERNARY -> handleQuaternary(player);
         }
     }
 
@@ -76,6 +77,10 @@ public abstract class NewAbility {
     }
 
     public void handleTertiary(ServerPlayer player) {
+
+    }
+
+    public void handleQuaternary(ServerPlayer player) {
 
     }
 
