@@ -1,11 +1,10 @@
-package tfar.customabilities;
+package tfar.customabilities.init;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.minecraft.server.level.ServerPlayer;
+import tfar.customabilities.CustomAbilities;
+import tfar.customabilities.ScheduledCallback;
 import tfar.customabilities.ability.NewAbility;
-
-import java.util.function.Consumer;
 
 @SuppressWarnings("UnstableApiUsage")
 public class ModAttachmentTypes {
@@ -22,5 +21,8 @@ public class ModAttachmentTypes {
     public static final AttachmentType<ScheduledCallback> CALLBACK_DATA = AttachmentRegistry.<ScheduledCallback>builder()
             .initializer(() -> new ScheduledCallback(-1,player -> {}))
             .buildAndRegister(CustomAbilities.id("scheduled_callback"));
+
+    public static final AttachmentType<Integer> LIGHT = AttachmentRegistry.<Integer>builder().initializer(() -> 0)
+            .buildAndRegister(CustomAbilities.id("light"));
 
 }

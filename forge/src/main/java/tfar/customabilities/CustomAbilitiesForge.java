@@ -432,40 +432,6 @@ public class CustomAbilitiesForge {
         }
     }
 
-    public static class Light implements IDynamicLightSource {
-
-        private final Player player;
-
-        Light(Player player) {
-            this.player = player;
-        }
-
-        @Override
-        public Entity getAttachmentEntity() {
-            return player;
-        }
-
-        @Override
-        public int getLightLevel() {
-            return 15;
-        }
-    }
-
-    static Map<UUID, Light> map = new HashMap<>();
-
-    public static void toggleLights(Player player) {
-
-        Light light = map.get(player.getUUID());
-
-        if (light == null) {
-            light = new Light(player);
-            map.put(player.getUUID(), light);
-            DynamicLights.addLightSource(light);
-        } else {
-            map.remove(player.getUUID());
-            DynamicLights.removeLightSource(light);
-        }
-    }
 
     private void visibility(LivingEvent.LivingVisibilityEvent event) {
         LivingEntity living = event.getEntity();

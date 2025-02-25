@@ -11,6 +11,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tfar.customabilities.Constants;
 import tfar.customabilities.EntityDuck;
+import tfar.customabilities.ability.NewAbility;
+import tfar.customabilities.platform.Services;
 
 import javax.annotation.Nullable;
 
@@ -24,29 +26,10 @@ public class MinecraftMixin {
         boolean alreadyGlowing = cir.getReturnValue();
         if (alreadyGlowing) return;
         if (this.player != null) {
-            PlayerDuck playerDuck = (PlayerDuck)this.player;
-            Ability ability = playerDuck.getAbility();
+            NewAbility ability = Services.PLATFORM.getAbility(this.player);
 
             if (ability != null) {
 
-                switch (ability) {
-                    case Saus -> {
-                        if (entity instanceof ItemEntity itemEntity && Constants.isOre(itemEntity.getItem())) {
-                            cir.setReturnValue(true);
-                        }
-                    }
-                    case Gar -> {
-                        if (playerDuck.garAbilityActive() && player.distanceToSqr(entity) < 25) {
-                            cir.setReturnValue(true);
-                        }
-                    }
-                    case Syd -> {
-                        EntityDuck entityDuck = (EntityDuck) entity;
-                        if (entityDuck.getSidGlow()) {
-                            cir.setReturnValue(true);
-                        }
-                    }
-                 }
             }
         }
     }

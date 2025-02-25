@@ -2,16 +2,10 @@ package tfar.customabilities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,14 +14,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SkullBlockEntity;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -37,14 +27,9 @@ import static net.minecraft.world.level.block.NoteBlock.*;
 
 public class Constants {
 
-	public static final String MOD_NAME = "CustomAbilities";
-	public static final Logger LOG = LoggerFactory.getLogger(MOD_NAME);
-
 	static final UUID knockbackuuid = UUID.fromString("3000b165-ed6f-49eb-8c7e-b596d4ffbb2b");
 
 	public static AttributeModifier modifier = new AttributeModifier(knockbackuuid, "ability boost", 1, AttributeModifier.Operation.ADDITION);
-
-	public static final Consumer<Player> NOTHING = player -> {};
 
 	public static Consumer<Player> addAttributeModifier(Attribute attribute,AttributeModifier attributeModifier) {
 		return player -> {
@@ -83,43 +68,9 @@ public class Constants {
 		}
 	}
 
-	public static boolean nativeAquaAffinity(Player player) {
-		return false;
-	}
-
-	public static boolean hurtByWater(Player player) {
-		return false;
-	}
-
-	public static final TagKey<Item> ores = TagKey.create(Registries.ITEM, new ResourceLocation("forge","ores"));
-	public static final TagKey<Item> gems = TagKey.create(Registries.ITEM, new ResourceLocation("forge","gems"));
-	public static final TagKey<Item> ingots = TagKey.create(Registries.ITEM, new ResourceLocation("forge","ingots"));
-	public static final TagKey<Item> raw_materials = TagKey.create(Registries.ITEM, new ResourceLocation("forge","raw_materials"));
-
-	public static boolean isOre(ItemStack stack) {
-		return stack.is(ores) || stack.is(gems) || stack.is(ingots) || stack.is(raw_materials);
-	}
-
-
 
 	public static final ResourceLocation LUTE_RL = new ResourceLocation("immersive_melodies","lute");
 	public static final ResourceLocation GUITAR_RL = new ResourceLocation("xercamusic","redstone_guitar");
-
-
-	public static void loadAllItems(CompoundTag tag, NonNullList<ItemStack> $$1) {
-		ListTag listTag = tag.getList("Items", 10);
-
-		for(int i = 0; i < listTag.size(); ++i) {
-			CompoundTag $$4 = listTag.getCompound(i);
-			$$1.add(ItemStack.of($$4));
-		}
-	}
-
-
-	public static void addItemToInv(Player player) {
-		Item item = BuiltInRegistries.ITEM.get(LUTE_RL);
-		player.addItem(new ItemStack(item));
-	}
 
 
 	public static boolean triggerEvent(Level level, double x,double y,double z) {
@@ -159,6 +110,4 @@ public class Constants {
 	}
 
 
-
-	public static final int OTTY_AIR = 20 * 60 * 8;
 }

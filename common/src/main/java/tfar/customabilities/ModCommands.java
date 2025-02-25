@@ -69,6 +69,6 @@ public class ModCommands {
         if (newA != null) {
             newA.onGive(player);
         }
-        Constants.LOG.info("{} removed {} ability, got {} ability",player,original,newA);
+        CustomAbilities.LOG.info("{} removed {} ability, got {} ability",player,original,newA);
     }
 }

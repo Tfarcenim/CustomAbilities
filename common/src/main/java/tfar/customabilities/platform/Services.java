@@ -1,6 +1,6 @@
 package tfar.customabilities.platform;
 
-import tfar.customabilities.Constants;
+import tfar.customabilities.CustomAbilities;
 import tfar.customabilities.platform.services.IPlatformHelper;
 
 import java.util.ServiceLoader;
@@ -24,7 +24,7 @@ public class Services {
         final T loadedService = ServiceLoader.load(clazz)
                 .findFirst()
                 .orElseThrow(() -> new NullPointerException("Failed to load service for " + clazz.getName()));
-        Constants.LOG.debug("Loaded {} for service {}", loadedService, clazz);
+        CustomAbilities.LOG.debug("Loaded {} for service {}", loadedService, clazz);
         return loadedService;
     }
 }

@@ -8,7 +8,7 @@ import tfar.customabilities.Utils;
 // Damage dealt will play a small electric buzz noise. A menu to adjust the chance percentage to any value can be accessible through a keybind. This damage will lower the health of players, but cannot kill them (as in it cannot do the finishing blow, similar to the effects of poison.) When a player is at half a heart, they will not take damage from this effect. This effect does not affect Mari.
 //        - Lightning that strikes within a 100 block radius will strike directly on top of Mari instead. Mari is immune to this damage.
 //
-//“Charge” Keybind - This ability causes the next punch with an empty hand to deal 8 health points of damage to the player/mob, regardless of armor. (Only one punch until the keybind is activated again.) This keybind has a cooldown of 30 seconds.
+//"Charge" Keybind - This ability causes the next punch with an empty hand to deal 8 health points of damage to the player/mob, regardless of armor. (Only one punch until the keybind is activated again.) This keybind has a cooldown of 30 seconds.
 //
 //"Teleportation" Keybind - Teleports Mari 12 blocks in the direction the player is looking. Mari cannot teleport through solid blocks to prevent them from suffocating.
 //

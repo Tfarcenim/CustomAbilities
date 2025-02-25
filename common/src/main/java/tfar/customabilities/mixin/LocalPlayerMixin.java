@@ -11,8 +11,8 @@ public class LocalPlayerMixin {
 
     @Inject(method = "getWaterVision",at = @At("HEAD"),cancellable = true)
     private void clearView(CallbackInfoReturnable<Float> cir) {
-        if (((PlayerDuck)this).getAbility() == Ability.Otty) {
-            cir.setReturnValue(1f);
-        }
+      //  if (((PlayerDuck)this).getAbility() == Ability.Otty) {
+      //      cir.setReturnValue(1f);
+      //  }
     }
 }

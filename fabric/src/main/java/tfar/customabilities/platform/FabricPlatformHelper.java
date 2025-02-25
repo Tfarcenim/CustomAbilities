@@ -11,7 +11,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.MixinEnvironment;
-import tfar.customabilities.ModAttachmentTypes;
+import tfar.customabilities.init.ModAttachmentTypes;
 import tfar.customabilities.ScheduledCallback;
 import tfar.customabilities.ability.NewAbility;
 import tfar.customabilities.network.ClientPacketHandlerFabric;
@@ -111,4 +111,13 @@ public class FabricPlatformHelper implements IPlatformHelper {
         player.setAttached(ModAttachmentTypes.CALLBACK_DATA,callback);
     }
 
+    @Override
+    public int getLightEmission(Entity entity) {
+        return entity.getAttachedOrElse(ModAttachmentTypes.LIGHT,0);
+    }
+
+    @Override
+    public void setLightEmission(Entity entity, int light) {
+        entity.setAttached(ModAttachmentTypes.LIGHT,light);
+    }
 }

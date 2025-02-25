@@ -18,7 +18,10 @@
         "main": [
             "tfar.customabilities.CustomAbilitiesFabric"
         ],
-        "client": ["tfar.customabilities.client.CustomAbilitiesClientFabric"]
+        "client": ["tfar.customabilities.client.CustomAbilitiesClientFabric"],
+        "lambdynlights:initializer": [
+            "tfar.customabilities.Lights"
+        ]
     },
     "mixins": [
         "${mod_id}.mixins.json",

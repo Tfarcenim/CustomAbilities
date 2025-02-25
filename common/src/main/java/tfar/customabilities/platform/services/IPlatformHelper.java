@@ -71,6 +71,7 @@ public interface IPlatformHelper {
 
     void setScheduledCallback(ServerPlayer player,ScheduledCallback callback);
     ScheduledCallback getScheduledCallback(ServerPlayer player);
-
+    int getLightEmission(Entity entity);
+    void setLightEmission(Entity entity,int light);
 
 }

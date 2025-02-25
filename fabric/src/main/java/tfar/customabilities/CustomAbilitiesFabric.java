@@ -13,6 +13,7 @@ public class CustomAbilitiesFabric implements ModInitializer {
         // project.
 
         ServerPlayerEvents.AFTER_RESPAWN.register(CustomAbilities::afterRespawn);
+        ModParticleTypes.init();
 
         // Use Fabric to bootstrap the Common mod.
         CustomAbilities.init();

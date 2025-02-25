@@ -3,7 +3,6 @@ package tfar.customabilities.datagen;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
-import tfar.customabilities.Constants;
 import tfar.customabilities.CustomAbilities;
 import tfar.customabilities.client.ModKeybinds;
 
@@ -14,7 +13,7 @@ public class ModLangProvider extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
-        add("key.categories."+ CustomAbilities.MOD_ID, Constants.MOD_NAME);
+        add("key.categories."+ CustomAbilities.MOD_ID, CustomAbilities.MOD_NAME);
         addKey(ModKeybinds.INVIS_TOGGLE,"Toggle Invisibility");
         addKey(ModKeybinds.TELEPORT,"Teleport (Mari & Miblex)");
         addKey(ModKeybinds.FLIGHT_BOOST,"Flight Boost");
