@@ -10,6 +10,7 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import tfar.customabilities.ability.NewAbility;
+import tfar.customabilities.attachments.CommonDataAttachments;
 import tfar.customabilities.platform.Services;
 
 public class Utils {
@@ -48,5 +49,13 @@ public class Utils {
     public static boolean hasFakeElytra(LivingEntity living) {
         NewAbility ability = Services.PLATFORM.getAbility(living);
         return ability != null && ability.isElytra;
+    }
+
+    public static int getLightLevel(Player player) {
+        return Services.PLATFORM.getAttachedValue(player, CommonDataAttachments.LIGHT);
+    }
+
+    public static void setLightLevel(Player player,int light) {
+        Services.PLATFORM.setAttachedValue(player,CommonDataAttachments.LIGHT,light);
     }
 }

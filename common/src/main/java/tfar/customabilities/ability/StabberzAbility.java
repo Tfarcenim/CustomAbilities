@@ -3,6 +3,7 @@ package tfar.customabilities.ability;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import tfar.customabilities.Utils;
 import tfar.customabilities.platform.Services;
 
 //Stabberz
@@ -32,7 +33,11 @@ public class StabberzAbility extends NewAbility {
     @Override
     public void handleSecondary(ServerPlayer player) {
         super.handleSecondary(player);
-        int emission = Services.PLATFORM.getLightEmission(player);
-
+        int emission = Utils.getLightLevel(player);
+        if (emission > 0) {
+            Utils.setLightLevel(player,0);
+        } else {
+            Utils.setLightLevel(player,13);
+        }
     }
 }
