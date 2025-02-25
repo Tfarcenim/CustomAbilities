@@ -15,6 +15,10 @@ import tfar.customabilities.Utils;
 //"Fast" Keybind - Grants Mari Speed 1 for 15 seconds. This keybind has a cooldown of 15 seconds. (No particles)
 public class MariAbility extends NewAbility {
 
+    public MariAbility(String mari) {
+        super(mari);
+    }
+
     @Override
     public void handlePrimary(ServerPlayer player) {
         super.handlePrimary(player);

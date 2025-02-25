@@ -88,6 +88,11 @@ public class ForgePlatformHelper implements IPlatformHelper {
     }
 
     @Override
+    public void sendToTracking(S2CModPacket msg, Entity entity) {
+
+    }
+
+    @Override
     public void setScheduledCallback(ServerPlayer player, ScheduledCallback callback) {
 
     }

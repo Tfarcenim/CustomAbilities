@@ -38,6 +38,9 @@ public class ClientPacketHandler {
             while (ModKeybinds.QUATERNARY.consumeClick()) {
                 Services.PLATFORM.sendToServer(new C2SKeybindPacket(C2SKeybindPacket.Type.QUATERNARY));
             }
+            while (ModKeybinds.QUINARY.consumeClick()) {
+                Services.PLATFORM.sendToServer(new C2SKeybindPacket(C2SKeybindPacket.Type.QUINARY));
+            }
           //  Services.PLATFORM.sendToServer(new C2SHoldAbilityPacket(holding_p, holding_s, holding_t, holding_q));
         }
 

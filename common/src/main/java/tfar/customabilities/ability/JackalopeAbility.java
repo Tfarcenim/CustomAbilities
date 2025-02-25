@@ -18,6 +18,10 @@ This keybind has a 30 second cooldown. (No particles)
 */
 public class JackalopeAbility extends NewAbility{
 
+    public JackalopeAbility(String jackalope) {
+        super(jackalope);
+    }
+
     @Override
     public void handlePrimary(ServerPlayer player) {
         super.handlePrimary(player);

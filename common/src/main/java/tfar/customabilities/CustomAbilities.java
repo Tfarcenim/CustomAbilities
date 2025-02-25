@@ -12,6 +12,8 @@ import net.minecraft.world.entity.player.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tfar.customabilities.ability.NewAbility;
+import tfar.customabilities.init.ModAttributes;
+import tfar.customabilities.init.ModMobEffects;
 import tfar.customabilities.network.PacketHandler;
 import tfar.customabilities.platform.Services;
 
@@ -59,17 +61,30 @@ public class CustomAbilities {
 
     public static float onLivingHurt(LivingEntity target, DamageSource source,float amount) {
         Entity attacker = source.getEntity();
-        if (Utils.hasAbility(target,Abilities.BARCODE)) {
-            if (source.is(DamageTypeTags.IS_FIRE)) {
-                amount *=1.35f;
-            }
-        }else if (Utils.hasAbility(target,Abilities.SYD)) {
+
+        if (source.is(DamageTypeTags.IS_FIRE)) {
+            amount *=target.getAttributeValue(ModAttributes.FIRE_WEAKNESS);
+        }
+        else if (Utils.hasAbility(target,Abilities.SYD)) {
             if (attacker instanceof LivingEntity livingAttacker) {
                 if (livingAttacker.getRandom().nextDouble() < .15) {
                     livingAttacker.addEffect(new MobEffectInstance(MobEffects.POISON,3 * 20,0));
                 }
             }
         }
+
+        //"Frosted Fingers" Keybind - Will make Bear’s punches apply Slowness 2 and Weakness 2 for 10 seconds.
+        // Repeated hits will not stack the countdown on the effects, but reset them. This keybind has a cooldown of 60 seconds.
+
+
+        if (attacker instanceof LivingEntity livingAttacker) {
+            if (livingAttacker.hasEffect(ModMobEffects.FROSTED_FINGERS)) {
+                target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10 * 20, 1));
+                target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 10 * 20, 1));
+            }
+
+        }
+
         return amount;
     }
 
@@ -84,5 +99,16 @@ public class CustomAbilities {
 
     public static boolean nativeAquaAffinity(Player player) {
         return false;
+    }
+
+    public static float onLivingDamaged(LivingEntity livingEntity, DamageSource source, float f) {
+        Entity attacker = source.getEntity();
+
+        if (attacker instanceof LivingEntity livingAttacker && livingAttacker.hasEffect(ModMobEffects.ELECTRO_FIST) && livingAttacker.getMainHandItem().isEmpty()) {
+            f = 5;
+            livingAttacker.removeEffect(ModMobEffects.ELECTRO_FIST);
+        }
+
+        return f;
     }
 }

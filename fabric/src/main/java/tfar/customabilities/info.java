@@ -3,32 +3,6 @@ package tfar.customabilities;
 public class info {
 }
 /*
-
-
-
-Bear
-- Permanent Strength 2 (No particles)
-        - Permanent Resistance 2 (No particles)
-        - Has 25 health points
-- Has Night vision during the night (No particles)
-- Takes 50% less damage from burning, freezing, and damage caused by lightning
-- Takes 50% longer to drown
-
-“Frosted Fingers” Keybind - Will make Bear’s punches apply Slowness 2 and Weakness 2 for 10 seconds. Repeated hits will not stack the countdown on the effects, but reset them. This keybind has a cooldown of 60 seconds.
-
-“Sushi eyes” Keybind - Will grant bear Night vision for 60 seconds. This keybind has a cooldown of 15 seconds
-
-“Electro Fist” Keybind- This ability causes the next punch with an empty hand to deal 5 health points of damage to the player/mob, regardless of armor. (Only one punch until the keybind is activated again.) This keybind has a cooldown of 90 seconds.
-
-“Blaze Fingers” Keybind - This ability throws three consecutive blaze fireballs. (Hue shifted to match soul fire, if possible.) This keybind has a cooldown of 60 seconds.
-
-“Smoke Screen” Keybind - This ability will place down campfire smoke in a 3x3x3 radius for 30 seconds. This keybind has a cooldown of 180 seconds.
-
-
-
-
-
-
         Ramsey
 
 “Invisibility” Keybind toggle - Toggling this ability will cause Ramsey’s player model to fade in/out of visibility (Same Ramsey invisibility as last commission, but with a fade if possible) (No particles)

@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import tfar.customabilities.attachments.CommonDataAttachments;
+import tfar.customabilities.init.ModAttributes;
 import tfar.customabilities.network.client.S2CSyncAbilityPacket;
 import tfar.customabilities.platform.Services;
 
@@ -23,12 +24,10 @@ public class CustomAbilitiesFabric implements ModInitializer {
             Services.PLATFORM.sendToClient(new S2CSyncAbilityPacket(handler.player.getId(),Utils.getAbility(handler.player)),handler.player);
         });
         CommandRegistrationCallback.EVENT.register((commandDispatcher, commandBuildContext, commandSelection) -> ModCommands.register(commandDispatcher));
-        EntityElytraEvents.CUSTOM.register((entity, tickElytra) -> {
-            if (Utils.hasFakeElytra(entity)) return true;
-            return false;
-        });
+        EntityElytraEvents.CUSTOM.register((entity, tickElytra) -> Utils.hasFakeElytra(entity));
         ServerPlayerEvents.AFTER_RESPAWN.register(CustomAbilities::afterRespawn);
         ModParticleTypes.init();
+        ModAttributes.init();
         CommonDataAttachments.init();
         // Use Fabric to bootstrap the Common mod.
         CustomAbilities.init();

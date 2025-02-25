@@ -20,6 +20,10 @@ import java.util.List;
 // Will grant Syd Regeneration (potency 2) and Nausea for 5 seconds. This keybind has a 40 second cooldown. (No particles)
 public class SydAbility extends NewAbility{
 
+    public SydAbility(String syd) {
+        super(syd);
+    }
+
     @Override
     public void tick(ServerPlayer player) {
         super.tick(player);

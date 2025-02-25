@@ -27,6 +27,10 @@ import java.util.List;
 //        (REF Supplementaries & Fossils and Archeology 's Bubble Blower)
 public class StabberzAbility extends NewAbility {
 
+    public StabberzAbility(String stabberz) {
+        super(stabberz);
+    }
+
     @Override
     public void handlePrimary(ServerPlayer player) {
         super.handlePrimary(player);

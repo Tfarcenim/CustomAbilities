@@ -1,4 +1,10 @@
 package tfar.customabilities.ability;
+
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.projectile.FireworkRocketEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
 //Cubone  Slightly based on the DUCK origin by LunWri
 //- Always has an invisible elytra equipped. Can still equip armor in the chest slot (Like Mari’s ability in our previous commission)
 //- Permanent Slow Falling (No particles)
@@ -13,5 +19,21 @@ package tfar.customabilities.ability;
 public class CuboneAbility extends NewAbility{
 
 
+    public CuboneAbility(String cubone) {
+        super(cubone);
+    }
 
+    @Override
+    public void handlePrimary(ServerPlayer player) {
+        super.handlePrimary(player);
+        flightBoost(player);
+        addCooldown(player,0,20);
+    }
+
+
+    public static void flightBoost(ServerPlayer player) {
+        ItemStack firework = new ItemStack(Items.FIREWORK_ROCKET);
+        FireworkRocketEntity fireworkRocketEntity = new FireworkRocketEntity(player.level(), firework, player);
+        player.level().addFreshEntity(fireworkRocketEntity);
+    }
 }

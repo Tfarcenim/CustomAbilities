@@ -18,6 +18,7 @@ public class ModLangProvider extends LanguageProvider {
         addKey(ModKeybinds.SECONDARY,"Secondary");
         addKey(ModKeybinds.TERTIARY,"Tertiary");
         addKey(ModKeybinds.QUATERNARY,"Quaternary");
+        addKey(ModKeybinds.QUINARY,"Quinary");
     }
 
     void addKey(KeyMapping mapping, String translation) {

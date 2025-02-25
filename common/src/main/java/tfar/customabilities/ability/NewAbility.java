@@ -5,24 +5,31 @@ import com.mojang.serialization.Codec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import tfar.customabilities.Abilities;
+import tfar.customabilities.CustomAbilities;
 import tfar.customabilities.network.server.C2SKeybindPacket;
 import tfar.customabilities.platform.Services;
 
 import java.util.Map;
+import java.util.UUID;
 
 public abstract class NewAbility {
 
     public static final Codec<NewAbility> CODEC = Codec.STRING.xmap(Abilities.ABILITIES_BY_NAME::get, NewAbility::getName);
 
     private final Map<MobEffect, MobEffectInstance> mobEffects = Maps.newHashMap();
+    private final Map<Attribute, AttributeModifier> attributeModifiers = Maps.newHashMap();
 
-    private String name;
+    private final String name;
     public boolean isElytra;
 
-    public NewAbility() {
+    public NewAbility(String name) {
+        this.name = name;
     }
 
     public NewAbility addMobEffect(MobEffectInstance instance) {
@@ -39,10 +46,6 @@ public abstract class NewAbility {
         return name;
     }
 
-    public final void setName(String name) {
-        this.name = name;
-    }
-
     public void tick(ServerPlayer player) {
 
     }
@@ -53,10 +56,12 @@ public abstract class NewAbility {
 
     public void onGive(ServerPlayer player) {
         mobEffects.values().forEach(player::addEffect);
+        addAttributeModifiers(player,player.getAttributes());
     }
 
     public void onRemove(ServerPlayer player) {
         mobEffects.keySet().forEach(player::removeEffect);
+        removeAttributeModifiers(player,player.getAttributes());
     }
 
     public final void handleKeyPress(ServerPlayer player,C2SKeybindPacket.Type type) {
@@ -65,6 +70,7 @@ public abstract class NewAbility {
             case SECONDARY -> handleSecondary(player);
             case TERTIARY -> handleTertiary(player);
             case QUATERNARY -> handleQuaternary(player);
+            case QUINARY -> handleQuinary(player);
         }
     }
 
@@ -84,9 +90,42 @@ public abstract class NewAbility {
 
     }
 
+    public void handleQuinary(ServerPlayer player) {
+
+    }
+
     protected static void addCooldown(ServerPlayer player,int slot,int value) {
         int[] ints = Services.PLATFORM.getCooldown(player);
         ints[slot] = ints[slot] + value;
     }
 
+    public Map<Attribute, AttributeModifier> getAttributeModifiers() {
+        return this.attributeModifiers;
+    }
+
+    public NewAbility addAttributeModifier(Attribute attribute, double amount, AttributeModifier.Operation operation) {
+        AttributeModifier attributemodifier = new AttributeModifier(new UUID(CustomAbilities.MOD_ID.hashCode(),name.hashCode()), this::getName, amount, operation);
+        this.attributeModifiers.put(attribute, attributemodifier);
+        return this;
+    }
+
+    public void removeAttributeModifiers(LivingEntity livingEntity, AttributeMap map) {
+        for(Map.Entry<Attribute, AttributeModifier> entry : this.attributeModifiers.entrySet()) {
+            AttributeInstance attributeinstance = map.getInstance(entry.getKey());
+            if (attributeinstance != null) {
+                attributeinstance.removeModifier(entry.getValue());
+            }
+        }
+    }
+
+    public void addAttributeModifiers(LivingEntity livingEntity, AttributeMap map) {
+        for(Map.Entry<Attribute, AttributeModifier> entry : this.attributeModifiers.entrySet()) {
+            AttributeInstance attributeinstance = map.getInstance(entry.getKey());
+            if (attributeinstance != null) {
+                AttributeModifier attributemodifier = entry.getValue();
+                attributeinstance.removeModifier(attributemodifier);
+                attributeinstance.addPermanentModifier(new AttributeModifier(attributemodifier.getId(), name, attributemodifier.getAmount(), attributemodifier.getOperation()));
+            }
+        }
+    }
 }
