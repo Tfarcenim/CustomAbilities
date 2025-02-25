@@ -19,7 +19,8 @@ public class Abilities {
             ,"jackalope");
     public static final NewAbility STABBERZ = register(new StabberzAbility()
     ,"stabberz");
-    public static final NewAbility CUBONE = register(new CuboneAbility().providesElytra(),"cubone");
+    public static final NewAbility CUBONE = register(new CuboneAbility().providesElytra()
+            .addMobEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,MobEffectInstance.INFINITE_DURATION,0,false,false)),"cubone");
 
     public static final NewAbility MARI = register(new MariAbility(),"mari");
 

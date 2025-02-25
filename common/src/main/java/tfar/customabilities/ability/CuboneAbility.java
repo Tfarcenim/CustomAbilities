@@ -9,6 +9,9 @@ package tfar.customabilities.ability;
 //- Omnivore
 //- After sleeping in a bed, an egg is put in their inventory
 //
-//“Launch” Keybind - Will rocket boost Cubone. (Like Mari’s ability in our previous commission) (This keybind has a 1 second cooldown)
+//"Launch" Keybind - Will rocket boost Cubone. (Like Mari’s ability in our previous commission) (This keybind has a 1 second cooldown)
 public class CuboneAbility extends NewAbility{
+
+
+
 }

@@ -8,7 +8,6 @@
     "EnchantmentHelperMixin",
     "EntityMixin",
     "FoodDataMixin",
-    "LivingEntityMixin",
     "PlayerMixin"
   ],
   "client": [
