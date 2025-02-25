@@ -2,6 +2,7 @@ package tfar.customabilities;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import tfar.customabilities.attachments.CommonDataAttachments;
 
 public class CustomAbilitiesFabric implements ModInitializer {
     
@@ -14,7 +15,7 @@ public class CustomAbilitiesFabric implements ModInitializer {
 
         ServerPlayerEvents.AFTER_RESPAWN.register(CustomAbilities::afterRespawn);
         ModParticleTypes.init();
-
+        CommonDataAttachments.init();
         // Use Fabric to bootstrap the Common mod.
         CustomAbilities.init();
     }

@@ -1,6 +1,8 @@
 package tfar.customabilities.platform;
 
 import com.mojang.datafixers.util.Either;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -11,6 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.MixinEnvironment;
+import tfar.customabilities.attachments.CommonDataAttachment;
 import tfar.customabilities.init.ModAttachmentTypes;
 import tfar.customabilities.ScheduledCallback;
 import tfar.customabilities.ability.NewAbility;
@@ -111,13 +114,37 @@ public class FabricPlatformHelper implements IPlatformHelper {
         player.setAttached(ModAttachmentTypes.CALLBACK_DATA,callback);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
-    public int getLightEmission(Entity entity) {
-        return entity.getAttachedOrElse(ModAttachmentTypes.LIGHT,0);
+    public <T> void registerDataAttachment(CommonDataAttachment<T> attachment) {
+        AttachmentType<T> type = createType(attachment);
+        attachment.setAttachment(type);
     }
 
+    @SuppressWarnings({"UnstableApiUsage", "unchecked"})
     @Override
-    public void setLightEmission(Entity entity, int light) {
-        entity.setAttached(ModAttachmentTypes.LIGHT,light);
+    public <T> T getAttachedValue(Entity entity, CommonDataAttachment<T> attachment) {
+        AttachmentType<T> type = (AttachmentType<T>) attachment.getAttachment();
+        return entity.getAttached(type);
+    }
+
+    @SuppressWarnings({"UnstableApiUsage", "unchecked"})
+    @Override
+    public <T> void setAttachedValue(Entity entity, CommonDataAttachment<T> attachment, T value) {
+        AttachmentType<T> type = (AttachmentType<T>) attachment.getAttachment();
+        entity.setAttached(type,value);
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    <T> AttachmentType<T> createType(CommonDataAttachment<T> attachment) {
+        AttachmentRegistry.Builder<T> builder = AttachmentRegistry.builder();
+        if (attachment.isCopyOnDeath()) {
+            builder.copyOnDeath();
+        }
+        builder.initializer(attachment.getDefaultValueSupplier());
+        if (attachment.getCodec() != null) {
+            builder.persistent(attachment.getCodec());
+        }
+        return builder.buildAndRegister(attachment.getName());
     }
 }

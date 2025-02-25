@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import tfar.customabilities.ScheduledCallback;
 import tfar.customabilities.ability.NewAbility;
+import tfar.customabilities.attachments.CommonDataAttachment;
 import tfar.customabilities.network.client.S2CModPacket;
 import tfar.customabilities.network.client.S2CSyncAbilityPacket;
 import tfar.customabilities.network.server.C2SModPacket;
@@ -71,7 +72,9 @@ public interface IPlatformHelper {
 
     void setScheduledCallback(ServerPlayer player,ScheduledCallback callback);
     ScheduledCallback getScheduledCallback(ServerPlayer player);
-    int getLightEmission(Entity entity);
-    void setLightEmission(Entity entity,int light);
+
+    <T> void registerDataAttachment(CommonDataAttachment<T> attachment);
+    <T> T getAttachedValue(Entity entity,CommonDataAttachment<T> attachment);
+    <T> void setAttachedValue(Entity entity,CommonDataAttachment<T> attachment,T value);
 
 }
