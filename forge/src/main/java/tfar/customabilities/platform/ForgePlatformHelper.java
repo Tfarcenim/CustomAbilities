@@ -8,7 +8,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import tfar.customabilities.CustomAbilitiesForge;
+import tfar.customabilities.ScheduledCallback;
 import tfar.customabilities.ability.NewAbility;
+import tfar.customabilities.attachments.CommonDataAttachment;
 import tfar.customabilities.net.PacketHandlerForge;
 import tfar.customabilities.network.client.S2CModPacket;
 import tfar.customabilities.network.server.C2SModPacket;
@@ -58,13 +60,8 @@ public class ForgePlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public NewAbility getAbility(Entity entity) {
-        return null;
-    }
-
-    @Override
-    public void setAbility(Entity entity, NewAbility ability) {
-
+    public int[] getCooldown(Entity entity) {
+        return new int[0];
     }
 
     int i;
@@ -88,6 +85,31 @@ public class ForgePlatformHelper implements IPlatformHelper {
     @Override
     public void sendToServer(C2SModPacket msg) {
         PacketHandlerForge.sendToServer(msg);
+    }
+
+    @Override
+    public void setScheduledCallback(ServerPlayer player, ScheduledCallback callback) {
+
+    }
+
+    @Override
+    public ScheduledCallback getScheduledCallback(ServerPlayer player) {
+        return null;
+    }
+
+    @Override
+    public <T> void registerDataAttachment(CommonDataAttachment<T> attachment) {
+
+    }
+
+    @Override
+    public <T> T getAttachedValue(Entity entity, CommonDataAttachment<T> attachment) {
+        return null;
+    }
+
+    @Override
+    public <T> void setAttachedValue(Entity entity, CommonDataAttachment<T> attachment, T value) {
+
     }
 
 }

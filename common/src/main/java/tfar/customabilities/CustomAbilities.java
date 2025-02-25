@@ -42,7 +42,7 @@ public class CustomAbilities {
     }
 
     public static void tick(ServerPlayer serverPlayer) {
-        NewAbility ability = Services.PLATFORM.getAbility(serverPlayer);
+        NewAbility ability = Utils.getAbility(serverPlayer);
         if (ability != null) {
             ability.tick(serverPlayer);
         }
@@ -75,7 +75,7 @@ public class CustomAbilities {
 
     public static void afterRespawn(ServerPlayer oldPlayer, ServerPlayer player, boolean alive) {
         if (!alive) {
-            NewAbility ability = Services.PLATFORM.getAbility(player);
+            NewAbility ability = Utils.getAbility(player);
             if (ability != null) {
                 ability.onRespawn(player);
             }

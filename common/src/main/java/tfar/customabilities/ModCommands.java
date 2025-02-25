@@ -31,8 +31,8 @@ public class ModCommands {
         try {
             String s = StringArgumentType.getString(context,"name");
             NewAbility newAbility = Abilities.ABILITIES_BY_NAME.get(s);
-            NewAbility original = Services.PLATFORM.getAbility(serverPlayer);
-            Services.PLATFORM.setAbility(serverPlayer,newAbility);
+            NewAbility original = Utils.getAbility(serverPlayer);
+            Utils.setAbility(serverPlayer,newAbility);
             onChange(serverPlayer,original,newAbility);
         } catch (IllegalArgumentException e) {
             context.getSource().sendFailure(Component.literal("Something went wrong: "+e));
@@ -43,7 +43,7 @@ public class ModCommands {
 
     private static int getAbility(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
-        NewAbility ability = Services.PLATFORM.getAbility(serverPlayer);
+        NewAbility ability = Utils.getAbility(serverPlayer);
         if (ability != null) {
             context.getSource().sendSystemMessage(Component.literal("You have the "+ability.getName()+" ability"));
         } else {
@@ -56,8 +56,8 @@ public class ModCommands {
             SharedSuggestionProvider.suggest(Abilities.ABILITIES_BY_NAME.keySet(),suggestionsBuilder);
     private static int clearAbility(CommandContext<CommandSourceStack>context) throws CommandSyntaxException {
         ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
-        NewAbility original = Services.PLATFORM.getAbility(serverPlayer);
-        Services.PLATFORM.setAbility(serverPlayer,null);
+        NewAbility original = Utils.getAbility(serverPlayer);
+        Utils.setAbility(serverPlayer,null);
         onChange(serverPlayer,original,null);
         return 1;
     }

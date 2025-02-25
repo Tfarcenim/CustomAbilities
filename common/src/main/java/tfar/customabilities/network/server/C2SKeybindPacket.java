@@ -2,6 +2,7 @@ package tfar.customabilities.network.server;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import tfar.customabilities.Utils;
 import tfar.customabilities.ability.NewAbility;
 import tfar.customabilities.platform.Services;
 
@@ -19,7 +20,7 @@ public class C2SKeybindPacket implements C2SModPacket {
 
     @Override
     public void handleServer(ServerPlayer player) {
-        NewAbility ability = Services.PLATFORM.getAbility(player);
+        NewAbility ability = Utils.getAbility(player);
         if (ability != null) {
             ability.handleKeyPress(player, type);
         }

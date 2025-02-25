@@ -17,11 +17,6 @@ public class PacketHandler {
 
         int i = 0;
 
-        INSTANCE.registerMessage(i++,
-                C2SKeybindPacket.class,
-                C2SKeybindPacket::encode,
-                C2SKeybindPacket::new,
-                C2SKeybindPacket::handle);
     }
 
 

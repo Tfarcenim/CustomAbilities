@@ -1,6 +1,6 @@
 package tfar.customabilities;
 
-import atomicstryker.dynamiclights.server.DynamicLightSourceContainer;
+/*import atomicstryker.dynamiclights.server.DynamicLightSourceContainer;
 import atomicstryker.dynamiclights.server.IDynamicLightSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
@@ -49,4 +49,4 @@ public class CustomDynamic extends DynamicLightSourceContainer {
     private boolean hasEntityMoved(Entity entity) {
         return ((DynamicLightSourceContainerAccess) this).hasEntityMovedAccess(entity);
     }
-}
+}*/

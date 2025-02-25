@@ -1,17 +1,9 @@
 package tfar.customabilities;
 
-import atomicstryker.dynamiclights.server.DynamicLights;
-import atomicstryker.dynamiclights.server.IDynamicLightSource;
-import draylar.identity.api.PlayerIdentity;
-import draylar.identity.api.PlayerUnlocks;
-import draylar.identity.api.platform.IdentityConfig;
-import draylar.identity.api.variant.IdentityType;
-import draylar.identity.impl.PlayerDataProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,13 +15,10 @@ import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
@@ -43,7 +32,6 @@ import net.minecraftforge.event.VanillaGameEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.LogicalSide;
@@ -52,7 +40,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import org.jetbrains.annotations.Nullable;
 import tfar.customabilities.client.Client;
 import tfar.customabilities.datagen.ModDatagen;
 import tfar.customabilities.net.PacketHandler;
@@ -79,12 +66,10 @@ public class CustomAbilitiesForge {
         MinecraftForge.EVENT_BUS.addListener(this::attack);
         //MinecraftForge.EVENT_BUS.addListener(this::heal);
         MinecraftForge.EVENT_BUS.addListener(this::clonePlayer);
-        MinecraftForge.EVENT_BUS.addListener(this::sleepInBed);
         MinecraftForge.EVENT_BUS.addListener(this::onKill);
         MinecraftForge.EVENT_BUS.addListener(this::visibility);
         MinecraftForge.EVENT_BUS.addListener(this::vanillaEvent);
         MinecraftForge.EVENT_BUS.addListener(this::potionExpire);
-        MinecraftForge.EVENT_BUS.addListener(this::worldTick);
         MinecraftForge.EVENT_BUS.addListener(this::canAffect);
         MinecraftForge.EVENT_BUS.addListener(this::onLeftClickBlock);
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -168,16 +153,9 @@ public class CustomAbilitiesForge {
         MobEffectInstance mobEffectInstance = event.getEffectInstance();
         LivingEntity living = event.getEntity();
         if (living instanceof Player player) {
-            if (mobEffectInstance.getEffect() == MobEffects.DARKNESS && Constants.hasAbility(player, Ability.Syd)) {
+            if (mobEffectInstance.getEffect() == MobEffects.DARKNESS) {
                 event.setResult(Event.Result.DENY);
             }
-        }
-    }
-
-    private void worldTick(TickEvent.LevelTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && event.side == LogicalSide.SERVER) {
-            ServerLevel serverLevel = (ServerLevel) event.level;
-            CustomAbilities.getDeferredEventSystem(serverLevel).tickDeferredEvents(serverLevel);
         }
     }
 
@@ -194,8 +172,7 @@ public class CustomAbilitiesForge {
     private void playertick(TickEvent.PlayerTickEvent event) {
         if (event.side == LogicalSide.SERVER && event.phase == TickEvent.Phase.START) {
             Player player = event.player;
-            Ability ability = ((PlayerDuck) player).getAbility();
-            if (ability != null) ability.tickAbility.accept(player);
+
         }
     }
 
@@ -231,57 +208,33 @@ public class CustomAbilitiesForge {
         }
     }
 
-    private void heal(LivingHealEvent event) {
-        LivingEntity living = event.getEntity();
-        if (living instanceof Player player) {
-            if (Constants.hasAbility(player, Ability.Gar)) {
-                //    if (lessThan25PercentHealth(player)) {
-                //  }
-            }
-        }
-    }
-
     private void clonePlayer(PlayerEvent.Clone event) {
         Player original = event.getOriginal();
         Player player = event.getEntity();
-        PlayerDuck playerDuck = (PlayerDuck) player;
 
-        if (event.isWasDeath()) {
-            NonNullList<ItemStack> kept = ((PlayerDuck) original).getKeptItems();
+    //    if (event.isWasDeath()) {
+    //        NonNullList<ItemStack> kept = ((PlayerDuck) original).getKeptItems();
 
-            for (ItemStack stack : kept) {
-                player.addItem(stack);
-            }
-        }
-    }
-
-    private void sleepInBed(PlayerSleepInBedEvent event) {
-        Player player = event.getEntity();
-        if (Constants.hasAbility(player, Ability.Otty)) {
-            int r = 3;
-            List<ServerPlayer> otherPlayers = player.level().getEntitiesOfClass(ServerPlayer.class, player.getBoundingBox().inflate(r), LivingEntity::isSleeping);
-            if (otherPlayers.isEmpty()) {
-                event.setResult(Player.BedSleepingProblem.OTHER_PROBLEM);
-            }
-        }
+   //         for (ItemStack stack : kept) {
+   //             player.addItem(stack);
+     //       }
+    //    }
     }
 
     public static void flightBoost(Player player) {
-        PlayerDuck playerDuck = (PlayerDuck) player;
-        Ability ability = playerDuck.getAbility();
-        if (playerDuck.getFlightBoostCooldown() > 0) {
-            player.sendSystemMessage(Component.translatable("Flight Boost on Cooldown: "+
-                    (int)Math.ceil(playerDuck.getFlightBoostCooldown()/20d) + " seconds left"));
-            return;
-        }
-
-        ItemStack firework = new ItemStack(Items.FIREWORK_ROCKET);
-        FireworkRocketEntity fireworkRocketEntity = new FireworkRocketEntity(player.level(), firework, player);
-        player.level().addFreshEntity(fireworkRocketEntity);
-        int cooldown = 0;
-        if (ability == Ability.Mari) cooldown = 30 * 20;
-        else if (ability == Ability.Spriteboba) cooldown = 30 * 20;
-        playerDuck.setFlightBoostCooldown(cooldown);
+//       Ability ability = playerDuck.getAbility();
+ //       if (playerDuck.getFlightBoostCooldown() > 0) {
+ //           player.sendSystemMessage(Component.translatable("Flight Boost on Cooldown: "+
+ ////                   (int)Math.ceil(playerDuck.getFlightBoostCooldown()/20d) + " seconds left"));
+//            return;
+  //      }
+     //   ItemStack firework = new ItemStack(Items.FIREWORK_ROCKET);
+    //    FireworkRocketEntity fireworkRocketEntity = new FireworkRocketEntity(player.level(), firework, player);
+    //    player.level().addFreshEntity(fireworkRocketEntity);
+    //    int cooldown = 0;
+   //     if (ability == Ability.Mari) cooldown = 30 * 20;
+   //     else if (ability == Ability.Spriteboba) cooldown = 30 * 20;
+     //   playerDuck.setFlightBoostCooldown(cooldown);
     }
 
 
@@ -294,17 +247,17 @@ public class CustomAbilitiesForge {
     }
 
     public static void toggleBatForm(Player player) {
-        LivingEntity identity = PlayerIdentity.getIdentity(player);
-        if (identity != null) {
-            PlayerIdentity.updateIdentity((ServerPlayer) player, null, null);
-        } else {
-            EntityType<Bat> batEntityType = EntityType.BAT;
-            Bat bat = batEntityType.create(player.level());
-            IdentityType<?> defaultType = IdentityType.from(bat);
-            if (defaultType != null) {
-                PlayerIdentity.updateIdentity((ServerPlayer) player, defaultType, bat);
-            }
-        }
+    //    LivingEntity identity = PlayerIdentity.getIdentity(player);
+//        if (identity != null) {
+    //        PlayerIdentity.updateIdentity((ServerPlayer) player, null, null);
+  //      } else {
+  ///          EntityType<Bat> batEntityType = EntityType.BAT;
+  //          Bat bat = batEntityType.create(player.level());
+  //          IdentityType<?> defaultType = IdentityType.from(bat);
+   //         if (defaultType != null) {
+           //     PlayerIdentity.updateIdentity((ServerPlayer) player, defaultType, bat);
+  //          }
+  //      }
     }
 
     public static void addAllIdentities(Player player) {
@@ -312,25 +265,25 @@ public class CustomAbilitiesForge {
             if (entityType != EntityType.ENDER_DRAGON) {
                 Entity entity = entityType.create(player.level());
                 if (entity instanceof LivingEntity living) {
-                    IdentityType<?> defaultType = IdentityType.from(living);
-                    if (defaultType != null) {
-                        PlayerUnlocks.unlock((ServerPlayer) player, defaultType);
-                    }
+  //                  IdentityType<?> defaultType = IdentityType.from(living);
+   //                 if (defaultType != null) {
+       //                 PlayerUnlocks.unlock((ServerPlayer) player, defaultType);
+          //          }
                 }
             }
         }
     }
 
     public static void removeAllIdentities(Player player) {
-        PlayerDataProvider provider = (PlayerDataProvider) player;
-        Set<IdentityType<?>> unlocked = new HashSet<>(provider.getUnlocked());//make a copy to avoid cc
-        for (IdentityType<?> identityType : unlocked) {
-            PlayerUnlocks.revoke((ServerPlayer) player, identityType);
-        }
+//        PlayerDataProvider provider = (PlayerDataProvider) player;
+//        Set<IdentityType<?>> unlocked = new HashSet<>(provider.getUnlocked());//make a copy to avoid cc
+//        for (IdentityType<?> identityType : unlocked) {
+//            PlayerUnlocks.revoke((ServerPlayer) player, identityType);
+    //    }
     }
 
 
-    private static void equip(ServerPlayer source, ServerPlayer player, ResourceLocation identity, @Nullable CompoundTag nbt) {
+    private static void equip(ServerPlayer source, ServerPlayer player, ResourceLocation identity, CompoundTag nbt) {
         Entity created;
         if (nbt != null) {
             CompoundTag copy = nbt.copy();
@@ -343,28 +296,28 @@ public class CustomAbilitiesForge {
         }
 
         if (created instanceof LivingEntity living) {
-            IdentityType<?> defaultType = IdentityType.from(living);
+     /*       IdentityType<?> defaultType = IdentityType.from(living);
             if (defaultType != null) {
                 boolean result = PlayerIdentity.updateIdentity(player, defaultType, (LivingEntity) created);
                 if (result && IdentityConfig.getInstance().logCommands()) {
                     source.displayClientMessage(Component.translatable("identity.equip_success", Component.translatable(created.getType().getDescriptionId()), player.getDisplayName()), true);
                 }
-            }
+            }*/
         }
 
     }
 
     private static void unequip(ServerPlayer source, ServerPlayer player) {
-        boolean result = PlayerIdentity.updateIdentity(player, null, null);
-        if (result && IdentityConfig.getInstance().logCommands()) {
-            source.displayClientMessage(Component.translatable("identity.unequip_success", player.getDisplayName()), false);
-        }
+    //    boolean result = PlayerIdentity.updateIdentity(player, null, null);
+    //    if (result && IdentityConfig.getInstance().logCommands()) {
+    //        source.displayClientMessage(Component.translatable("identity.unequip_success", player.getDisplayName()), false);
+     //   }
 
     }
 
 
     public static boolean hasTrueInvis(Player player) {
-        return Constants.hasAbility(player, Ability.Ramsey) && player.hasEffect(MobEffects.INVISIBILITY);
+        return player.hasEffect(MobEffects.INVISIBILITY);
     }
 
     //this event is crap
@@ -378,17 +331,13 @@ public class CustomAbilitiesForge {
     private void onKill(LivingDeathEvent event) {
         Entity trueEntity = event.getSource().getEntity();
         LivingEntity died = event.getEntity();
-        if (trueEntity instanceof Player player && Constants.hasAbility(player, Ability.Ramsey) && died instanceof Player) {
+        if (trueEntity instanceof Player player && died instanceof Player) {
             player.setAbsorptionAmount(player.getAbsorptionAmount() + 2);
-            ((PlayerDuck) player).setRamseyParticles(true);
             Constants.addStackableEffect(player, new MobEffectInstance(MobEffects.DAMAGE_BOOST, 20 * 60, 0, true, false));
             Constants.addStackableEffect(player, new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60, 0, true, false));
         }
 
 
-        if (died instanceof Player player && Constants.hasAbility(player, Ability.Muw)) {
-            saveItemsMatching(player, KEEP);
-        }
     }
 
     static final Predicate<ItemStack> KEEP = stack -> {
@@ -407,16 +356,13 @@ public class CustomAbilitiesForge {
             }
         }
 
-        PlayerDuck playerDuck = (PlayerDuck) player;
-        playerDuck.setKeptItems(keep);
     }
 
     private void potionExpire(MobEffectEvent.Expired event) {
         LivingEntity living = event.getEntity();
-        if (living instanceof Player player && Constants.hasAbility(player, Ability.Ramsey)) {
+        if (living instanceof Player player) {
             MobEffect mobEffect = event.getEffectInstance().getEffect();
             if (mobEffect == MobEffects.DAMAGE_BOOST || mobEffect == MobEffects.MOVEMENT_SPEED) {
-                ((PlayerDuck) player).setRamseyParticles(false);
             }
         }
     }

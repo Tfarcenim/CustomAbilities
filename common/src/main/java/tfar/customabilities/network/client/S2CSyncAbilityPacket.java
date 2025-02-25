@@ -1,31 +1,29 @@
 package tfar.customabilities.network.client;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import tfar.customabilities.Abilities;
 import tfar.customabilities.ability.NewAbility;
-import tfar.customabilities.platform.Services;
+import tfar.customabilities.attachments.CommonDataAttachments;
 
-public class S2CSyncAbilityPacket implements S2CModPacket{
+public class S2CSyncAbilityPacket extends S2CSyncDataAttachmentPacket<NewAbility> {
 
-    String ability;
 
-    public S2CSyncAbilityPacket(String name) {
-        this.ability =name;
+    public S2CSyncAbilityPacket(FriendlyByteBuf buf) {
+        super(buf);
     }
 
-    public S2CSyncAbilityPacket(FriendlyByteBuf buf){
-        ability = buf.readUtf();
-    }
-
-    @Override
-    public void handleClient() {
-        NewAbility ability1 = Abilities.ABILITIES_BY_NAME.get(ability);
-        Services.PLATFORM.setAbility(Minecraft.getInstance().player, ability1);
+    public S2CSyncAbilityPacket(int entityID, NewAbility value) {
+        super(entityID, CommonDataAttachments.ABILITY, value);
     }
 
     @Override
-    public void write(FriendlyByteBuf to) {
-        to.writeUtf(ability);
+    protected NewAbility readValue(FriendlyByteBuf buf) {
+        String s = buf.readUtf();
+        return Abilities.ABILITIES_BY_NAME.get(s);
+    }
+
+    @Override
+    protected void writeValue(FriendlyByteBuf buf, NewAbility value) {
+        buf.writeUtf(value == null ? "null" : value.getName());
     }
 }

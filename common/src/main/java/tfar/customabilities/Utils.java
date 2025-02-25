@@ -3,6 +3,7 @@ package tfar.customabilities;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -11,12 +12,14 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import tfar.customabilities.ability.NewAbility;
 import tfar.customabilities.attachments.CommonDataAttachments;
+import tfar.customabilities.network.client.S2CSyncAbilityPacket;
+import tfar.customabilities.network.client.S2CSyncLightEmissionPacket;
 import tfar.customabilities.platform.Services;
 
 public class Utils {
 
     public static boolean hasAbility(Entity entity, NewAbility ability) {
-        return Services.PLATFORM.getAbility(entity) == ability;
+        return getAbility(entity) == ability;
     }
 
     public static boolean isDark(Player player) {
@@ -47,7 +50,7 @@ public class Utils {
     }
 
     public static boolean hasFakeElytra(LivingEntity living) {
-        NewAbility ability = Services.PLATFORM.getAbility(living);
+        NewAbility ability = getAbility(living);
         return ability != null && ability.isElytra;
     }
 
@@ -57,5 +60,20 @@ public class Utils {
 
     public static void setLightLevel(Player player,int light) {
         Services.PLATFORM.setAttachedValue(player,CommonDataAttachments.LIGHT,light);
+        if (player instanceof ServerPlayer serverPlayer) {
+            Services.PLATFORM.sendToClient(new S2CSyncLightEmissionPacket(serverPlayer.getId(),light),serverPlayer);
+        }
     }
+
+    public static void setAbility(Entity player,NewAbility ability) {
+        Services.PLATFORM.setAttachedValue(player,CommonDataAttachments.ABILITY,ability);
+        if (player instanceof ServerPlayer serverPlayer) {//notify player
+            Services.PLATFORM.sendToClient(new S2CSyncAbilityPacket(serverPlayer.getId(),ability),serverPlayer);
+        }
+    }
+
+    public static NewAbility getAbility(Entity player) {
+        return Services.PLATFORM.getAttachedValue(player,CommonDataAttachments.ABILITY);
+    }
+
 }

@@ -14,13 +14,10 @@ public class ModLangProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         add("key.categories."+ CustomAbilities.MOD_ID, CustomAbilities.MOD_NAME);
-        addKey(ModKeybinds.INVIS_TOGGLE,"Toggle Invisibility");
-        addKey(ModKeybinds.TELEPORT,"Teleport (Mari & Miblex)");
-        addKey(ModKeybinds.FLIGHT_BOOST,"Flight Boost");
-        addKey(ModKeybinds.BAT_MORPH,"Bat Morph (Barcode)");
-        addKey(ModKeybinds.LEVITATION,"Levitation (Bug)");
-        addKey(ModKeybinds.SPEED_BOOST,"Speed Boost");
-        addKey(ModKeybinds.LIGHT_TOGGLE,"Light Toggle (Bug)");
+        addKey(ModKeybinds.PRIMARY,"Primary");
+        addKey(ModKeybinds.SECONDARY,"Secondary");
+        addKey(ModKeybinds.TERTIARY,"Tertiary");
+        addKey(ModKeybinds.QUATERNARY,"Quaternary");
     }
 
     void addKey(KeyMapping mapping, String translation) {

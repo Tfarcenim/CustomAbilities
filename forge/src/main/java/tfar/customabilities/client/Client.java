@@ -1,8 +1,6 @@
 package tfar.customabilities.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -18,10 +16,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import tfar.customabilities.CustomAbilities;
 import tfar.customabilities.CustomAbilitiesForge;
-import tfar.customabilities.net.C2SKeybindPacket;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class Client {
 

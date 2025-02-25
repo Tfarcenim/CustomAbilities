@@ -62,17 +62,6 @@ public class FabricPlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public NewAbility getAbility(Entity player) {
-        return player.getAttached(ModAttachmentTypes.ABILITY_DATA);
-    }
-
-    @Override
-    public void setAbility(Entity entity, NewAbility ability) {
-        IPlatformHelper.super.setAbility(entity, ability);
-        entity.setAttached(ModAttachmentTypes.ABILITY_DATA,ability);
-    }
-
-    @Override
     public int[] getCooldown(Entity entity) {
         return entity.getAttached(ModAttachmentTypes.COOLDOWN_DATA);
     }

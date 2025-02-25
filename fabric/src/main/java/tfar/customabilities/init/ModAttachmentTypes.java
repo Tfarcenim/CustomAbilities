@@ -9,11 +9,6 @@ import tfar.customabilities.ability.NewAbility;
 @SuppressWarnings("UnstableApiUsage")
 public class ModAttachmentTypes {
 
-    public static final AttachmentType<NewAbility> ABILITY_DATA = AttachmentRegistry.<NewAbility>builder()
-            .persistent(NewAbility.CODEC)
-            .copyOnDeath()
-            .buildAndRegister(CustomAbilities.id("ability"));
-
     public static final AttachmentType<int[]> COOLDOWN_DATA = AttachmentRegistry.<int[]>builder()
             .initializer(() -> new int[4])
             .buildAndRegister(CustomAbilities.id("cooldown"));
@@ -21,8 +16,5 @@ public class ModAttachmentTypes {
     public static final AttachmentType<ScheduledCallback> CALLBACK_DATA = AttachmentRegistry.<ScheduledCallback>builder()
             .initializer(() -> new ScheduledCallback(-1,player -> {}))
             .buildAndRegister(CustomAbilities.id("scheduled_callback"));
-
-    public static final AttachmentType<Integer> LIGHT = AttachmentRegistry.<Integer>builder().initializer(() -> 0)
-            .buildAndRegister(CustomAbilities.id("light"));
 
 }

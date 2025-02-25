@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tfar.customabilities.Constants;
 import tfar.customabilities.EntityDuck;
+import tfar.customabilities.Utils;
 import tfar.customabilities.ability.NewAbility;
 import tfar.customabilities.platform.Services;
 
@@ -26,7 +27,7 @@ public class MinecraftMixin {
         boolean alreadyGlowing = cir.getReturnValue();
         if (alreadyGlowing) return;
         if (this.player != null) {
-            NewAbility ability = Services.PLATFORM.getAbility(this.player);
+            NewAbility ability = Utils.getAbility(this.player);
 
             if (ability != null) {
 
