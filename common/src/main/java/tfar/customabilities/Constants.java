@@ -9,11 +9,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeMap;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SkullBlockEntity;
@@ -21,36 +16,10 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.Consumer;
 
 import static net.minecraft.world.level.block.NoteBlock.*;
 
 public class Constants {
-
-	static final UUID knockbackuuid = UUID.fromString("3000b165-ed6f-49eb-8c7e-b596d4ffbb2b");
-
-	public static AttributeModifier modifier = new AttributeModifier(knockbackuuid, "ability boost", 1, AttributeModifier.Operation.ADDITION);
-
-	public static Consumer<Player> addAttributeModifier(Attribute attribute,AttributeModifier attributeModifier) {
-		return player -> {
-			AttributeMap attributeMap = player.getAttributes();
-			AttributeInstance attributeinstance = attributeMap.getInstance(attribute);
-			if (attributeinstance != null) {
-				attributeinstance.removeModifier(attributeModifier);
-				attributeinstance.addPermanentModifier(attributeModifier);
-			}
-		};
-	}
-
-	public static Consumer<Player> removeAttributeModifier(Attribute attribute,AttributeModifier attributeModifier) {
-		return player -> {
-			AttributeMap attributeMap = player.getAttributes();
-			AttributeInstance attributeinstance = attributeMap.getInstance(attribute);
-			if (attributeinstance != null) {
-				attributeinstance.removePermanentModifier(attributeModifier.getId());
-			}
-		};
-	}
 
 	public static void addStackableEffect(LivingEntity living,MobEffectInstance instance) {
 		if (living.hasEffect(instance.getEffect())) {

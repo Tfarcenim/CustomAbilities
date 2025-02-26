@@ -2,9 +2,12 @@ package tfar.customabilities.datagen;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraftforge.common.data.LanguageProvider;
 import tfar.customabilities.CustomAbilities;
 import tfar.customabilities.client.ModKeybinds;
+import tfar.customabilities.init.ModAttributes;
 
 public class ModLangProvider extends LanguageProvider {
     public ModLangProvider(PackOutput output) {
@@ -19,9 +22,14 @@ public class ModLangProvider extends LanguageProvider {
         addKey(ModKeybinds.TERTIARY,"Tertiary");
         addKey(ModKeybinds.QUATERNARY,"Quaternary");
         addKey(ModKeybinds.QUINARY,"Quinary");
+
+        addAttribute(ModAttributes.FIRE_WEAKNESS,"Fire Weakness");
     }
 
     void addKey(KeyMapping mapping, String translation) {
         add(mapping.getName(),translation);
+    }
+    void addAttribute(Attribute attribute,String translation) {
+        add(attribute.getDescriptionId(),translation);
     }
 }

@@ -10,13 +10,13 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.player.Player;
 import tfar.customabilities.Abilities;
 import tfar.customabilities.CustomAbilities;
 import tfar.customabilities.network.server.C2SKeybindPacket;
 import tfar.customabilities.platform.Services;
 
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class NewAbility {
 
@@ -24,6 +24,7 @@ public abstract class NewAbility {
 
     private final Map<MobEffect, MobEffectInstance> mobEffects = Maps.newHashMap();
     private final Map<Attribute, AttributeModifier> attributeModifiers = Maps.newHashMap();
+    private final Set<MobEffect> eatImmunities = new HashSet<>();
 
     private final String name;
     public boolean isElytra;
@@ -62,6 +63,10 @@ public abstract class NewAbility {
     public void onRemove(ServerPlayer player) {
         mobEffects.keySet().forEach(player::removeEffect);
         removeAttributeModifiers(player,player.getAttributes());
+    }
+
+    public float getNightVisionModifier(Player player,float original) {
+        return original;
     }
 
     public final void handleKeyPress(ServerPlayer player,C2SKeybindPacket.Type type) {
@@ -109,12 +114,21 @@ public abstract class NewAbility {
         return this;
     }
 
+    public NewAbility addEatImmunity(MobEffect... effects) {
+        eatImmunities.addAll(Arrays.asList(effects));
+        return this;
+    }
+
     public void removeAttributeModifiers(LivingEntity livingEntity, AttributeMap map) {
         for(Map.Entry<Attribute, AttributeModifier> entry : this.attributeModifiers.entrySet()) {
             AttributeInstance attributeinstance = map.getInstance(entry.getKey());
             if (attributeinstance != null) {
                 attributeinstance.removeModifier(entry.getValue());
             }
+        }
+
+        if (livingEntity.getHealth() > livingEntity.getMaxHealth()) {
+            livingEntity.setHealth(livingEntity.getMaxHealth());
         }
     }
 
@@ -127,5 +141,12 @@ public abstract class NewAbility {
                 attributeinstance.addPermanentModifier(new AttributeModifier(attributemodifier.getId(), name, attributemodifier.getAmount(), attributemodifier.getOperation()));
             }
         }
+        if (livingEntity.getHealth() > livingEntity.getMaxHealth()) {
+            livingEntity.setHealth(livingEntity.getMaxHealth());
+        }
+    }
+
+    public boolean isImmuneToFoodEffect(MobEffectInstance instance) {
+        return eatImmunities.contains(instance.getEffect());
     }
 }

@@ -16,7 +16,7 @@ public class CustomAbilitiesClientFabric implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ParticleFactoryRegistry.getInstance().register(ModParticleTypes.BUBBLE,ModBubbleParticle.Provider::new);
-        ClientTickEvents.START_CLIENT_TICK.register(ClientPacketHandler::tick);
+        ClientTickEvents.START_CLIENT_TICK.register(CustomAbilitiesClient::tick);
         EntitySleepEvents.STOP_SLEEPING.register((entity, sleepingPos) -> {
             if (Utils.hasAbility(entity, Abilities.CUBONE)) {
                 if (entity instanceof ServerPlayer player) {
@@ -28,5 +28,6 @@ public class CustomAbilitiesClientFabric implements ClientModInitializer {
         KeyBindingHelper.registerKeyBinding(ModKeybinds.SECONDARY);
         KeyBindingHelper.registerKeyBinding(ModKeybinds.TERTIARY);
         KeyBindingHelper.registerKeyBinding(ModKeybinds.QUATERNARY);
+        ClientPacketHandler.renderers();
     }
 }

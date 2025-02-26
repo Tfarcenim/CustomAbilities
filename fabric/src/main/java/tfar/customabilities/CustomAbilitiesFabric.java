@@ -4,10 +4,10 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.EntityElytraEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import tfar.customabilities.attachments.CommonDataAttachments;
 import tfar.customabilities.init.ModAttributes;
+import tfar.customabilities.init.ModEntityTypes;
 import tfar.customabilities.network.client.S2CSyncAbilityPacket;
 import tfar.customabilities.platform.Services;
 
@@ -29,6 +29,7 @@ public class CustomAbilitiesFabric implements ModInitializer {
         ModParticleTypes.init();
         ModAttributes.init();
         CommonDataAttachments.init();
+        ModEntityTypes.init();
         // Use Fabric to bootstrap the Common mod.
         CustomAbilities.init();
     }

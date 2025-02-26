@@ -6,6 +6,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 
 import java.util.List;
@@ -27,6 +28,11 @@ public class SydAbility extends NewAbility{
     @Override
     public void tick(ServerPlayer player) {
         super.tick(player);
+    }
+
+    @Override
+    public float getNightVisionModifier(Player player, float original) {
+        return player.isUnderWater() ? 1 : original;
     }
 
     @Override

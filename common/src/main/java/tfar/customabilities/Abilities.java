@@ -15,6 +15,7 @@ public class Abilities {
     public static final NewAbility BARCODE = register(new BarcodeAbility("barcode")
             .addMobEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,MobEffectInstance.INFINITE_DURATION,0,false,false))
             .addAttributeModifier(ModAttributes.FIRE_WEAKNESS,.35, AttributeModifier.Operation.MULTIPLY_TOTAL)
+            .addEatImmunity(MobEffects.POISON,MobEffects.HUNGER)
     );
     public static final NewAbility SYD = register(new SydAbility("syd")
             .addMobEffect(new MobEffectInstance(MobEffects.WATER_BREATHING,MobEffectInstance.INFINITE_DURATION,0,false,false)));
@@ -34,13 +35,16 @@ public class Abilities {
             .addMobEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST,MobEffectInstance.INFINITE_DURATION,1,false,false))
             .addMobEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,MobEffectInstance.INFINITE_DURATION,1,false,false))
 
-            .addMobEffect(new MobEffectInstance(MobEffects.NIGHT_VISION,MobEffectInstance.INFINITE_DURATION,0,false,false))
-
             .addAttributeModifier(Attributes.MAX_HEALTH,5, AttributeModifier.Operation.ADDITION)
             .addAttributeModifier(ModAttributes.FIRE_WEAKNESS,-.5, AttributeModifier.Operation.MULTIPLY_TOTAL)
     );
 
     public static final NewAbility MARI = register(new MariAbility("mari"));
+    public static final NewAbility RAMSEY = register(new RamseyAbility("ramsey"));
+    public static final NewAbility BRAWL = register(new BrawlAbility("brawl")
+            .addMobEffect(new MobEffectInstance(MobEffects.REGENERATION,MobEffectInstance.INFINITE_DURATION,0,false,false))
+            .addEatImmunity(MobEffects.POISON,MobEffects.HUNGER)
+    );
 
 
     static NewAbility register(NewAbility ability) {

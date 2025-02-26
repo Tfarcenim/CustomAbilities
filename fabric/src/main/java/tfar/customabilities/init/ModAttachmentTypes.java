@@ -10,7 +10,7 @@ import tfar.customabilities.ability.NewAbility;
 public class ModAttachmentTypes {
 
     public static final AttachmentType<int[]> COOLDOWN_DATA = AttachmentRegistry.<int[]>builder()
-            .initializer(() -> new int[4])
+            .initializer(() -> new int[5])
             .buildAndRegister(CustomAbilities.id("cooldown"));
 
     public static final AttachmentType<ScheduledCallback> CALLBACK_DATA = AttachmentRegistry.<ScheduledCallback>builder()

@@ -1,7 +1,9 @@
 {
+  "attribute.name.generic.fire_weakness": "Fire Weakness",
   "key.categories.customabilities": "CustomAbilities",
   "key.customabilities.primary": "Primary",
   "key.customabilities.quaternary": "Quaternary",
+  "key.customabilities.quinary": "Quinary",
   "key.customabilities.secondary": "Secondary",
   "key.customabilities.tertiary": "Tertiary"
 }

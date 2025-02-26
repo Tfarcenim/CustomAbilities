@@ -65,11 +65,17 @@ public class CustomAbilities {
         if (source.is(DamageTypeTags.IS_FIRE)) {
             amount *=target.getAttributeValue(ModAttributes.FIRE_WEAKNESS);
         }
-        else if (Utils.hasAbility(target,Abilities.SYD)) {
+        if (Utils.hasAbility(target,Abilities.SYD)) {
             if (attacker instanceof LivingEntity livingAttacker) {
                 if (livingAttacker.getRandom().nextDouble() < .15) {
                     livingAttacker.addEffect(new MobEffectInstance(MobEffects.POISON,3 * 20,0));
                 }
+            }
+        }
+
+        else if (Utils.hasAbility(target,Abilities.BEAR)) {
+            if (source.is(DamageTypeTags.IS_LIGHTNING) ||source.is(DamageTypeTags.IS_DROWNING)) {
+                amount *= .5f;
             }
         }
 
