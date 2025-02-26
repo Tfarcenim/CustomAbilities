@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import tfar.customabilities.attachments.CommonDataAttachments;
 import tfar.customabilities.init.ModAttributes;
 import tfar.customabilities.init.ModEntityTypes;
+import tfar.customabilities.init.ModMobEffects;
 import tfar.customabilities.network.client.S2CSyncAbilityPacket;
 import tfar.customabilities.platform.Services;
 
@@ -28,6 +29,7 @@ public class CustomAbilitiesFabric implements ModInitializer {
         ServerPlayerEvents.AFTER_RESPAWN.register(CustomAbilities::afterRespawn);
         ModParticleTypes.init();
         ModAttributes.init();
+        ModMobEffects.init();
         CommonDataAttachments.init();
         ModEntityTypes.init();
         // Use Fabric to bootstrap the Common mod.

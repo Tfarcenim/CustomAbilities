@@ -3,7 +3,7 @@ package tfar.customabilities.ability;
 import net.minecraft.server.level.ServerPlayer;
 //        Ramsey
 //
-//“Invisibility” Keybind toggle - Toggling this ability will cause Ramsey’s player model to fade in/out of visibility
+//"Invisibility" Keybind toggle - Toggling this ability will cause Ramsey’s player model to fade in/out of visibility
 // (Same Ramsey invisibility as last commission, but with a fade if possible) (No particles)
 public class RamseyAbility extends NewAbility{
     public RamseyAbility(String name) {

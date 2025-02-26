@@ -4,11 +4,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tfar.customabilities.ability.NewAbility;
@@ -57,6 +60,27 @@ public class CustomAbilities {
                 }
             }
         }
+
+        updateCooldowns(Utils.getCooldowns(serverPlayer));
+    }
+
+    static boolean updateCooldowns(int[] cooldowns) {
+        boolean changed = false;
+        for(int i = 0; i < cooldowns.length;i++) {
+            if (cooldowns[i]>0) {
+                cooldowns[0]--;
+                changed = true;
+            }
+        }
+        return changed;
+    }
+
+    public static void insertLightLevel(Entity entity,int lightLevel) {
+        int[] lightLevels = Utils.getPreviousLightLevels(entity);
+        for (int i = lightLevels.length-2; i >=0;i--) {
+            lightLevels[i+1] = lightLevels[i];
+        }
+        lightLevels[0] = lightLevel;
     }
 
     public static float onLivingHurt(LivingEntity target, DamageSource source,float amount) {
@@ -77,7 +101,13 @@ public class CustomAbilities {
             if (source.is(DamageTypeTags.IS_LIGHTNING) ||source.is(DamageTypeTags.IS_DROWNING)) {
                 amount *= .5f;
             }
+
+            if (source.is(DamageTypes.FALL)) {//brawl
+             amount*=.25f;
+            }
         }
+
+
 
         //"Frosted Fingers" Keybind - Will make Bear’s punches apply Slowness 2 and Weakness 2 for 10 seconds.
         // Repeated hits will not stack the countdown on the effects, but reset them. This keybind has a cooldown of 60 seconds.
@@ -116,5 +146,12 @@ public class CustomAbilities {
         }
 
         return f;
+    }
+
+    public static boolean canPlayerEat(Player instance, boolean canAlwaysEat, ItemStack stack) {
+        if (Utils.hasAbility(instance,Abilities.BRAWL)) {
+            return stack.getItem().getFoodProperties().isMeat();
+        }
+        return instance.canEat(stack.getItem().getFoodProperties().canAlwaysEat());
     }
 }

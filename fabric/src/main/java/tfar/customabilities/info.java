@@ -16,11 +16,6 @@ Sushi
 - Can eat raw meat without being affected by hunger (raw chicken, rotten flesh.) Can only eat meat, cannot eat bread, vegetables, berries, etc.
 
 
-
-
-
-
-
 Devlin
 - Always has an invisible elytra equipped. Can still equip armor in the chest slot (Like Mari’s ability in our previous commission)
 - Sinks to the floor when in water. When under 2 blocks of water, Devlin has Slowness 1.

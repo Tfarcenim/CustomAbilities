@@ -2,6 +2,7 @@ package tfar.customabilities.ability;
 
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -13,12 +14,13 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import tfar.customabilities.Abilities;
 import tfar.customabilities.CustomAbilities;
+import tfar.customabilities.Utils;
 import tfar.customabilities.network.server.C2SKeybindPacket;
 import tfar.customabilities.platform.Services;
 
 import java.util.*;
 
-public abstract class NewAbility {
+public class NewAbility {
 
     public static final Codec<NewAbility> CODEC = Codec.STRING.xmap(Abilities.ABILITIES_BY_NAME::get, NewAbility::getName);
 
@@ -70,6 +72,13 @@ public abstract class NewAbility {
     }
 
     public final void handleKeyPress(ServerPlayer player,C2SKeybindPacket.Type type) {
+        int cooldown = Utils.getCooldowns(player)[type.ordinal()];
+
+        if (cooldown > 0) {
+            player.sendSystemMessage(Component.literal("This ability is on cooldown: "+cooldown/20f+ " seconds remaining"));
+            return;
+        }
+
         switch (type) {
             case PRIMARY -> handlePrimary(player);
             case SECONDARY -> handleSecondary(player);
@@ -100,7 +109,7 @@ public abstract class NewAbility {
     }
 
     protected static void addCooldown(ServerPlayer player,int slot,int value) {
-        int[] ints = Services.PLATFORM.getCooldown(player);
+        int[] ints = Utils.getCooldowns(player);
         ints[slot] = ints[slot] + value;
     }
 
@@ -148,5 +157,12 @@ public abstract class NewAbility {
 
     public boolean isImmuneToFoodEffect(MobEffectInstance instance) {
         return eatImmunities.contains(instance.getEffect());
+    }
+
+    @Override
+    public String toString() {
+        return "NewAbility{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }

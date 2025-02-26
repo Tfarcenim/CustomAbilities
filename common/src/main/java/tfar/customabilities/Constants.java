@@ -10,14 +10,13 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.NoteBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SkullBlockEntity;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 
 import javax.annotation.Nullable;
 import java.util.*;
-
-import static net.minecraft.world.level.block.NoteBlock.*;
 
 public class Constants {
 
@@ -46,9 +45,9 @@ public class Constants {
 		NoteBlockInstrument instrument = NoteBlockInstrument.values()[level.getRandom().nextInt(NoteBlockInstrument.values().length)];
 		float $$7;
 		if (instrument.isTunable()) {
-			List<Integer> values = new ArrayList<>(NOTE.getPossibleValues());
+			List<Integer> values = new ArrayList<>(NoteBlock.NOTE.getPossibleValues());
 			int note = values.get(level.random.nextInt(values.size()));
-			$$7 = getPitchFromNote(note);
+			$$7 = NoteBlock.getPitchFromNote(note);
 			level.addParticle(ParticleTypes.NOTE, x + 0.5, y+ 1.2, z + 0.5, note / 24.0, 0.0, 0.0);
 		} else {
 			$$7 = 1.0F;

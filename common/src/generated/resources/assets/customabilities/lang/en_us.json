@@ -1,10 +1,11 @@
 {
-  "key.bat_morph": "Bat Morph (Barcode)",
+  "attribute.name.generic.fire_weakness": "Fire Weakness",
+  "effect.customabilities.electro_fist": "Electro Fist",
+  "effect.customabilities.frosted_fingers": "Frosted Fingers",
   "key.categories.customabilities": "CustomAbilities",
-  "key.flight_boost": "Flight Boost",
-  "key.levitation": "Levitation (Bug)",
-  "key.light_toggle": "Light Toggle (Bug)",
-  "key.speed_boost": "Speed Boost",
-  "key.teleport": "Teleport (Mari & Miblex)",
-  "key.toggle_invisibility": "Toggle Invisibility"
+  "key.customabilities.primary": "Primary",
+  "key.customabilities.quaternary": "Quaternary",
+  "key.customabilities.quinary": "Quinary",
+  "key.customabilities.secondary": "Secondary",
+  "key.customabilities.tertiary": "Tertiary"
 }

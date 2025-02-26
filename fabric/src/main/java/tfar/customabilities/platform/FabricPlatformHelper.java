@@ -65,11 +65,6 @@ public class FabricPlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public int[] getCooldown(Entity entity) {
-        return entity.getAttached(ModAttachmentTypes.COOLDOWN_DATA);
-    }
-
-    @Override
     public <MSG extends S2CModPacket> void registerClientPacket(Class<MSG> packetLocation, Function<FriendlyByteBuf, MSG> reader) {
         if (MixinEnvironment.getCurrentEnvironment().getSide() == MixinEnvironment.Side.CLIENT) {
             ClientPacketHandlerFabric.register(packetLocation,reader);
@@ -144,7 +139,9 @@ public class FabricPlatformHelper implements IPlatformHelper {
         if (attachment.isCopyOnDeath()) {
             builder.copyOnDeath();
         }
-        builder.initializer(attachment.getDefaultValueSupplier());
+        if (attachment.getDefaultValueSupplier() != null) {
+            builder.initializer(attachment.getDefaultValueSupplier());
+        }
         if (attachment.getCodec() != null) {
             builder.persistent(attachment.getCodec());
         }

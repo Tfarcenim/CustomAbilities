@@ -8,6 +8,7 @@ import net.minecraftforge.common.data.LanguageProvider;
 import tfar.customabilities.CustomAbilities;
 import tfar.customabilities.client.ModKeybinds;
 import tfar.customabilities.init.ModAttributes;
+import tfar.customabilities.init.ModMobEffects;
 
 public class ModLangProvider extends LanguageProvider {
     public ModLangProvider(PackOutput output) {
@@ -24,6 +25,9 @@ public class ModLangProvider extends LanguageProvider {
         addKey(ModKeybinds.QUINARY,"Quinary");
 
         addAttribute(ModAttributes.FIRE_WEAKNESS,"Fire Weakness");
+
+        add(ModMobEffects.FROSTED_FINGERS,"Frosted Fingers");
+        add(ModMobEffects.ELECTRO_FIST,"Electro Fist");
     }
 
     void addKey(KeyMapping mapping, String translation) {

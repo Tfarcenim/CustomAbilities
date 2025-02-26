@@ -54,9 +54,6 @@ public interface IPlatformHelper {
 
     void removeAllIdentities(Player player);
 
-
-    int[] getCooldown(Entity entity);
-
     <MSG extends S2CModPacket> void registerClientPacket(Class<MSG> packetLocation, Function<FriendlyByteBuf,MSG> reader);
     <MSG extends C2SModPacket> void registerServerPacket(Class<MSG> packetLocation, Function<FriendlyByteBuf,MSG> reader);
     void sendToClient(S2CModPacket msg, ServerPlayer player);
@@ -68,6 +65,15 @@ public interface IPlatformHelper {
 
     <T> void registerDataAttachment(CommonDataAttachment<T> attachment);
     <T> T getAttachedValue(Entity entity,CommonDataAttachment<T> attachment);
+     default <T> T getOrCreateAttachedValue(Entity entity,CommonDataAttachment<T> attachment) {
+         T value = getAttachedValue(entity,attachment);
+         if (value!=null) {
+             return value;
+         }
+         setAttachedValue(entity,attachment,attachment.getDefaultValueSupplier().get());
+         T newValue = getAttachedValue(entity,attachment);
+         return newValue;
+    }
     <T> void setAttachedValue(Entity entity,CommonDataAttachment<T> attachment,T value);
 
 }

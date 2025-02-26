@@ -11,6 +11,7 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import tfar.customabilities.ability.NewAbility;
+import tfar.customabilities.attachments.CommonDataAttachment;
 import tfar.customabilities.attachments.CommonDataAttachments;
 import tfar.customabilities.network.client.S2CSyncAbilityPacket;
 import tfar.customabilities.network.client.S2CSyncLightEmissionPacket;
@@ -75,6 +76,14 @@ public class Utils {
 
     public static NewAbility getAbility(Entity player) {
         return Services.PLATFORM.getAttachedValue(player,CommonDataAttachments.ABILITY);
+    }
+
+    public static int[] getPreviousLightLevels(Entity entity) {
+        return Services.PLATFORM.getOrCreateAttachedValue(entity,CommonDataAttachments.PREVIOUS_LIGHT_LEVELS);
+    }
+
+    public static int[] getCooldowns(Entity entity) {
+        return Services.PLATFORM.getOrCreateAttachedValue(entity, CommonDataAttachments.COOLDOWNS);
     }
 
 }

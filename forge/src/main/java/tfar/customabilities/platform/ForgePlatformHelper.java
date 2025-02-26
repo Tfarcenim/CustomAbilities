@@ -59,11 +59,6 @@ public class ForgePlatformHelper implements IPlatformHelper {
         CustomAbilitiesForge.removeAllIdentities(player);
     }
 
-    @Override
-    public int[] getCooldown(Entity entity) {
-        return new int[0];
-    }
-
     int i;
 
     @Override

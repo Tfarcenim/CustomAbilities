@@ -5,6 +5,7 @@ import tfar.customabilities.CustomAbilities;
 import tfar.customabilities.ability.NewAbility;
 import tfar.customabilities.platform.Services;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +21,22 @@ public class CommonDataAttachments {
             .setCodec(NewAbility.CODEC)
             .copyOnDeath()
             .setName(CustomAbilities.id("ability")));
+
+    public static final CommonDataAttachment<int[]> PREVIOUS_LIGHT_LEVELS = register(CommonDataAttachment.<int[]>create()
+            .setDefaultValueSupplier(CommonDataAttachments::createLightDefaults)
+            .setName(CustomAbilities.id("previous_light_levels"))
+    );
+
+    public static final CommonDataAttachment<int[]> COOLDOWNS = register(CommonDataAttachment.<int[]>create()
+            .setDefaultValueSupplier(() -> new int[5])
+            .setName(CustomAbilities.id("cooldown")));
+
+
+    static int[] createLightDefaults() {
+        int[] ints = new int[40];
+        Arrays.fill(ints, 15);
+        return ints;
+    }
 
     static <T> CommonDataAttachment<T> register(CommonDataAttachment<T> type) {
         Services.PLATFORM.registerDataAttachment(type);

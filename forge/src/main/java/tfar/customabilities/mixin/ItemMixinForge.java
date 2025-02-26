@@ -12,7 +12,7 @@ import tfar.customabilities.Constants;
 import tfar.customabilities.Utils;
 
 @Mixin(Item.class)
-public abstract class ItemMixin implements IForgeItem {
+public abstract class ItemMixinForge implements IForgeItem {
 
     @Override
     public boolean canElytraFly(ItemStack stack, LivingEntity entity) {
