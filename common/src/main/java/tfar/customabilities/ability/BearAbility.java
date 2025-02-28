@@ -2,8 +2,11 @@ package tfar.customabilities.ability;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.SmallFireball;
 import net.minecraft.world.level.block.LevelEvent;
@@ -33,6 +36,14 @@ import tfar.customabilities.init.ModMobEffects;
 public class BearAbility extends NewAbility{
     public BearAbility(String name) {
         super(name);
+    }
+
+    @Override
+    public float modifyDamageTaken(LivingEntity target, DamageSource source, float amount) {
+        if (source.is(DamageTypeTags.IS_LIGHTNING) ||source.is(DamageTypeTags.IS_DROWNING)) {
+            amount *= .5f;
+        }
+        return amount;
     }
 
     @Override

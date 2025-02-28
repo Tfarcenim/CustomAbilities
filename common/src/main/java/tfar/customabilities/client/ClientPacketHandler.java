@@ -2,10 +2,7 @@ package tfar.customabilities.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.world.entity.Entity;
-import tfar.customabilities.init.ModEntityTypes;
 import tfar.customabilities.network.client.S2CSyncDataAttachmentPacket;
 import tfar.customabilities.platform.Services;
 
@@ -20,10 +17,6 @@ public class ClientPacketHandler {
                 Services.PLATFORM.setAttachedValue(entity,p.attachment,p.value);
             }
         }
-    }
-
-    public static void renderers() {
-        EntityRenderers.register(ModEntityTypes.SMOKE_CLOUD, NoopRenderer::new);
     }
 
 }

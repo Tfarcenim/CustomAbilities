@@ -3,7 +3,6 @@ package tfar.customabilities.mixin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.world.effect.MobEffects;
-import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -13,8 +12,8 @@ import tfar.customabilities.client.CustomAbilitiesClient;
 
 
 @Mixin(LightTexture.class)
-@Debug(export = true)
-public class GameRendererMixin {
+//@Debug(export = true)
+public class LightTextureMixin {
 
     @Shadow @Final private Minecraft minecraft;
 

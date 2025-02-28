@@ -6,26 +6,8 @@ public class info {
 
 
 
-Sushi
-- Permanent Depth Strider (+33% swim speed)
-- Permanent Water Breathing (No particles)
-- When under water, night vision is granted (No particles)
-- Permanent Aqua Affinity (No particles)
-- All hits deal an additional 3 points of damage
-- Burns 50% faster
-- Can eat raw meat without being affected by hunger (raw chicken, rotten flesh.) Can only eat meat, cannot eat bread, vegetables, berries, etc.
 
 
-Devlin
-- Always has an invisible elytra equipped. Can still equip armor in the chest slot (Like Mari’s ability in our previous commission)
-- Sinks to the floor when in water. When under 2 blocks of water, Devlin has Slowness 1.
-        - Immune to damage caused by lightning strikes. Not immune for 30 seconds after being struck.
-
-        “Hover” Keybind toggle - Toggling makes all blocks around the player act like ice, plus a 10% speed increase. The ice effect follows the player and only affects the player who used it. (if possible, the player will hover over water.) Devlin does not take fall damage when hover is active.
-This ability has 5 uses before having to sleep to reset the count. If toggled when Devlin has run out of uses: Devlin takes 2 HP worth of damage and one random block within 3 blocks of Devlin will break.
-
-        “Boost” Keybind toggle - Toggling this ability will launch Devlin in the direction that he is looking. When walking it launches him 8 blocks. When flying, it rocket boosts Devlin.
-This ability has 5 uses before having to sleep to reset the count. If toggled when Devlin has run out of uses: Devlin takes 2 HP worth of damage and one random block within 3 blocks of Devlin will break.
 
 
 Pepper

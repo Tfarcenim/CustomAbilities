@@ -4,14 +4,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tfar.customabilities.ability.NewAbility;
@@ -89,6 +87,12 @@ public class CustomAbilities {
         if (source.is(DamageTypeTags.IS_FIRE)) {
             amount *=target.getAttributeValue(ModAttributes.FIRE_WEAKNESS);
         }
+
+        NewAbility ability = Utils.getAbility(target);
+        if (ability != null) {
+            amount = ability.modifyDamageTaken(target, source, amount);
+        }
+
         if (Utils.hasAbility(target,Abilities.SYD)) {
             if (attacker instanceof LivingEntity livingAttacker) {
                 if (livingAttacker.getRandom().nextDouble() < .15) {
@@ -96,18 +100,6 @@ public class CustomAbilities {
                 }
             }
         }
-
-        else if (Utils.hasAbility(target,Abilities.BEAR)) {
-            if (source.is(DamageTypeTags.IS_LIGHTNING) ||source.is(DamageTypeTags.IS_DROWNING)) {
-                amount *= .5f;
-            }
-
-            if (source.is(DamageTypes.FALL)) {//brawl
-             amount*=.25f;
-            }
-        }
-
-
 
         //"Frosted Fingers" Keybind - Will make Bear’s punches apply Slowness 2 and Weakness 2 for 10 seconds.
         // Repeated hits will not stack the countdown on the effects, but reset them. This keybind has a cooldown of 60 seconds.
@@ -117,6 +109,10 @@ public class CustomAbilities {
             if (livingAttacker.hasEffect(ModMobEffects.FROSTED_FINGERS)) {
                 target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10 * 20, 1));
                 target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 10 * 20, 1));
+            }
+
+            if (Utils.hasAbility(livingAttacker,Abilities.SUSHI)) {
+                amount+=3;
             }
 
         }
@@ -133,8 +129,17 @@ public class CustomAbilities {
         }
     }
 
-    public static boolean nativeAquaAffinity(Player player) {
-        return false;
+    public static boolean nativeAquaAffinity(LivingEntity player) {
+        NewAbility ability = Utils.getAbility(player);
+        return ability == Abilities.SUSHI;
+    }
+
+    public static int getDepthStriderAbility(LivingEntity player) {
+        NewAbility ability = Utils.getAbility(player);
+        if (ability == Abilities.SUSHI) {
+            return 1;
+        }
+        return 0;
     }
 
     public static float onLivingDamaged(LivingEntity livingEntity, DamageSource source, float f) {
@@ -148,10 +153,11 @@ public class CustomAbilities {
         return f;
     }
 
-    public static boolean canPlayerEat(Player instance, boolean canAlwaysEat, ItemStack stack) {
-        if (Utils.hasAbility(instance,Abilities.BRAWL)) {
-            return stack.getItem().getFoodProperties().isMeat();
-        }
-        return instance.canEat(stack.getItem().getFoodProperties().canAlwaysEat());
+    public static boolean canPlayerEat(Player player, boolean canAlwaysEat, ItemStack stack) {
+        boolean vanillaEat = player.canEat(canAlwaysEat);
+        NewAbility ability = Utils.getAbility(player);
+
+        return vanillaEat && (ability == null || ability.canEat(stack));
+
     }
 }

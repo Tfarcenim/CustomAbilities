@@ -71,6 +71,11 @@ public class StabberzAbility extends NewAbility {
             entity.hurtMarked = true;
         }
         player.addEffect(new MobEffectInstance(MobEffects.HUNGER,20 * 30));
+    }
 
+    @Override
+    public void onRemove(ServerPlayer player) {
+        super.onRemove(player);
+        player.removeEffect(MobEffects.SLOW_FALLING);
     }
 }

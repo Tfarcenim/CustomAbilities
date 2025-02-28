@@ -13,7 +13,7 @@
     "PlayerMixin"
   ],
   "client": [
-    "GameRendererMixin",
+    "LightTextureMixin",
     "LocalPlayerMixin",
     "MinecraftMixin"
   ],

@@ -26,7 +26,6 @@ public class Abilities {
     public static final NewAbility STABBERZ = register(new StabberzAbility("stabberz")
     );
     public static final NewAbility CUBONE = register(new CuboneAbility("cubone").providesElytra()
-            .addMobEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,MobEffectInstance.INFINITE_DURATION,0,false,false))
             .addAttributeModifier(ModAttributes.FIRE_WEAKNESS,.5, AttributeModifier.Operation.MULTIPLY_TOTAL)
             .addAttributeModifier(Attributes.MAX_HEALTH,-4, AttributeModifier.Operation.ADDITION)
     );
@@ -39,11 +38,21 @@ public class Abilities {
             .addAttributeModifier(ModAttributes.FIRE_WEAKNESS,-.5, AttributeModifier.Operation.MULTIPLY_TOTAL)
     );
 
+    public static final NewAbility SUSHI = register(new SushiAbility("sushi")
+            .addMobEffect(new MobEffectInstance(MobEffects.WATER_BREATHING,MobEffectInstance.INFINITE_DURATION,1,false,false))
+            .addEatImmunity(MobEffects.POISON,MobEffects.HUNGER)
+            .addAttributeModifier(ModAttributes.FIRE_WEAKNESS,.5, AttributeModifier.Operation.MULTIPLY_TOTAL)
+    );
+
     public static final NewAbility MARI = register(new MariAbility("mari"));
     public static final NewAbility RAMSEY = register(new RamseyAbility("ramsey"));
     public static final NewAbility BRAWL = register(new BrawlAbility("brawl")
             .addMobEffect(new MobEffectInstance(MobEffects.REGENERATION,MobEffectInstance.INFINITE_DURATION,0,false,false))
             .addEatImmunity(MobEffects.POISON,MobEffects.HUNGER)
+    );
+
+    public static final NewAbility DEVLIN = register(new DevlinAbility("devlin")
+            .providesElytra()
     );
 
 

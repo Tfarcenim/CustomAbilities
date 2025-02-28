@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -12,11 +13,11 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import tfar.customabilities.Abilities;
 import tfar.customabilities.CustomAbilities;
 import tfar.customabilities.Utils;
 import tfar.customabilities.network.server.C2SKeybindPacket;
-import tfar.customabilities.platform.Services;
 
 import java.util.*;
 
@@ -157,6 +158,14 @@ public class NewAbility {
 
     public boolean isImmuneToFoodEffect(MobEffectInstance instance) {
         return eatImmunities.contains(instance.getEffect());
+    }
+
+    public float modifyDamageTaken(LivingEntity target, DamageSource source, float amount) {
+        return amount;
+    }
+
+    public boolean canEat(ItemStack stack) {
+        return true;
     }
 
     @Override

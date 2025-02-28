@@ -24,20 +24,10 @@ import tfar.customabilities.init.ModEntityTypes;
 
 public class SmokeCloudEntity extends Entity implements TraceableEntity {
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final int TIME_BETWEEN_APPLICATIONS = 5;
     private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(SmokeCloudEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_HEIGHT = SynchedEntityData.defineId(SmokeCloudEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<ParticleOptions> DATA_PARTICLE = SynchedEntityData.defineId(SmokeCloudEntity.class, EntityDataSerializers.PARTICLE);
-    private static final float MAX_RADIUS = 32.0F;
-    private static final float MINIMAL_RADIUS = 0.5F;
-    private static final float DEFAULT_RADIUS = 3.0F;
-    public static final float DEFAULT_WIDTH = 6.0F;
-    public static final float HEIGHT = 0.5F;
     private int duration = 600;
-    private int waitTime = 20;
-    private int reapplicationDelay = 20;
-    private int durationOnUse;
-    private float radiusOnUse;
-    private float radiusPerTick;
     @Nullable
     private LivingEntity owner;
     @Nullable
@@ -55,15 +45,21 @@ public class SmokeCloudEntity extends Entity implements TraceableEntity {
 
     @Override
     protected void defineSynchedData() {
-        this.getEntityData().define(DATA_RADIUS, 3.0F);
+        this.getEntityData().define(DATA_RADIUS, 3f);
+        this.getEntityData().define(DATA_HEIGHT, 5f);
         this.getEntityData().define(DATA_PARTICLE, ParticleTypes.ENTITY_EFFECT);
     }
 
     public void setRadius(float radius) {
         if (!this.level().isClientSide) {
-            this.getEntityData().set(DATA_RADIUS, Mth.clamp(radius, 0.0F, 32.0F));
+            this.getEntityData().set(DATA_RADIUS, Math.max(radius, 0));
         }
+    }
 
+    public void setHeight(float height) {
+        if (!this.level().isClientSide) {
+            this.getEntityData().set(DATA_HEIGHT, Math.max(height, 0));
+        }
     }
 
     @Override
@@ -77,6 +73,10 @@ public class SmokeCloudEntity extends Entity implements TraceableEntity {
 
     public float getRadius() {
         return this.getEntityData().get(DATA_RADIUS);
+    }
+
+    public float getHeight() {
+        return getEntityData().get(DATA_HEIGHT);
     }
 
     public ParticleOptions getParticle() {
@@ -99,78 +99,31 @@ public class SmokeCloudEntity extends Entity implements TraceableEntity {
     public void tick() {
         super.tick();
         float radius = this.getRadius();
+        float height = getHeight();
         if (this.level().isClientSide) {
 
             ParticleOptions particleoptions = this.getParticle();
-            int i = Mth.ceil((float) Math.PI * radius * radius);
+            int i = Mth.ceil( radius * radius * height/2);
 
             for(int j = 0; j < i; ++j) {
                 float angle = this.random.nextFloat() * ((float)Math.PI * 2F);
                 float r = Mth.sqrt(this.random.nextFloat()) * radius;
                 double xPos = this.getX() + (double)(Mth.cos(angle) * r);
-                double yPos = this.getY() + random.nextDouble() * 2;
-                double d4 = this.getZ() + (double)(Mth.sin(angle) * r);
+                double yPos = this.getY() + random.nextDouble() * height;
+                double zPos = this.getZ() + (double)(Mth.sin(angle) * r);
                 double xSpeed = 0 * (0.5D - this.random.nextDouble()) * 0.15D;
-                double ySpeed = 0.01F;
+                double ySpeed = 0;
                 double zSpeed = 0 *(0.5D - this.random.nextDouble()) * 0.15D;
 
-                this.level().addAlwaysVisibleParticle(particleoptions, xPos, yPos, d4, xSpeed, ySpeed, zSpeed);
+                this.level().addAlwaysVisibleParticle(particleoptions, xPos, yPos, zPos, xSpeed, ySpeed, zSpeed);
             }
         } else {
-            if (this.tickCount >= this.waitTime + this.duration) {
+            if (this.tickCount >= this.duration) {
                 this.discard();
-                return;
-            }
-
-            boolean flag1 = this.tickCount < this.waitTime;
-
-            if (flag1) {
-                return;
-            }
-
-            if (this.radiusPerTick != 0.0F) {
-                radius += this.radiusPerTick;
-                if (radius < 0.5F) {
-                    this.discard();
-                    return;
-                }
-
-                this.setRadius(radius);
             }
         }
     }
 
-    public float getRadiusOnUse() {
-        return this.radiusOnUse;
-    }
-
-    public void setRadiusOnUse(float radiusOnUse) {
-        this.radiusOnUse = radiusOnUse;
-    }
-
-    public float getRadiusPerTick() {
-        return this.radiusPerTick;
-    }
-
-    public void setRadiusPerTick(float radiusPerTick) {
-        this.radiusPerTick = radiusPerTick;
-    }
-
-    public int getDurationOnUse() {
-        return this.durationOnUse;
-    }
-
-    public void setDurationOnUse(int durationOnUse) {
-        this.durationOnUse = durationOnUse;
-    }
-
-    public int getWaitTime() {
-        return this.waitTime;
-    }
-
-    public void setWaitTime(int waitTime) {
-        this.waitTime = waitTime;
-    }
 
     public void setOwner(@Nullable LivingEntity owner) {
         this.owner = owner;
@@ -197,11 +150,7 @@ public class SmokeCloudEntity extends Entity implements TraceableEntity {
     protected void readAdditionalSaveData(CompoundTag compound) {
         this.tickCount = compound.getInt("Age");
         this.duration = compound.getInt("Duration");
-        this.waitTime = compound.getInt("WaitTime");
-        this.reapplicationDelay = compound.getInt("ReapplicationDelay");
-        this.durationOnUse = compound.getInt("DurationOnUse");
-        this.radiusOnUse = compound.getFloat("RadiusOnUse");
-        this.radiusPerTick = compound.getFloat("RadiusPerTick");
+        setHeight(compound.getFloat("Height"));
         this.setRadius(compound.getFloat("Radius"));
         if (compound.hasUUID("Owner")) {
             this.ownerUUID = compound.getUUID("Owner");
@@ -220,12 +169,8 @@ public class SmokeCloudEntity extends Entity implements TraceableEntity {
     protected void addAdditionalSaveData(CompoundTag compound) {
         compound.putInt("Age", this.tickCount);
         compound.putInt("Duration", this.duration);
-        compound.putInt("WaitTime", this.waitTime);
-        compound.putInt("ReapplicationDelay", this.reapplicationDelay);
-        compound.putInt("DurationOnUse", this.durationOnUse);
-        compound.putFloat("RadiusOnUse", this.radiusOnUse);
-        compound.putFloat("RadiusPerTick", this.radiusPerTick);
         compound.putFloat("Radius", this.getRadius());
+        compound.putFloat("Height", this.getHeight());
         compound.putString("Particle", this.getParticle().writeToString());
         if (this.ownerUUID != null) {
             compound.putUUID("Owner", this.ownerUUID);
@@ -234,7 +179,7 @@ public class SmokeCloudEntity extends Entity implements TraceableEntity {
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        if (DATA_RADIUS.equals(key)) {
+        if (DATA_RADIUS.equals(key) || DATA_HEIGHT.equals(key)) {
             this.refreshDimensions();
         }
 
@@ -248,6 +193,6 @@ public class SmokeCloudEntity extends Entity implements TraceableEntity {
 
     @Override
     public EntityDimensions getDimensions(Pose pose) {
-        return EntityDimensions.scalable(this.getRadius() * 2.0F, 3);
+        return EntityDimensions.scalable(this.getRadius() * 2.0F, getHeight());
     }
 }

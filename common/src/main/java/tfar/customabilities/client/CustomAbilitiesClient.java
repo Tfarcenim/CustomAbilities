@@ -1,9 +1,14 @@
 package tfar.customabilities.client;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.Input;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.NoopRenderer;
+import tfar.customabilities.Abilities;
 import tfar.customabilities.Utils;
 import tfar.customabilities.ability.NewAbility;
+import tfar.customabilities.init.ModEntityTypes;
 import tfar.customabilities.network.server.C2SKeybindPacket;
 import tfar.customabilities.platform.Services;
 
@@ -42,5 +47,19 @@ public class CustomAbilitiesClient {
             return ability.getNightVisionModifier(player,old);
         }
         return old;
+    }
+
+    public static void renderers() {
+        EntityRenderers.register(ModEntityTypes.SMOKE_CLOUD, NoopRenderer::new);
+        EntityRenderers.register(ModEntityTypes.SMALL_TNT,SmallTntRenderer::new);
+    }
+
+    public static void updateInputs(LocalPlayer localPlayer, Input input) {
+        NewAbility ability = Utils.getAbility(localPlayer);
+        if (ability == Abilities.DEVLIN) {
+            if (localPlayer.isUnderWater()) {
+                input.jumping = false;
+            }
+        }
     }
 }
