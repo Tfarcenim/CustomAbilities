@@ -16,10 +16,10 @@ import tfar.customabilities.Utils;
 //- Permanent Swift Sneak (Potency 3)
 //- Permanent +15% walking/running speed
 //
-//“Invisibility” Keybind toggle - Toggling this ability will cause Pepper’s player model to fade in/out of visibility
+//"Invisibility" Keybind toggle - Toggling this ability will cause Pepper’s player model to fade in/out of visibility
 // (Same Ramsey invisibility as last commission, but with a fade if possible) (No particles)
 //
-//        “Detect” Keybind toggle - Players within a 32 block radius from pepper have the glowing effect until toggled off. Only visible to Pepper
+//        "Detect" Keybind toggle - Players within a 32 block radius from pepper have the glowing effect until toggled off. Only visible to Pepper
 //
 //"Elytra" Keybind toggle - Toggling equips/unequips invisible elytra. Can still equip armor in the chest slot
 //

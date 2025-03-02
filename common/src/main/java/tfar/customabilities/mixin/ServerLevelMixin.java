@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tfar.customabilities.CustomAbilities;
 
 @Mixin(ServerLevel.class)
-@Debug(export = true)
+//@Debug(export = true)
 public class ServerLevelMixin {
 
     @Inject(method = "findLightningTargetAround",at = @At(value = "NEW",

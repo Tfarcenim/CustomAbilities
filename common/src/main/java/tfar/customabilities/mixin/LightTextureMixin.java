@@ -18,7 +18,7 @@ public class LightTextureMixin {
     @Shadow @Final private Minecraft minecraft;
 
     @ModifyVariable(method = "updateLightTexture",
-            at = @At(value = "INVOKE", target = "Lorg/joml/Vector3f;<init>(FFF)V",ordinal = 0),ordinal = 6)
+            at = @At(value = "INVOKE", target = "Lorg/joml/Vector3f;<init>(FFF)V",ordinal = 0,remap = false),ordinal = 6)
     private float adjustVision(float old) {
         if (!minecraft.player.hasEffect(MobEffects.NIGHT_VISION)) {
             return CustomAbilitiesClient.getNightVisionScale(minecraft.player,old);
