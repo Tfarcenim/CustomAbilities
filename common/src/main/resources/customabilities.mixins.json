@@ -11,7 +11,8 @@
     "FoodDataMixin",
     "ItemMixin",
     "LivingEntityMixin",
-    "PlayerMixin"
+    "PlayerMixin",
+    "ServerLevelMixin"
   ],
   "client": [
     "LightTextureMixin",

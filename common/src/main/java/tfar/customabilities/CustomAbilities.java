@@ -2,6 +2,7 @@ package tfar.customabilities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
@@ -10,12 +11,14 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -27,6 +30,9 @@ import tfar.customabilities.init.ModAttributes;
 import tfar.customabilities.init.ModMobEffects;
 import tfar.customabilities.network.PacketHandler;
 import tfar.customabilities.platform.Services;
+
+import java.util.List;
+import java.util.Optional;
 
 // This class is part of the common project meaning it is shared between all supported loaders. Code written here can only
 // import and access the vanilla codebase, libraries used by vanilla, and optionally third party libraries that provide
@@ -51,7 +57,7 @@ public class CustomAbilities {
     }
 
     public static ResourceLocation id(String ability) {
-        return new ResourceLocation(MOD_ID,ability);
+        return new ResourceLocation(MOD_ID, ability);
     }
 
     public static void tick(ServerPlayer serverPlayer) {
@@ -69,33 +75,37 @@ public class CustomAbilities {
             }
         }
 
-        updateCooldowns(Utils.getCooldowns(serverPlayer));
+        int[] cooldowns = Utils.getCooldowns(serverPlayer);
+        boolean refresh = updateCooldowns(cooldowns);
+        if (refresh) {
+            Utils.setCooldowns(serverPlayer,cooldowns);
+        }
     }
 
     static boolean updateCooldowns(int[] cooldowns) {
         boolean changed = false;
-        for(int i = 0; i < cooldowns.length;i++) {
-            if (cooldowns[i]>0) {
-                cooldowns[0]--;
+        for (int i = 0; i < cooldowns.length; i++) {
+            if (cooldowns[i] > 0) {
+                cooldowns[i]--;
                 changed = true;
             }
         }
         return changed;
     }
 
-    public static void insertLightLevel(Entity entity,int lightLevel) {
+    public static void insertLightLevel(Entity entity, int lightLevel) {
         int[] lightLevels = Utils.getPreviousLightLevels(entity);
-        for (int i = lightLevels.length-2; i >=0;i--) {
-            lightLevels[i+1] = lightLevels[i];
+        for (int i = lightLevels.length - 2; i >= 0; i--) {
+            lightLevels[i + 1] = lightLevels[i];
         }
         lightLevels[0] = lightLevel;
     }
 
-    public static float onLivingHurt(LivingEntity target, DamageSource source,float amount) {
+    public static float onLivingHurt(LivingEntity target, DamageSource source, float amount) {
         Entity attacker = source.getEntity();
 
         if (source.is(DamageTypeTags.IS_FIRE)) {
-            amount *=target.getAttributeValue(ModAttributes.FIRE_WEAKNESS);
+            amount *= target.getAttributeValue(ModAttributes.FIRE_WEAKNESS);
         }
 
         if (source.is(DamageTypeTags.IS_DROWNING)) {
@@ -107,10 +117,10 @@ public class CustomAbilities {
             amount = ability.modifyDamageTaken(target, source, amount);
         }
 
-        if (Utils.hasAbility(target,Abilities.SYD)) {
+        if (Utils.hasAbility(target, Abilities.SYD)) {
             if (attacker instanceof LivingEntity livingAttacker) {
                 if (livingAttacker.getRandom().nextDouble() < .15) {
-                    livingAttacker.addEffect(new MobEffectInstance(MobEffects.POISON,3 * 20,0));
+                    livingAttacker.addEffect(new MobEffectInstance(MobEffects.POISON, 3 * 20, 0));
                 }
             }
         }
@@ -125,13 +135,13 @@ public class CustomAbilities {
                 target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 10 * 20, 1));
             }
 
-            if (Utils.hasAbility(livingAttacker,Abilities.SUSHI)) {
-                amount+=3;
+            if (Utils.hasAbility(livingAttacker, Abilities.SUSHI)) {
+                amount += 3;
             }
 
-            if (Utils.hasAbility(livingAttacker,Abilities.KJ)) {
+            if (Utils.hasAbility(livingAttacker, Abilities.KJ)) {
                 if (target.getRandom().nextDouble() < .25) {
-                    target.addEffect(new MobEffectInstance(MobEffects.POISON,3 * 20,0));
+                    target.addEffect(new MobEffectInstance(MobEffects.POISON, 3 * 20, 0));
                 }
             }
         }
@@ -166,6 +176,9 @@ public class CustomAbilities {
 
         if (attacker instanceof LivingEntity livingAttacker && livingAttacker.hasEffect(ModMobEffects.ELECTRO_FIST) && livingAttacker.getMainHandItem().isEmpty()) {
             f = 5;
+            if (Utils.hasAbility(attacker, Abilities.MARI)) {
+                f = 8;
+            }
             livingAttacker.removeEffect(ModMobEffects.ELECTRO_FIST);
         }
 
@@ -182,7 +195,7 @@ public class CustomAbilities {
 
     //return true to prevent damage
     public static boolean livingAttack(LivingEntity livingEntity, DamageSource source, float amount) {
-        if (Utils.hasAbility(livingEntity,Abilities.DEVLIN)) {
+        if (Utils.hasAbility(livingEntity, Abilities.DEVLIN)) {
             if (source.is(DamageTypes.FALL)) return true;
             if (source.is(DamageTypeTags.IS_LIGHTNING)) {
                 boolean shouldHurt = livingEntity.hasEffect(ModMobEffects.SHOCKED);
@@ -218,10 +231,10 @@ public class CustomAbilities {
     public static int modifyProtection(LivingEntity livingEntity, DamageSource source, int base) {
         NewAbility newAbility = Utils.getAbility(livingEntity);
         if (newAbility != null) {
-            return Math.max(base,newAbility.getNaturalProtectionPoints(livingEntity,source));
+            return Math.max(base, newAbility.getNaturalProtectionPoints(livingEntity, source));
         }
-        if (Utils.hasAbility(livingEntity,Abilities.PEPPER) && source.is(DamageTypes.FALL)) {
-            return Math.max(12,base);
+        if (Utils.hasAbility(livingEntity, Abilities.PEPPER) && source.is(DamageTypes.FALL)) {
+            return Math.max(12, base);
         }
         return base;
     }
@@ -229,17 +242,24 @@ public class CustomAbilities {
     public static int getBuiltInLevel(Enchantment enchantment, LivingEntity entity) {
         NewAbility ability = Utils.getAbility(entity);
         if (ability != null) {
-            return ability.getNaturalEnchantmentLevel(entity,enchantment);
+            return ability.getNaturalEnchantmentLevel(entity, enchantment);
         }
 
         return 0;
     }
 
-    public static boolean shouldPrevent(LivingEntity entity,MobEffectInstance mobEffectInstance) {
+    public static boolean shouldPrevent(LivingEntity entity, MobEffectInstance mobEffectInstance) {
         NewAbility ability = Utils.getAbility(entity);
         if (ability != null) {
             return ability == Abilities.BUG && mobEffectInstance.getEffect() == MobEffects.POISON;
         }
         return false;
+    }
+
+    public static Optional<BlockPos> findMari(ServerLevel level, BlockPos around) {
+        Player player = level.getNearestPlayer(around.getX(),around.getY(),around.getZ(),100, (entity) -> {
+            return entity != null && entity.isAlive() && level.canSeeSky(entity.blockPosition()) && Utils.hasAbility(entity,Abilities.MARI);
+        });
+        return Optional.ofNullable(player != null ? player.blockPosition():null);
     }
 }

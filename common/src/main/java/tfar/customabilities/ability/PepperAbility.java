@@ -47,7 +47,7 @@ public class PepperAbility extends NewAbility{
         super.handleSecondary(player);
         if (player.isFallFlying()) {
             Utils.flightBoost(player);
-            addCooldown(player,0,20);
+            addCooldown(player,1,20);
         }
     }
 

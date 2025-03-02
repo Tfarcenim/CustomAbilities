@@ -101,6 +101,11 @@ public class Utils {
         return Services.PLATFORM.getOrCreateAttachedValue(entity, CommonDataAttachments.COOLDOWNS);
     }
 
+    public static void setCooldowns(Entity entity,int[] cooldowns) {
+        Services.PLATFORM.setAttachedValue(entity,CommonDataAttachments.COOLDOWNS, cooldowns);
+    }
+
+
     public static DevlinAbilityData getDelvinAbilityData(Entity entity) {
         return Services.PLATFORM.getOrCreateAttachedValue(entity, CommonDataAttachments.DEVLIN_ABILITY_DATA);
     }

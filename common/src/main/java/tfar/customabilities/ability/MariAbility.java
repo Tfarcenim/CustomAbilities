@@ -3,7 +3,13 @@ package tfar.customabilities.ability;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import tfar.customabilities.Abilities;
 import tfar.customabilities.Utils;
+import tfar.customabilities.init.ModMobEffects;
 
 //Mari
 //- Every half a second, Mari passively has a 5% chance to deal half a heart of damage to any player within a five block radius.
@@ -24,8 +30,23 @@ public class MariAbility extends NewAbility {
     }
 
     @Override
+    public void tick(ServerPlayer player) {
+        super.tick(player);
+        if (player.tickCount % 10 ==0 && player.getRandom().nextDouble() < .05) {
+            Player nearby = player.level().getNearestPlayer(player.getX(), player.getY(), player.getZ(), 5, (entity) -> {
+                return entity != null && entity.isAlive() && entity instanceof LivingEntity livingEntity && livingEntity.getHealth() >1;
+            });
+            if (nearby!=null) {
+                nearby.hurt(player.damageSources().lightningBolt(),1);
+            }
+        }
+    }
+
+    @Override
     public void handlePrimary(ServerPlayer player) {
         super.handlePrimary(player);
+        player.addEffect(new MobEffectInstance(ModMobEffects.ELECTRO_FIST,MobEffectInstance.INFINITE_DURATION,0,false,false));
+        addCooldown(player,2,30*20);
     }
 
     @Override
@@ -37,6 +58,7 @@ public class MariAbility extends NewAbility {
     @Override
     public void handleTertiary(ServerPlayer player) {
         super.handleTertiary(player);
+        player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,20 * 30,0,false,false));
     }
 
     @Override
