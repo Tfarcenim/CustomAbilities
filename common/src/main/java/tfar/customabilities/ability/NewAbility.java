@@ -5,8 +5,10 @@ import com.mojang.serialization.Codec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -14,9 +16,11 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import tfar.customabilities.Abilities;
 import tfar.customabilities.CustomAbilities;
 import tfar.customabilities.Utils;
+import tfar.customabilities.init.ModMobEffects;
 import tfar.customabilities.network.server.C2SKeybindPacket;
 
 import java.util.*;
@@ -40,6 +44,10 @@ public class NewAbility {
         mobEffects.put(instance.getEffect(),instance);
         return this;
     }
+
+    public NewAbility addPermanentMobEffect(MobEffect effect) {
+        return addMobEffect(new MobEffectInstance(effect,MobEffectInstance.INFINITE_DURATION,0,false,false));
+    };
 
     public NewAbility providesElytra() {
         isElytra = true;
@@ -168,10 +176,30 @@ public class NewAbility {
         return true;
     }
 
+    public void onWakeup(ServerPlayer player) {
+
+    }
+
     @Override
     public String toString() {
         return "NewAbility{" +
                 "name='" + name + '\'' +
                 '}';
+    }
+
+    public int getNaturalEnchantmentLevel(LivingEntity entity, Enchantment enchantment) {
+        return 0;
+    }
+
+    public boolean shouldGlow(Player player, Entity lookingAt) {
+        return false;
+    }
+
+    public int getNaturalProtectionPoints(LivingEntity livingEntity, DamageSource source) {
+        return 0;
+    }
+
+    public boolean isImmuneTo(DamageSource source) {
+        return false;
     }
 }

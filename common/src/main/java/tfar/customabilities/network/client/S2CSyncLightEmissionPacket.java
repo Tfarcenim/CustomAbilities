@@ -18,7 +18,7 @@ public class S2CSyncLightEmissionPacket extends S2CSyncDataAttachmentPacket<Inte
     }
 
     @Override
-    protected void writeValue(FriendlyByteBuf buf, Integer value) {
+    protected void writeValue(FriendlyByteBuf buf) {
         buf.writeInt(value);
     }
 }

@@ -23,7 +23,7 @@ public class S2CSyncAbilityPacket extends S2CSyncDataAttachmentPacket<NewAbility
     }
 
     @Override
-    protected void writeValue(FriendlyByteBuf buf, NewAbility value) {
+    protected void writeValue(FriendlyByteBuf buf) {
         buf.writeUtf(value == null ? "null" : value.getName());
     }
 }

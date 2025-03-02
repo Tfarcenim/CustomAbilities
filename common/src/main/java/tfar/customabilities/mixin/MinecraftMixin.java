@@ -28,9 +28,11 @@ public class MinecraftMixin {
         if (alreadyGlowing) return;
         if (this.player != null) {
             NewAbility ability = Utils.getAbility(this.player);
-
             if (ability != null) {
-
+                boolean shouldGlow = ability.shouldGlow(this.player,entity);
+                if (shouldGlow) {
+                    cir.setReturnValue(true);
+                }
             }
         }
     }

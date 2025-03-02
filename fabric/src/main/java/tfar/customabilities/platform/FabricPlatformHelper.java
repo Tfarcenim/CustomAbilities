@@ -7,7 +7,9 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import tfar.customabilities.attachments.CommonDataAttachment;
+import tfar.customabilities.attachments.CommonDataAttachments;
 import tfar.customabilities.init.ModAttachmentTypes;
 import tfar.customabilities.ScheduledCallback;
 import tfar.customabilities.ability.NewAbility;
@@ -146,5 +149,10 @@ public class FabricPlatformHelper implements IPlatformHelper {
             builder.persistent(attachment.getCodec());
         }
         return builder.buildAndRegister(attachment.getName());
+    }
+
+    @Override
+    public CommonDataAttachment<?> findAttachment(ResourceLocation name) {
+        return CommonDataAttachments.MAP.get(name);
     }
 }

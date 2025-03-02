@@ -18,7 +18,7 @@ public abstract class S2CSyncDataAttachmentPacket<T> implements S2CModPacket{
     }
 
     protected abstract T readValue(FriendlyByteBuf buf);
-    protected abstract void writeValue(FriendlyByteBuf buf,T value);
+    protected abstract void writeValue(FriendlyByteBuf buf);
 
     public S2CSyncDataAttachmentPacket(int entityID, CommonDataAttachment<T> attachment, T value) {
         this.entityID = entityID;
@@ -35,6 +35,6 @@ public abstract class S2CSyncDataAttachmentPacket<T> implements S2CModPacket{
     public void write(FriendlyByteBuf to) {
         to.writeInt(entityID);
         to.writeResourceLocation(attachment.getName());
-        writeValue(to,value);
+        writeValue(to);
     }
 }

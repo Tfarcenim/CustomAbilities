@@ -1,11 +1,15 @@
 package tfar.customabilities.ability;
 
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
 import tfar.customabilities.Utils;
 
 //Mari
 //- Every half a second, Mari passively has a 5% chance to deal half a heart of damage to any player within a five block radius.
-// Damage dealt will play a small electric buzz noise. A menu to adjust the chance percentage to any value can be accessible through a keybind. This damage will lower the health of players, but cannot kill them (as in it cannot do the finishing blow, similar to the effects of poison.) When a player is at half a heart, they will not take damage from this effect. This effect does not affect Mari.
+// Damage dealt will play a small electric buzz noise. A menu to adjust the chance percentage to any value can be accessible through a keybind.
+// This damage will lower the health of players, but cannot kill them (as in it cannot do the finishing blow, similar to the effects of poison.)
+// When a player is at half a heart, they will not take damage from this effect. This effect does not affect Mari.
 //        - Lightning that strikes within a 100 block radius will strike directly on top of Mari instead. Mari is immune to this damage.
 //
 //"Charge" Keybind - This ability causes the next punch with an empty hand to deal 8 health points of damage to the player/mob, regardless of armor. (Only one punch until the keybind is activated again.) This keybind has a cooldown of 30 seconds.
@@ -33,6 +37,10 @@ public class MariAbility extends NewAbility {
     @Override
     public void handleTertiary(ServerPlayer player) {
         super.handleTertiary(player);
+    }
 
+    @Override
+    public boolean isImmuneTo(DamageSource source) {
+        return super.isImmuneTo(source) && source.is(DamageTypeTags.IS_LIGHTNING);
     }
 }

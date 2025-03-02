@@ -2,6 +2,7 @@ package tfar.customabilities.platform.services;
 
 import com.mojang.datafixers.util.Either;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -65,15 +66,17 @@ public interface IPlatformHelper {
 
     <T> void registerDataAttachment(CommonDataAttachment<T> attachment);
     <T> T getAttachedValue(Entity entity,CommonDataAttachment<T> attachment);
-     default <T> T getOrCreateAttachedValue(Entity entity,CommonDataAttachment<T> attachment) {
-         T value = getAttachedValue(entity,attachment);
-         if (value!=null) {
-             return value;
-         }
-         setAttachedValue(entity,attachment,attachment.getDefaultValueSupplier().get());
-         T newValue = getAttachedValue(entity,attachment);
-         return newValue;
+    default <T> T getOrCreateAttachedValue(Entity entity,CommonDataAttachment<T> attachment) {
+        T value = getAttachedValue(entity,attachment);
+        if (value!=null) {
+            return value;
+        }
+        setAttachedValue(entity,attachment,attachment.getDefaultValueSupplier().get());
+        T newValue = getAttachedValue(entity,attachment);
+        return newValue;
     }
     <T> void setAttachedValue(Entity entity,CommonDataAttachment<T> attachment,T value);
+
+    CommonDataAttachment<?> findAttachment(ResourceLocation name);
 
 }

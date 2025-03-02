@@ -3,8 +3,12 @@ package tfar.customabilities;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.EntityElytraEvents;
+import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import tfar.customabilities.attachments.CommonDataAttachments;
 import tfar.customabilities.init.ModAttributes;
 import tfar.customabilities.init.ModEntityTypes;
@@ -23,6 +27,11 @@ public class CustomAbilitiesFabric implements ModInitializer {
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             Services.PLATFORM.sendToClient(new S2CSyncAbilityPacket(handler.player.getId(),Utils.getAbility(handler.player)),handler.player);
+        });
+        EntitySleepEvents.STOP_SLEEPING.register((entity, sleepingPos) -> {
+            if (entity instanceof ServerPlayer serverPlayer) {
+                Utils.getAbility(serverPlayer).onWakeup(serverPlayer);
+            }
         });
         CommandRegistrationCallback.EVENT.register((commandDispatcher, commandBuildContext, commandSelection) -> ModCommands.register(commandDispatcher));
         EntityElytraEvents.CUSTOM.register((entity, tickElytra) -> Utils.hasFakeElytra(entity));

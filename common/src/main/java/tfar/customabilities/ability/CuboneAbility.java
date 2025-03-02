@@ -3,10 +3,9 @@ package tfar.customabilities.ability;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import tfar.customabilities.init.ModMobEffects;
+import tfar.customabilities.Utils;
 
 //Cubone  Slightly based on the DUCK origin by LunWri
 //- Always has an invisible elytra equipped. Can still equip armor in the chest slot (Like Mari’s ability in our previous commission)
@@ -29,14 +28,13 @@ public class CuboneAbility extends NewAbility{
     @Override
     public void handlePrimary(ServerPlayer player) {
         super.handlePrimary(player);
-        flightBoost(player);
+        Utils.flightBoost(player);
         addCooldown(player,0,20);
     }
 
     @Override
     public void handleSecondary(ServerPlayer player) {
         super.handleSecondary(player);
-        super.handlePrimary(player);
         if (player.hasEffect(MobEffects.SLOW_FALLING)) {
             player.removeEffect(MobEffects.SLOW_FALLING);
         } else {
@@ -44,15 +42,15 @@ public class CuboneAbility extends NewAbility{
         }
     }
 
-    public static void flightBoost(ServerPlayer player) {
-        ItemStack firework = new ItemStack(Items.FIREWORK_ROCKET);
-        FireworkRocketEntity fireworkRocketEntity = new FireworkRocketEntity(player.level(), firework, player);
-        player.level().addFreshEntity(fireworkRocketEntity);
-    }
-
     @Override
     public void onRemove(ServerPlayer player) {
         super.onRemove(player);
         player.removeEffect(MobEffects.SLOW_FALLING);
+    }
+
+    @Override
+    public void onWakeup(ServerPlayer player) {
+        super.onWakeup(player);
+        player.addItem(new ItemStack(Items.EGG));
     }
 }

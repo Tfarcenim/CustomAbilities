@@ -2,20 +2,35 @@ package tfar.customabilities;
 
 import com.mojang.datafixers.util.Either;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.FireworkRocketEntity;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import tfar.customabilities.ability.NewAbility;
-import tfar.customabilities.attachments.CommonDataAttachment;
 import tfar.customabilities.attachments.CommonDataAttachments;
+import tfar.customabilities.data.DevlinAbilityData;
+import tfar.customabilities.network.client.S2CSyncBooleanDataAttachmentPacket;
 import tfar.customabilities.network.client.S2CSyncAbilityPacket;
 import tfar.customabilities.network.client.S2CSyncLightEmissionPacket;
 import tfar.customabilities.platform.Services;
+
+import java.util.stream.Stream;
 
 public class Utils {
 
@@ -86,4 +101,79 @@ public class Utils {
         return Services.PLATFORM.getOrCreateAttachedValue(entity, CommonDataAttachments.COOLDOWNS);
     }
 
+    public static DevlinAbilityData getDelvinAbilityData(Entity entity) {
+        return Services.PLATFORM.getOrCreateAttachedValue(entity, CommonDataAttachments.DEVLIN_ABILITY_DATA);
+    }
+
+    public static void setDevlinAbilityData(Entity entity,DevlinAbilityData data) {
+        Services.PLATFORM.setAttachedValue(entity, CommonDataAttachments.DEVLIN_ABILITY_DATA,data);
+    }
+
+    public static void flightBoost(ServerPlayer player) {
+        ItemStack firework = new ItemStack(Items.FIREWORK_ROCKET);
+        FireworkRocketEntity fireworkRocketEntity = new FireworkRocketEntity(player.level(), firework, player);
+        player.level().addFreshEntity(fireworkRocketEntity);
+    }
+
+    public static boolean getPepperVision(Player player) {
+        return Services.PLATFORM.getOrCreateAttachedValue(player,CommonDataAttachments.PEPPER_VISION);
+    }
+
+    public static void setPepperVision(Player player,boolean pepperVision) {
+        Services.PLATFORM.setAttachedValue(player,CommonDataAttachments.PEPPER_VISION,pepperVision);
+        if (player instanceof ServerPlayer serverPlayer) {
+            Services.PLATFORM.sendToClient(S2CSyncBooleanDataAttachmentPacket.createPepperVisionPacket(serverPlayer.getId(),pepperVision),serverPlayer);
+        }
+    }
+
+    public static int getDaylightTimer(Player player) {
+        return Services.PLATFORM.getOrCreateAttachedValue(player,CommonDataAttachments.DAYLIGHT_TIMER);
+    }
+
+    public static void setDaylightTimer(Player player,int pepperVision) {
+        Services.PLATFORM.setAttachedValue(player,CommonDataAttachments.DAYLIGHT_TIMER,pepperVision);
+    }
+    public static Stream<Block> getKnownBlocks() {
+        return getKnown(BuiltInRegistries.BLOCK);
+    }
+    public static Stream<Item> getKnownItems() {
+        return getKnown(BuiltInRegistries.ITEM);
+    }
+    public static Stream<MobEffect> getKnownMobEffects() {
+        return getKnown(BuiltInRegistries.MOB_EFFECT);
+    }
+
+
+    public static <V> Stream<V> getKnown(Registry<V> registry) {
+        return registry.stream().filter(o -> registry.getKey(o).getNamespace().equals(CustomAbilities.MOD_ID));
+    }
+
+
+    public static EntityHitResult pickEntity(Entity pEntity, double pBlockInteractionRange, double pEntityInteractionRange, float pPartialTick) {
+        double d0 = Math.max(pBlockInteractionRange, pEntityInteractionRange);
+        double d1 = Mth.square(d0);
+        Vec3 vec3 = pEntity.getEyePosition(pPartialTick);
+        HitResult hitresult = pEntity.pick(d0, pPartialTick, false);
+        double d2 = hitresult.getLocation().distanceToSqr(vec3);
+        if (hitresult.getType() != HitResult.Type.MISS) {
+            d1 = d2;
+            d0 = Math.sqrt(d2);
+        }
+
+        Vec3 vec31 = pEntity.getViewVector(pPartialTick);
+        Vec3 vec32 = vec3.add(vec31.x * d0, vec31.y * d0, vec31.z * d0);
+        float f = 1.0F;
+        AABB aabb = pEntity.getBoundingBox().expandTowards(vec31.scale(d0)).inflate(f, f, f);
+        EntityHitResult entityhitresult = ProjectileUtil.getEntityHitResult(
+                pEntity, vec3, vec32, aabb, entity -> !entity.isSpectator() && entity.isPickable(), d1
+        );
+        return entityhitresult;
+    }
+
+    public static HitResult pickEither(Entity pEntity, double pBlockInteractionRange, double pEntityInteractionRange, float pPartialTick) {
+        EntityHitResult entityHitResult = pickEntity(pEntity,pBlockInteractionRange,pEntityInteractionRange,pPartialTick);
+        if (entityHitResult != null) return entityHitResult;
+
+        return pEntity.pick(pEntityInteractionRange, pPartialTick, true);
+    }
 }

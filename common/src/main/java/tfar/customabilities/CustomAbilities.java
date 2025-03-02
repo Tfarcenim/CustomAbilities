@@ -1,15 +1,25 @@
 package tfar.customabilities;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tfar.customabilities.ability.NewAbility;
@@ -88,6 +98,10 @@ public class CustomAbilities {
             amount *=target.getAttributeValue(ModAttributes.FIRE_WEAKNESS);
         }
 
+        if (source.is(DamageTypeTags.IS_DROWNING)) {
+            amount *= target.getAttributeValue(ModAttributes.DROWNING_WEAKNESS);
+        }
+
         NewAbility ability = Utils.getAbility(target);
         if (ability != null) {
             amount = ability.modifyDamageTaken(target, source, amount);
@@ -115,6 +129,11 @@ public class CustomAbilities {
                 amount+=3;
             }
 
+            if (Utils.hasAbility(livingAttacker,Abilities.KJ)) {
+                if (target.getRandom().nextDouble() < .25) {
+                    target.addEffect(new MobEffectInstance(MobEffects.POISON,3 * 20,0));
+                }
+            }
         }
 
         return amount;
@@ -159,5 +178,68 @@ public class CustomAbilities {
 
         return vanillaEat && (ability == null || ability.canEat(stack));
 
+    }
+
+    //return true to prevent damage
+    public static boolean livingAttack(LivingEntity livingEntity, DamageSource source, float amount) {
+        if (Utils.hasAbility(livingEntity,Abilities.DEVLIN)) {
+            if (source.is(DamageTypes.FALL)) return true;
+            if (source.is(DamageTypeTags.IS_LIGHTNING)) {
+                boolean shouldHurt = livingEntity.hasEffect(ModMobEffects.SHOCKED);
+                livingEntity.addEffect(new MobEffectInstance(ModMobEffects.SHOCKED));
+                return !shouldHurt;
+            }
+        }
+
+        NewAbility ability = Utils.getAbility(livingEntity);
+        return ability != null && ability.isImmuneTo(source);
+
+    }
+
+    public static float frictionEvent(LivingEntity livingEntity, float original) {
+        if (livingEntity.hasEffect(ModMobEffects.HOVERING)) {
+            return 1;
+        }
+        return original;
+    }
+
+    public static VoxelShape getShapeEvent(BlockBehaviour.BlockStateBase state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        if (context != CollisionContext.empty() && context instanceof EntityCollisionContext collisionContext && state.getFluidState().is(Fluids.WATER)) {
+            Entity entity = collisionContext.getEntity();
+            if (entity instanceof LivingEntity livingEntity) {
+                if (!livingEntity.isInWaterOrBubble() && livingEntity.hasEffect(ModMobEffects.HOVERING)) {
+                    return Shapes.block();
+                }
+            }
+        }
+        return null;
+    }
+
+    public static int modifyProtection(LivingEntity livingEntity, DamageSource source, int base) {
+        NewAbility newAbility = Utils.getAbility(livingEntity);
+        if (newAbility != null) {
+            return Math.max(base,newAbility.getNaturalProtectionPoints(livingEntity,source));
+        }
+        if (Utils.hasAbility(livingEntity,Abilities.PEPPER) && source.is(DamageTypes.FALL)) {
+            return Math.max(12,base);
+        }
+        return base;
+    }
+
+    public static int getBuiltInLevel(Enchantment enchantment, LivingEntity entity) {
+        NewAbility ability = Utils.getAbility(entity);
+        if (ability != null) {
+            return ability.getNaturalEnchantmentLevel(entity,enchantment);
+        }
+
+        return 0;
+    }
+
+    public static boolean shouldPrevent(LivingEntity entity,MobEffectInstance mobEffectInstance) {
+        NewAbility ability = Utils.getAbility(entity);
+        if (ability != null) {
+            return ability == Abilities.BUG && mobEffectInstance.getEffect() == MobEffects.POISON;
+        }
+        return false;
     }
 }

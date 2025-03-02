@@ -40,7 +40,7 @@ public class BearAbility extends NewAbility{
 
     @Override
     public float modifyDamageTaken(LivingEntity target, DamageSource source, float amount) {
-        if (source.is(DamageTypeTags.IS_LIGHTNING) ||source.is(DamageTypeTags.IS_DROWNING)) {
+        if (source.is(DamageTypeTags.IS_LIGHTNING)) {
             amount *= .5f;
         }
         return amount;

@@ -56,7 +56,7 @@ public class CustomAbilitiesClient {
 
     public static void updateInputs(LocalPlayer localPlayer, Input input) {
         NewAbility ability = Utils.getAbility(localPlayer);
-        if (ability == Abilities.DEVLIN) {
+        if (ability == Abilities.DEVLIN || ability == Abilities.BUG) {
             if (localPlayer.isUnderWater()) {
                 input.jumping = false;
             }
