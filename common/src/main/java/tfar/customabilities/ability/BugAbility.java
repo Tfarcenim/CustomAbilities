@@ -33,10 +33,9 @@ public class BugAbility extends NewAbility{
     public void handlePrimary(ServerPlayer player) {
         super.handlePrimary(player);
         if (player.hasEffect(MobEffects.MOVEMENT_SPEED)) {
+            int amp = player.getEffect(MobEffects.MOVEMENT_SPEED).getAmplifier();
             player.removeEffect(MobEffects.MOVEMENT_SPEED);
-            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,MobEffectInstance.INFINITE_DURATION,0,false,false));
-        } else {
-            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, MobEffectInstance.INFINITE_DURATION, 2, false, false));
+            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,MobEffectInstance.INFINITE_DURATION,2 - amp,false,false));
         }
     }
 
