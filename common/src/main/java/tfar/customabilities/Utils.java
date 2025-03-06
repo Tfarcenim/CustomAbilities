@@ -22,6 +22,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import tfar.customabilities.ability.NewAbility;
 import tfar.customabilities.attachments.CommonDataAttachments;
 import tfar.customabilities.data.DevlinAbilityData;
@@ -89,6 +90,7 @@ public class Utils {
         }
     }
 
+    @Nullable
     public static NewAbility getAbility(Entity player) {
         return Services.PLATFORM.getAttachedValue(player,CommonDataAttachments.ABILITY);
     }

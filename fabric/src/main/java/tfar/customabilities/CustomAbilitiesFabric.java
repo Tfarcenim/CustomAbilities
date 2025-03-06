@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import tfar.customabilities.ability.NewAbility;
 import tfar.customabilities.attachments.CommonDataAttachments;
 import tfar.customabilities.init.ModAttributes;
 import tfar.customabilities.init.ModEntityTypes;
@@ -30,7 +31,10 @@ public class CustomAbilitiesFabric implements ModInitializer {
         });
         EntitySleepEvents.STOP_SLEEPING.register((entity, sleepingPos) -> {
             if (entity instanceof ServerPlayer serverPlayer) {
-                Utils.getAbility(serverPlayer).onWakeup(serverPlayer);
+                NewAbility ability = Utils.getAbility(entity);
+                if (ability != null) {
+                ability.onWakeup(serverPlayer);
+                }
             }
         });
         CommandRegistrationCallback.EVENT.register((commandDispatcher, commandBuildContext, commandSelection) -> ModCommands.register(commandDispatcher));

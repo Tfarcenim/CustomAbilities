@@ -2,6 +2,7 @@ package tfar.customabilities.platform;
 
 import com.mojang.datafixers.util.Either;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -110,6 +111,11 @@ public class ForgePlatformHelper implements IPlatformHelper {
     @Override
     public <T> void setAttachedValue(Entity entity, CommonDataAttachment<T> attachment, T value) {
 
+    }
+
+    @Override
+    public CommonDataAttachment<?> findAttachment(ResourceLocation name) {
+        return null;
     }
 
 }
