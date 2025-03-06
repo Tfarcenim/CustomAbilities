@@ -1,6 +1,8 @@
 package tfar.customabilities.ability;
 
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 
@@ -28,5 +30,10 @@ public class JackalopeAbility extends NewAbility{
         player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,5 * 20,1));
         player.addEffect(new MobEffectInstance(MobEffects.JUMP,5 * 20,2));
         addCooldown(player,0,30 * 20);
+    }
+
+    @Override
+    public boolean isImmuneTo(DamageSource source) {
+        return source.is(DamageTypeTags.IS_FALL) || super.isImmuneTo(source);
     }
 }

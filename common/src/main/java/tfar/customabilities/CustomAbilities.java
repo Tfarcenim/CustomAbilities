@@ -13,7 +13,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -28,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import tfar.customabilities.ability.NewAbility;
 import tfar.customabilities.init.ModAttributes;
 import tfar.customabilities.init.ModMobEffects;
+import tfar.customabilities.mixin.ItemAccessor;
 import tfar.customabilities.network.PacketHandler;
 import tfar.customabilities.platform.Services;
 
@@ -54,6 +57,8 @@ public class CustomAbilities {
         // your own abstraction layer. You can learn more about this in our provided services class. In this example
         // we have an interface in the common code and use a loader specific implementation to delegate our call to
         // the platform specific approach.
+
+        ((ItemAccessor) Items.SUGAR).setFoodProperties(new FoodProperties.Builder().nutrition(8).saturationMod(0.5f).build());
     }
 
     public static ResourceLocation id(String ability) {
@@ -188,7 +193,6 @@ public class CustomAbilities {
     public static boolean canPlayerEat(Player player, boolean canAlwaysEat, ItemStack stack) {
         boolean vanillaEat = player.canEat(canAlwaysEat);
         NewAbility ability = Utils.getAbility(player);
-
         return vanillaEat && (ability == null || ability.canEat(stack));
 
     }

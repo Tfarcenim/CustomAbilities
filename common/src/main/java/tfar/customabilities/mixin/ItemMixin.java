@@ -1,5 +1,7 @@
 package tfar.customabilities.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -12,8 +14,8 @@ import tfar.customabilities.CustomAbilities;
 @Mixin(Item.class)
 public class ItemMixin {
 
-    @Redirect(method = "use",at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;canEat(Z)Z"))
-    private boolean isEdibleEvent(Player instance, boolean canAlwaysEat, @Local ItemStack stack) {
+    @WrapOperation(method = "use",at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;canEat(Z)Z"))
+    private boolean isEdibleEvent(Player instance, boolean canAlwaysEat, Operation<Boolean> original, @Local ItemStack stack) {
         return CustomAbilities.canPlayerEat(instance,canAlwaysEat,stack);
     }
 }

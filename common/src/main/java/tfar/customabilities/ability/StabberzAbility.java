@@ -6,6 +6,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import tfar.customabilities.ModParticleTypes;
@@ -77,5 +79,10 @@ public class StabberzAbility extends NewAbility {
     public void onRemove(ServerPlayer player) {
         super.onRemove(player);
         player.removeEffect(MobEffects.SLOW_FALLING);
+    }
+
+    @Override
+    public boolean canEat(ItemStack stack) {
+        return true;
     }
 }

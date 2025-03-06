@@ -63,6 +63,6 @@ public class MariAbility extends NewAbility {
 
     @Override
     public boolean isImmuneTo(DamageSource source) {
-        return super.isImmuneTo(source) && source.is(DamageTypeTags.IS_LIGHTNING);
+        return super.isImmuneTo(source) || source.is(DamageTypeTags.IS_LIGHTNING);
     }
 }

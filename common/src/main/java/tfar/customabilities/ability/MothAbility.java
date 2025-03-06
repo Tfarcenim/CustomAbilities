@@ -68,6 +68,7 @@ public class MothAbility extends NewAbility{
 
     @Override
     public boolean isImmuneTo(DamageSource source) {
-        return super.isImmuneTo(source) && source.is(DamageTypeTags.IS_FALL);
+        return super.isImmuneTo(source) || source.is(DamageTypeTags.IS_FALL);
+
     }
 }

@@ -38,10 +38,18 @@ public class MaphAbility extends NewAbility{
             if (daylightTimer > 600) {
                 daylightTimer = 0;
                 player.heal(1);
-                player.setAbsorptionAmount(player.getAbsorptionAmount() +1);
+                if (player.getAbsorptionAmount() < 8) {
+                    player.setAbsorptionAmount(player.getAbsorptionAmount() + 1);
+                }
             }
             Utils.setDaylightTimer(player,daylightTimer);
         }
+
+        if (player.getAbsorptionAmount() > 1 && player.tickCount%20 == 0) {
+            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION,40,0,false,false));
+            player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,40,0,false,false));
+        }
+
         findNearbyFlower(player).ifPresent(pos -> {
         player.addEffect(new MobEffectInstance(MobEffects.LUCK,5,2,false,false));
     });

@@ -16,6 +16,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import tfar.customabilities.Abilities;
 import tfar.customabilities.CustomAbilities;
@@ -173,7 +174,7 @@ public class NewAbility {
     }
 
     public boolean canEat(ItemStack stack) {
-        return true;
+        return stack.getItem() != Items.SUGAR;
     }
 
     public void onWakeup(ServerPlayer player) {

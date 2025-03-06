@@ -3,6 +3,8 @@ package tfar.customabilities.ability;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -38,13 +40,23 @@ public class PepperAbility extends NewAbility{
     @Override
     public void handlePrimary(ServerPlayer player) {
         super.handlePrimary(player);
-        boolean wasActive = Utils.getPepperVision(player);
-        Utils.setPepperVision(player,!wasActive);
+        if (player.hasEffect(MobEffects.INVISIBILITY)) {
+            player.removeEffect(MobEffects.INVISIBILITY);
+        } else {
+            player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, MobEffectInstance.INFINITE_DURATION, 0, false, false));
+        }
     }
 
     @Override
     public void handleSecondary(ServerPlayer player) {
         super.handleSecondary(player);
+        boolean wasActive = Utils.getPepperVision(player);
+        Utils.setPepperVision(player,!wasActive);
+    }
+
+    @Override
+    public void handleTertiary(ServerPlayer player) {
+        super.handleTertiary(player);
         if (player.isFallFlying()) {
             Utils.flightBoost(player);
             addCooldown(player,1,20);
@@ -63,6 +75,7 @@ public class PepperAbility extends NewAbility{
     public void onRemove(ServerPlayer player) {
         super.onRemove(player);
         Utils.setPepperVision(player,false);
+        player.removeEffect(MobEffects.INVISIBILITY);
     }
 
     @Override
