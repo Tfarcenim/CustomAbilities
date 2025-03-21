@@ -16,6 +16,9 @@ public class CustomAbilitiesClientFabric implements ClientModInitializer {
         KeyBindingHelper.registerKeyBinding(ModKeybinds.SECONDARY);
         KeyBindingHelper.registerKeyBinding(ModKeybinds.TERTIARY);
         KeyBindingHelper.registerKeyBinding(ModKeybinds.QUATERNARY);
+        KeyBindingHelper.registerKeyBinding(ModKeybinds.QUINARY);
+
+        KeyBindingHelper.registerKeyBinding(ModKeybinds.CHANGE_PERCENT);
         CustomAbilitiesClient.renderers();
     }
 }

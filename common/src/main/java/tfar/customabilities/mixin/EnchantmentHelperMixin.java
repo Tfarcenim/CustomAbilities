@@ -27,13 +27,4 @@ public class EnchantmentHelperMixin {
             cir.setReturnValue(builtinLevel);
         }
     }
-
-    @Inject(method = "getDepthStrider",at = @At("RETURN"),cancellable = true)
-    private static void waterAbility2(LivingEntity living, CallbackInfoReturnable<Integer> cir) {
-            int nativeDepthStrider = CustomAbilities.getDepthStriderAbility(living);
-            int enchantmentDepthStrider = cir.getReturnValue();
-            if (nativeDepthStrider > enchantmentDepthStrider) {
-                cir.setReturnValue(nativeDepthStrider);
-            }
-    }
 }

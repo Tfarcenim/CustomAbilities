@@ -34,7 +34,7 @@ public class BarcodeAbility extends NewAbility {
                 }
             }
             if (shouldBlind) {
-                player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS,20 * 5));
+                player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS,20 * 5,0,false,false));
             }
         }
     }

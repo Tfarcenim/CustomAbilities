@@ -48,6 +48,11 @@ public class CommonDataAttachments {
             .setName(CustomAbilities.id("daylight_timer"))
     );
 
+    public static final CommonDataAttachment<Integer> ESCAPE_TIMER = register(CommonDataAttachment.<Integer>create()
+            .setDefaultValueSupplier(() -> 0)
+            .setName(CustomAbilities.id("escape_timer"))
+    );
+
 
     static int[] createLightDefaults() {
         int[] ints = new int[40];

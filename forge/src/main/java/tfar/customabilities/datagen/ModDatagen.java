@@ -18,6 +18,7 @@ public class ModDatagen {
         CompletableFuture<HolderLookup.Provider> lookupProvider = e.getLookupProvider();
         boolean client = e.includeClient();
         dataGenerator.addProvider(client,new ModLangProvider(packOutput));
+        dataGenerator.addProvider(client,new ModBlockstateProvider(packOutput,existingFileHelper));
 
         BlockTagsProvider blockTagsProvider = new ModBlockTagsProvider(packOutput,lookupProvider,existingFileHelper);
         dataGenerator.addProvider(true,blockTagsProvider);

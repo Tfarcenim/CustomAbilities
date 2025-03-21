@@ -44,6 +44,14 @@ public abstract class LivingEntityMixinFabric extends Entity {
     }
 
 
+    @ModifyVariable(method = "travel",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;onGround()Z",ordinal = 2))
+    private float modifyFriction(float original) {
+        return CustomAbilities.frictionEvent((LivingEntity)(Object)this,original);
+    }
+
+
+
     public LivingEntityMixinFabric(EntityType<?> $$0, Level $$1) {
         super($$0, $$1);
     }

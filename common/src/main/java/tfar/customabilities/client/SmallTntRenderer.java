@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
 import tfar.customabilities.entity.SmallTntEntity;
+import tfar.customabilities.init.ModBlocks;
 
 public class SmallTntRenderer extends EntityRenderer<SmallTntEntity> {
         private final BlockRenderDispatcher blockRenderer;
@@ -40,7 +41,7 @@ public class SmallTntRenderer extends EntityRenderer<SmallTntEntity> {
             pPoseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
             pPoseStack.translate(-0.5F, -1, 0.5F);
             pPoseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
-            TntMinecartRenderer.renderWhiteSolidBlock(this.blockRenderer, Blocks.TNT.defaultBlockState(), pPoseStack, pBuffer, pPackedLight, fuse / 5 % 2 == 0);
+            TntMinecartRenderer.renderWhiteSolidBlock(this.blockRenderer, ModBlocks.f898b3.defaultBlockState(), pPoseStack, pBuffer, pPackedLight, fuse / 5 % 2 == 0);
             pPoseStack.popPose();
             super.render(pEntity, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
         }

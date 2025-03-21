@@ -30,12 +30,6 @@ public class LivingEntityMixin {
         }
     }
 
-    @ModifyVariable(method = "travel",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;onGround()Z",ordinal = 2))
-    private float modifyFriction(float original) {
-        return CustomAbilities.frictionEvent((LivingEntity)(Object)this,original);
-    }
-
     @WrapOperation(method = "getDamageAfterMagicAbsorb",at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper;getDamageProtection(Ljava/lang/Iterable;Lnet/minecraft/world/damagesource/DamageSource;)I"))
     private int modifyProtection(Iterable<ItemStack> stacks, DamageSource source, Operation<Integer> original) {
         int base = original.call(stacks,source);

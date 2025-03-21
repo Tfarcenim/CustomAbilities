@@ -12,6 +12,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import tfar.customabilities.ModParticleTypes;
 import tfar.customabilities.Utils;
+import tfar.customabilities.entity.BubbleEntity;
+import tfar.customabilities.init.ModEntityTypes;
 
 import java.util.List;
 
@@ -57,6 +59,23 @@ public class StabberzAbility extends NewAbility {
     @Override
     public void handleTertiary(ServerPlayer player) {
         super.handleTertiary(player);
+        if (player.getFoodData().getFoodLevel() > 0) {
+            ServerLevel level = player.serverLevel();
+            Vec3 look = player.getLookAngle();
+            BubbleEntity bubbleEntity = new BubbleEntity(ModEntityTypes.BUBBLE, player, look.x, look.y, look.z, player.level());
+            bubbleEntity.setPos(player.getX(), player.getY(.5) + .5, player.getZ());
+            level.addFreshEntity(bubbleEntity);
+            player.addEffect(new MobEffectInstance(MobEffects.HUNGER, 20 * 30));
+        }
+    }
+
+    @Override
+    public void handleQuaternary(ServerPlayer player) {
+        super.handleQuaternary(player);
+        legacyBubbles(player);
+    }
+
+    static void legacyBubbles(ServerPlayer player) {
         ServerLevel level = player.serverLevel();
         int x = 30;
         for (int i = 0;i < x;i++) {

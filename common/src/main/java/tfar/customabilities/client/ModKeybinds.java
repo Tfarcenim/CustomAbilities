@@ -12,5 +12,6 @@ public class ModKeybinds {
     public static final KeyMapping QUATERNARY = new KeyMapping("key.customabilities.quaternary", GLFW.GLFW_KEY_L,"key.categories."+ CustomAbilities.MOD_ID);
     public static final KeyMapping QUINARY = new KeyMapping("key.customabilities.quinary", GLFW.GLFW_KEY_K,"key.categories."+ CustomAbilities.MOD_ID);
 
+    public static final KeyMapping CHANGE_PERCENT = new KeyMapping("key.customabilities.change_percent",GLFW.GLFW_KEY_P,"key.categories.customabilities");
 
 }

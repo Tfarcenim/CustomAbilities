@@ -54,7 +54,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
     public Either<Boolean, Vec3> fireTeleportEvent(LivingEntity living, double x, double y, double z) {
-        return Either.left(true);
+        return Either.right(new Vec3(x,y,z));
     }
 
     @Override

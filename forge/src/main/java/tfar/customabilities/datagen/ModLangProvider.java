@@ -39,6 +39,8 @@ public class ModLangProvider extends LanguageProvider {
         addKey(ModKeybinds.QUATERNARY,"Quaternary");
         addKey(ModKeybinds.QUINARY,"Quinary");
 
+        addKey(ModKeybinds.CHANGE_PERCENT,"Change Percent");
+
         addAttribute(ModAttributes.FIRE_WEAKNESS,"Fire Weakness");
         addAttribute(ModAttributes.DROWNING_WEAKNESS,"Drowning Weakness");
 

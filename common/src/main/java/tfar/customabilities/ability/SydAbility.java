@@ -7,6 +7,8 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.AABB;
 
 import java.util.List;
@@ -40,16 +42,25 @@ public class SydAbility extends NewAbility{
         super.handlePrimary(player);
         ServerLevel level = player.serverLevel();
         AABB aabb = new AABB(player.position(),player.position()).inflate(3.5,3.5,1);
+        int affected = 0;
         List<Entity> entities = level.getEntities(player, aabb, entity -> entity.isAlive() && entity.isAttackable());
         for (Entity entity : entities) {
             if (entity instanceof LivingEntity livingEntity) {
-                livingEntity.addEffect(new MobEffectInstance(MobEffects.WITHER,7 * 20,1));
+                boolean b = livingEntity.addEffect(new MobEffectInstance(MobEffects.WITHER, 7 * 20, 1));
+                if (b) {
+                    affected++;
+                }
             }
         }
-
+        if (affected > 0) {
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION,5 *20,10));
         player.addEffect(new MobEffectInstance(MobEffects.CONFUSION,5 *20,10));
+            addCooldown(player, 0, 40 * 20);
+        }
+    }
 
-        addCooldown(player,0,40 * 20);
+    @Override
+    public int getNaturalEnchantmentLevel(LivingEntity entity, Enchantment enchantment) {
+        return enchantment == Enchantments.DEPTH_STRIDER ? 1 : super.getNaturalEnchantmentLevel(entity, enchantment);
     }
 }

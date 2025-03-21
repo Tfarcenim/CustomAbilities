@@ -1,7 +1,10 @@
 package tfar.customabilities.ability;
 
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 
 //Sushi
 //- Permanent Depth Strider (+33% swim speed)
@@ -24,5 +27,10 @@ public class SushiAbility extends NewAbility{
     @Override
     public boolean canEat(ItemStack stack) {
         return stack.getItem().getFoodProperties().isMeat();
+    }
+
+    @Override
+    public int getNaturalEnchantmentLevel(LivingEntity entity, Enchantment enchantment) {
+        return enchantment == Enchantments.DEPTH_STRIDER ? 2 : super.getNaturalEnchantmentLevel(entity, enchantment);
     }
 }

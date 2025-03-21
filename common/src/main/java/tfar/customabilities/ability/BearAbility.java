@@ -86,7 +86,7 @@ public class BearAbility extends NewAbility{
         double d3 = look.z;
         double d4 = 0.5D;
 
-        double inaccuracy = 2.225D;
+        double inaccuracy = 0;
         for(int i = 0; i < 1; ++i) {
             SmallFireball smallfireball = new SmallFireball(player.level(), player, player.getRandom().triangle(d1, inaccuracy * d4), d2, player.getRandom().triangle(d3, inaccuracy * d4));
             smallfireball.setPos(smallfireball.getX(), player.getY(0.5D) + 0.5D, smallfireball.getZ());

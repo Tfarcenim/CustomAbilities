@@ -35,7 +35,7 @@ public class KJAbility extends NewAbility{
         double d4 = 0.5D;
 
         LargeFireball smallfireball = new LargeFireball(player.level(), player, d1,d2,d3,1);
-        //smallfireball.setPos(smallfireball.getX(), player.getY(0.5D) + 0.5D, smallfireball.getZ());
+        smallfireball.setPos(smallfireball.getX(), player.getY(0.5D) + 0.5D, smallfireball.getZ());
         player.level().addFreshEntity(smallfireball);
         addCooldown(player,3,60*20);
     }

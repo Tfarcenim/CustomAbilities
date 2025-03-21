@@ -51,7 +51,7 @@ public class Utils {
     public static void teleportPlayerToFacing(Player player) {
         HitResult pick = player.pick(12, 0, false);
         Vec3 pos = pick.getLocation();
-        teleportPlayerToLocation(player,pos);
+         teleportPlayerToLocation(player,pos);
     }
 
     public static void teleportPlayerToLocation(Player player, Vec3 position) {
@@ -140,6 +140,15 @@ public class Utils {
     public static void setDaylightTimer(Player player,int pepperVision) {
         Services.PLATFORM.setAttachedValue(player,CommonDataAttachments.DAYLIGHT_TIMER,pepperVision);
     }
+
+    public static int getEscapeTimer(Player player) {
+        return Services.PLATFORM.getOrCreateAttachedValue(player,CommonDataAttachments.ESCAPE_TIMER);
+    }
+
+    public static void setEscapeTimer(Player player,int escapeTimer) {
+        Services.PLATFORM.setAttachedValue(player,CommonDataAttachments.ESCAPE_TIMER,escapeTimer);
+    }
+
     public static Stream<Block> getKnownBlocks() {
         return getKnown(BuiltInRegistries.BLOCK);
     }

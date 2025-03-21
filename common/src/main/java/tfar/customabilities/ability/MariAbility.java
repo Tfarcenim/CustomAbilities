@@ -25,6 +25,8 @@ import tfar.customabilities.init.ModMobEffects;
 //"Fast" Keybind - Grants Mari Speed 1 for 15 seconds. This keybind has a cooldown of 15 seconds. (No particles)
 public class MariAbility extends NewAbility {
 
+    public static double chance = .05;
+
     public MariAbility(String mari) {
         super(mari);
     }
@@ -32,7 +34,7 @@ public class MariAbility extends NewAbility {
     @Override
     public void tick(ServerPlayer player) {
         super.tick(player);
-        if (player.tickCount % 10 ==0 && player.getRandom().nextDouble() < .05) {
+        if (player.tickCount % 10 ==0 && player.getRandom().nextDouble() < chance) {
             Player nearby = player.level().getNearestPlayer(player.getX(), player.getY(), player.getZ(), 5, (entity) -> {
                 return entity != null && entity.isAlive() && entity instanceof LivingEntity livingEntity && livingEntity.getHealth() >1;
             });

@@ -1,8 +1,13 @@
 {
+  "attribute.name.generic.drowning_weakness": "Drowning Weakness",
   "attribute.name.generic.fire_weakness": "Fire Weakness",
   "effect.customabilities.electro_fist": "Electro Fist",
   "effect.customabilities.frosted_fingers": "Frosted Fingers",
+  "effect.customabilities.hovering": "Hovering",
+  "effect.customabilities.red": "Red",
+  "effect.customabilities.shocked": "Shocked",
   "key.categories.customabilities": "CustomAbilities",
+  "key.customabilities.change_percent": "Change Percent",
   "key.customabilities.primary": "Primary",
   "key.customabilities.quaternary": "Quaternary",
   "key.customabilities.quinary": "Quinary",

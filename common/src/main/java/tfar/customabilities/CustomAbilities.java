@@ -124,7 +124,7 @@ public class CustomAbilities {
 
         if (Utils.hasAbility(target, Abilities.SYD)) {
             if (attacker instanceof LivingEntity livingAttacker) {
-                if (livingAttacker.getRandom().nextDouble() < .15) {
+                if (livingAttacker.getRandom().nextDouble() < .4) {
                     livingAttacker.addEffect(new MobEffectInstance(MobEffects.POISON, 3 * 20, 0));
                 }
             }
@@ -168,14 +168,6 @@ public class CustomAbilities {
         return ability == Abilities.SUSHI;
     }
 
-    public static int getDepthStriderAbility(LivingEntity player) {
-        NewAbility ability = Utils.getAbility(player);
-        if (ability == Abilities.SUSHI) {
-            return 1;
-        }
-        return 0;
-    }
-
     public static float onLivingDamaged(LivingEntity livingEntity, DamageSource source, float f) {
         Entity attacker = source.getEntity();
 
@@ -200,7 +192,7 @@ public class CustomAbilities {
     //return true to prevent damage
     public static boolean livingAttack(LivingEntity livingEntity, DamageSource source, float amount) {
         if (Utils.hasAbility(livingEntity, Abilities.DEVLIN)) {
-            if (source.is(DamageTypes.FALL)) return true;
+            if (source.is(DamageTypes.FALL) && livingEntity.hasEffect(ModMobEffects.HOVERING)) return true;
             if (source.is(DamageTypeTags.IS_LIGHTNING)) {
                 boolean shouldHurt = livingEntity.hasEffect(ModMobEffects.SHOCKED);
                 livingEntity.addEffect(new MobEffectInstance(ModMobEffects.SHOCKED));
