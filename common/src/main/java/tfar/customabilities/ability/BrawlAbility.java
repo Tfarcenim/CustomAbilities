@@ -4,6 +4,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
@@ -89,6 +90,6 @@ public class BrawlAbility extends NewAbility{
 
     @Override
     public boolean canEat(ItemStack stack) {
-        return stack.getItem().getFoodProperties().isMeat();
+        return stack.getItem().getFoodProperties().isMeat() || stack.is(ItemTags.FISHES);
     }
 }

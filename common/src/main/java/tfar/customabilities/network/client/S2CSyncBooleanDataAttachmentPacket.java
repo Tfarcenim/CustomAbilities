@@ -14,6 +14,10 @@ public class S2CSyncBooleanDataAttachmentPacket extends S2CSyncDataAttachmentPac
         return new S2CSyncBooleanDataAttachmentPacket(entityID, CommonDataAttachments.PEPPER_VISION,value);
     }
 
+    public static S2CSyncBooleanDataAttachmentPacket createToggleElytraPacket(int entityID, Boolean value) {
+        return new S2CSyncBooleanDataAttachmentPacket(entityID, CommonDataAttachments.TOGGLEABLE_ELYTRA,value);
+    }
+
     public S2CSyncBooleanDataAttachmentPacket(int entityID, CommonDataAttachment<Boolean> attachment, Boolean value) {
         super(entityID, attachment, value);
     }

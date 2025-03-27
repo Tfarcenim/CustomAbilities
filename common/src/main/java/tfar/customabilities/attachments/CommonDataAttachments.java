@@ -53,6 +53,10 @@ public class CommonDataAttachments {
             .setName(CustomAbilities.id("escape_timer"))
     );
 
+    public static final CommonDataAttachment<Boolean> TOGGLEABLE_ELYTRA = register(CommonDataAttachment.<Boolean>create()
+            .setDefaultValueSupplier(() -> false)
+            .setName(CustomAbilities.id("toggleable_elytra"))
+    );
 
     static int[] createLightDefaults() {
         int[] ints = new int[40];

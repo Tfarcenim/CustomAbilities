@@ -57,6 +57,13 @@ public class PepperAbility extends NewAbility{
     @Override
     public void handleTertiary(ServerPlayer player) {
         super.handleTertiary(player);
+        boolean fly = Utils.getToggleableElytra(player);
+        Utils.setToggelableElytra(player,!fly);
+    }
+
+    @Override
+    public void handleQuaternary(ServerPlayer player) {
+        super.handleQuaternary(player);
         if (player.isFallFlying()) {
             Utils.flightBoost(player);
             addCooldown(player,1,20);
@@ -76,6 +83,7 @@ public class PepperAbility extends NewAbility{
         super.onRemove(player);
         Utils.setPepperVision(player,false);
         player.removeEffect(MobEffects.INVISIBILITY);
+        Utils.setToggelableElytra(player,false);
     }
 
     @Override

@@ -59,7 +59,6 @@ public class Abilities {
 
     public static final NewAbility PEPPER = register(new PepperAbility("pepper")
             .addPermanentMobEffect(MobEffects.MOVEMENT_SPEED)
-            .providesElytra()
     );
 
     public static final NewAbility KJ = register(new KJAbility("kj")

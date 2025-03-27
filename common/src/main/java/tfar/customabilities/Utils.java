@@ -68,7 +68,7 @@ public class Utils {
 
     public static boolean hasFakeElytra(LivingEntity living) {
         NewAbility ability = getAbility(living);
-        return ability != null && ability.isElytra;
+        return (ability != null && ability.isElytra) || Utils.getToggleableElytra(living);
     }
 
     public static int getLightLevel(Player player) {
@@ -147,6 +147,17 @@ public class Utils {
 
     public static void setEscapeTimer(Player player,int escapeTimer) {
         Services.PLATFORM.setAttachedValue(player,CommonDataAttachments.ESCAPE_TIMER,escapeTimer);
+    }
+
+    public static void setToggelableElytra(Player player,boolean elytra) {
+        Services.PLATFORM.setAttachedValue(player,CommonDataAttachments.TOGGLEABLE_ELYTRA,elytra);
+        if (player instanceof ServerPlayer serverPlayer) {
+            Services.PLATFORM.sendToClient(S2CSyncBooleanDataAttachmentPacket.createToggleElytraPacket(serverPlayer.getId(),elytra),serverPlayer);
+        }
+    }
+
+    public static boolean getToggleableElytra(LivingEntity player) {
+        return Services.PLATFORM.getOrCreateAttachedValue(player,CommonDataAttachments.TOGGLEABLE_ELYTRA);
     }
 
     public static Stream<Block> getKnownBlocks() {

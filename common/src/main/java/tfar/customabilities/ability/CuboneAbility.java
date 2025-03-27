@@ -46,6 +46,7 @@ public class CuboneAbility extends NewAbility{
     public void onRemove(ServerPlayer player) {
         super.onRemove(player);
         player.removeEffect(MobEffects.SLOW_FALLING);
+        player.setAirSupply(300);
     }
 
     @Override
