@@ -8,7 +8,8 @@
     "AttributesMixin",
     "BlocksMixin",
     "ItemMixinForge",
-    "MobEffectsMixin"
+    "MobEffectsMixin",
+    "SoundEventsMixin"
   ],
   "client": [
   ],

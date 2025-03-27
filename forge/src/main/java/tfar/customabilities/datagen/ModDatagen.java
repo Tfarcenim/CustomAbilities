@@ -24,6 +24,7 @@ public class ModDatagen {
         dataGenerator.addProvider(true,blockTagsProvider);
         dataGenerator.addProvider(true,new ModItemTagsProvider(packOutput,lookupProvider,blockTagsProvider.contentsGetter(),existingFileHelper));
 
+        dataGenerator.addProvider(true,new ModSoundDefinitionProvider(packOutput,existingFileHelper));
     }
 
 }

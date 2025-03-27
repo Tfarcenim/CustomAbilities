@@ -1,6 +1,7 @@
 package tfar.customabilities.ability;
 
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -10,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import tfar.customabilities.Abilities;
 import tfar.customabilities.Utils;
 import tfar.customabilities.init.ModMobEffects;
+import tfar.customabilities.init.ModSoundEvents;
 
 //Mari
 //- Every half a second, Mari passively has a 5% chance to deal half a heart of damage to any player within a five block radius.
@@ -40,6 +42,7 @@ public class MariAbility extends NewAbility {
             });
             if (nearby!=null) {
                 nearby.hurt(player.damageSources().lightningBolt(),1);
+                player.serverLevel().playSound(null,nearby.blockPosition(), ModSoundEvents.ZAP, SoundSource.PLAYERS);
             }
         }
     }

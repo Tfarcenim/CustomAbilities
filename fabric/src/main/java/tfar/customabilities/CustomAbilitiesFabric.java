@@ -11,9 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import tfar.customabilities.ability.NewAbility;
 import tfar.customabilities.attachments.CommonDataAttachments;
-import tfar.customabilities.init.ModAttributes;
-import tfar.customabilities.init.ModEntityTypes;
-import tfar.customabilities.init.ModMobEffects;
+import tfar.customabilities.init.*;
 import tfar.customabilities.network.client.S2CSyncAbilityPacket;
 import tfar.customabilities.platform.Services;
 
@@ -45,6 +43,8 @@ public class CustomAbilitiesFabric implements ModInitializer {
         ModMobEffects.init();
         CommonDataAttachments.init();
         ModEntityTypes.init();
+        ModSoundEvents.init();
+        ModBlocks.init();
         // Use Fabric to bootstrap the Common mod.
         CustomAbilities.init();
     }
